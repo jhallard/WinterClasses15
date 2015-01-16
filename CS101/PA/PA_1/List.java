@@ -42,7 +42,10 @@ public class List {
 
     public int getElement() { // Returns cursor element in this list.
                              // Pre: length()>0, getIndex()>=0
-        return cursor_node.getData();
+        if(cursor_node != null)
+            return cursor_node.getData();
+        else
+            throw new RuntimeException();
     }
 
     public boolean equals(List L) { // Returns true if this List and L are the same integer
@@ -88,9 +91,21 @@ public class List {
             throw new RuntimeException();
         }
 
+        if(i == num_nodes-1) {
+            cursor_node = back_node;
+            cursor_index = num_nodes-1;
+            return;
+        }
+
         if(cursor_index == -1) {
-            cursor_index = 0;
-            cursor_node = front_node;
+            if(i < num_nodes/2) {
+                cursor_index = 0;
+                cursor_node = front_node;
+            }
+            else {
+                cursor_index = num_nodes-1;
+                cursor_node = back_node;
+            }
         }
 
         int diff = i - cursor_index;
@@ -121,7 +136,8 @@ public class List {
         if(cursor_index < 1 || cursor_node == null) {
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            return;
+            // throw new RuntimeException();
         }
 
         cursor_node = cursor_node.getPrev();
@@ -133,10 +149,10 @@ public class List {
                                                 // back of the list. If getIndex()==length()-1, cursor becomes
                                                 // undefined. If getIndex()==-1, cursor remains undefined. This
                                                 // operation is equivalent to moveTo(getIndex()+1).
-        if(cursor_index >= num_nodes-1 || cursor_node == null) {
+        if(cursor_index >= num_nodes-1 || cursor_index == -1 || cursor_node == null) {
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            return;
         }
 
         cursor_node = cursor_node.getNext();
@@ -147,14 +163,14 @@ public class List {
 
     public void prepend(int data) {         // Inserts new element before front element in this List.
         Node new_node = new Node(data);
-        new_node.setNext(front_node);
-        if(num_nodes == 0) {
+        if(num_nodes == 0 || front_node == null) {
             front_node = new_node;
             back_node = new_node;
             num_nodes++;
             return;
         }
         front_node.setPrev(new_node);
+        new_node.setNext(front_node);
         front_node = new_node;
         if(cursor_index != -1) {
             cursor_index++;
@@ -176,8 +192,8 @@ public class List {
         num_nodes++;
     }
 
-    public void insertBefore(int data) {        // Inserts new element before cursor element in this
-                                                // List. Pre: length()>0, getIndex()>=0
+    public void insertBefore(int data) {            // Inserts new element before cursor element in this
+                                                    // List. Pre: length()>0, getIndex()>=0
         if(cursor_index < 0 || num_nodes < 1 ) {
             cursor_index = -1;
             cursor_node = null;
@@ -192,6 +208,10 @@ public class List {
         cursor_node.setPrev(new_node);
         if(cursor_index != -1) {
             cursor_index++;
+        }
+
+        if(front_node == cursor_node) {
+            front_node = cursor_node.getPrev();
         }
         num_nodes++;
     }
@@ -208,6 +228,11 @@ public class List {
         new_node.setNext(cursor_node.getNext());
         cursor_node.getNext().setPrev(new_node);
         cursor_node.setNext(new_node);
+
+        if(back_node == cursor_node) {
+            back_node = cursor_node.getNext();
+        }
+
         num_nodes++;
     }
 
@@ -318,7 +343,7 @@ public class List {
         }
 
         public void setPrev(Node prv) {
-            prev = prev;
+            prev = prv;
         }
 
         public Node getNext() {
