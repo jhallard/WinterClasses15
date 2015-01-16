@@ -24,8 +24,6 @@ public class ListClient{
       for(B.moveTo(B.length()-1); B.getIndex()>=0; B.movePrev()){
          System.out.print(B.getElement()+" ");
       }
-
-    System.out.println("555");
       
       List C = A.copy();
       System.out.println(A.equals(B));

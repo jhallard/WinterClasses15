@@ -201,11 +201,12 @@ public class List {
         }
 
         Node new_node = new Node(data);
-        new_node.setPrev(cursor_node.getPrev());
         if(cursor_node.getPrev() != null) {
             cursor_node.getPrev().setNext(new_node);
         }
+        new_node.setPrev(cursor_node.getPrev());
         cursor_node.setPrev(new_node);
+        new_node.setNext(cursor_node);
         if(cursor_index != -1) {
             cursor_index++;
         }
