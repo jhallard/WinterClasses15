@@ -1,5 +1,8 @@
  /**
  * Created by John Allard on 1/10/2015.
+ * ID : 1437547
+ * CruzID : jhallard
+ * CS101 PA #1
  */
  import java.lang.RuntimeException;
 
@@ -289,15 +292,15 @@ public class List {
                                         // consisting of a space separated sequence of integers
                                         // with front on the left and back on the right. The
                                         // cursor is ignored.
-    Node walker = front_node;
-    String ret_string = "";
+        Node walker = front_node;
+        String ret_string = "";
 
-    while(walker != null) {
-        Integer x = walker.getData();
-        ret_string += (x.toString()+" ");
-        walker = walker.getNext();
-    }
-    return ret_string;
+        while(walker != null) {
+            Integer x = walker.getData();
+            ret_string += (x.toString()+" ");
+            walker = walker.getNext();
+        }
+        return ret_string;
     
     }
 

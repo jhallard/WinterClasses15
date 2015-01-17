@@ -9,10 +9,10 @@ JARFILE = $(MAINCLASS)
 all: $(JARFILE)
 $(JARFILE): $(CLASSES)
 echo Main-class: $(MAINCLASS) > Manifest
-jar cvfm $(JARFILE) Manifest $(JARCLASSES)
-chmod +x $(JARFILE)
-rm Manifest
+	jar cvfm $(JARFILE) Manifest $(JARCLASSES)
+	chmod +x $(JARFILE)
+	rm Manifest
 %.class: %.java
-$(JAVAC) $<
+	$(JAVAC) $<
 clean:
-rm -f *.class $(JARFILE)
+	rm -f *.class $(JARFILE)

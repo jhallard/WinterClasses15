@@ -20,16 +20,16 @@ public class ListClient{
          System.out.print(A.getElement()+" ");
       }
       System.out.println();
-
       for(B.moveTo(B.length()-1); B.getIndex()>=0; B.movePrev()){
          System.out.print(B.getElement()+" ");
       }
+      System.out.println();
       
       List C = A.copy();
       System.out.println(A.equals(B));
       System.out.println(B.equals(C));
       System.out.println(C.equals(A));
-    
+      
       A.moveTo(5);
       A.insertBefore(-1);
       A.moveTo(15);
