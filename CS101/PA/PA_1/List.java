@@ -30,13 +30,13 @@ public class List {
 
     public int front() { // Returns front element in this list. Pre: length()>0
         if(front_node == null || num_nodes == 0)
-            throw new RuntimeException();
+            throw new RuntimeException("Length = 0, no front item exists");
         return front_node.getData();
     }
 
     public int back() {  // Returns back element in this List. Pre: length()>0
         if(back_node == null || num_nodes == 0)
-            throw new RuntimeException();
+            throw new RuntimeException("Length = 0, no back item exists.");
         return back_node.getData();
     }
 
@@ -45,7 +45,7 @@ public class List {
         if(cursor_node != null)
             return cursor_node.getData();
         else
-            throw new RuntimeException();
+            throw new RuntimeException("Cursor node is null");
     }
 
     public boolean equals(List L) { // Returns true if this List and L are the same integer
@@ -88,7 +88,7 @@ public class List {
         if(i < 0 || i > num_nodes-1)  {// pre-condition assertion
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            throw new RuntimeException("Index out of bounds\n");
         }
 
         if(i == num_nodes-1) {
@@ -180,13 +180,13 @@ public class List {
 
     public void append(int data) {          // Inserts new element after back element in this List.
         Node new_node = new Node(data);
-        new_node.setPrev(back_node);
         if(num_nodes == 0) {
             front_node = new_node;
             back_node = new_node;
             num_nodes++;
             return;
         }
+        new_node.setPrev(back_node);
         back_node.setNext(new_node);
         back_node = new_node;
         num_nodes++;
@@ -197,7 +197,7 @@ public class List {
         if(cursor_index < 0 || num_nodes < 1 ) {
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            throw new RuntimeException("Cannot insert before null cursor node");
         }
 
         Node new_node = new Node(data);
@@ -226,9 +226,12 @@ public class List {
         }
 
         Node new_node = new Node(data);
+        if(cursor_node.getNext() != null) {
+            cursor_node.getNext().setPrev(new_node);
+        }
         new_node.setNext(cursor_node.getNext());
-        cursor_node.getNext().setPrev(new_node);
         cursor_node.setNext(new_node);
+        new_node.setPrev(cursor_node);
 
         if(back_node == cursor_node) {
             back_node = cursor_node.getNext();
@@ -242,7 +245,7 @@ public class List {
         if(num_nodes < 1 || front_node == null) {
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            throw new RuntimeException("Front node is null/ length = 0");
         }
 
         front_node = front_node.getNext();
@@ -251,10 +254,10 @@ public class List {
     }
 
     public void deleteBack() { // Deletes the back element in this List. Pre: length()>0
-        if(num_nodes < 1 || front_node == null) {
+        if(num_nodes < 1 || back_node == null) {
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            throw new RuntimeException("Back node is null/length = 0");
         }
 
         back_node = back_node.getPrev();
@@ -268,11 +271,13 @@ public class List {
         if(cursor_index < 0 || cursor_node == null || num_nodes == 0) {
             cursor_index = -1;
             cursor_node = null;
-            throw new RuntimeException();
+            throw new RuntimeException("Cannot delete null cursor");
         }
 
-        cursor_node.getNext().setPrev(cursor_node.getPrev());
-        cursor_node.getPrev().setNext(cursor_node.getNext());
+        if(cursor_node.getNext() != null)
+            cursor_node.getNext().setPrev(cursor_node.getPrev());
+        if(cursor_node.getPrev() != null)
+            cursor_node.getPrev().setNext(cursor_node.getNext());
 
         cursor_node = null;
         cursor_index = -1;
