@@ -1,11 +1,13 @@
 #include "List.h"
 
-typedef struct Node  {
+typedef struct NodeObj {
 
-    Node * prev;
-    Node * next;
+    struct NodeObj * prev;
+    struct NodeObj * next;
     int data;
-};
+} NodeObj;
+
+typedef struct NodeObj Node;
 
 typedef struct ListObj {
 
@@ -16,7 +18,7 @@ typedef struct ListObj {
     int cursor_index;
     int num_nodes;
 
-}, ListObj;
+} ListObj;
 
 
 // Constructors-Destructors ---------------------------------------------------
@@ -49,7 +51,7 @@ void freeList(List* pL) {
 
 // @func - length
 // args  - List to be queried
-// @ret  - the length of the list (if non-null)
+// @ret  - the length of the list (if non-NULL)
 int length(List L) {
     if(L == NULL) {
         return;
@@ -91,7 +93,7 @@ int back(List L) {
 // args  - The list to eb queried
 // @ret  - The data that the cursor points to
 int getElement(List L) {
-    if(L == NULL || L->cursor_node == NULL || L->cursor_index = -1) {
+    if(L == NULL || L->cursor_node == NULL || L->cursor_index == -1) {
         return;
     }
 
@@ -102,7 +104,7 @@ int getElement(List L) {
 // args  - #1 First list to be compared, #2 Second list to be compared for equality
 // @ret  - 1 if true, 0 if false
 int equals(List A, List B) {
-    if(L == NULL) {
+    if(A == NULL || B == NULL) {
         return;
     }
 }
@@ -129,6 +131,48 @@ void moveTo(List L, int i) {
     if(L == NULL) {
         return;
     }
+    if(i < 0 || i > L->num_nodes-1)  {// pre-condition assertion
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        return;
+    }
+
+    if(i == L->num_nodes-1) {
+        L->cursor_node = L->back_node;
+        L->cursor_index = L->num_nodes-1;
+        return;
+    }
+
+    if(L->cursor_index == -1) {
+        if(i < L->num_nodes/2) {
+            L->cursor_index = 0;
+            L->cursor_node = L->front_node;
+        }
+        else {
+            L->cursor_index = L->num_nodes-1;
+            L->cursor_node = L->back_node;
+        }
+    }
+
+    int diff = i - L->cursor_index;
+
+    if(diff == 0) {
+        return;
+    }
+    else if(diff > 0) { // we need to move forward
+        while(L->cursor_index != i && L->cursor_node != NULL) {
+            L->cursor_node = L->cursor_node->next;
+            L->cursor_index++;
+        }
+        return;
+    }
+    else {
+        while(L->cursor_index != i && L->cursor_node != NULL) {
+            L->cursor_node = L->cursor_node->prev;
+            L->cursor_index--;
+        }
+        return;
+    }
 }
 
 // @func - movePrev
@@ -138,6 +182,15 @@ void movePrev(List L) {
     if(L == NULL) {
         return;
     }
+
+    // assert that the cursor is in a valid place
+    if(L->cursor_index < 1 || L->cursor_node == NULL) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        return;
+    }
+
+    L->cursor_node = L->cursor_node->prev;
 }
 
 // @func -

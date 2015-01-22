@@ -5,11 +5,14 @@
 // Project - Programming Assignment #2
 // ==========================================
 
+#ifndef LIST_H_CS101
+#define LIST_H_CS101
+
 #include <stdio.h>
 #include <stdlib.h>
 
 // typedef a ListObj ptr to be a list for convenience
-typedef ListObj* List;
+typedef struct ListObj* List;
 
 // Constructors-Destructors ---------------------------------------------------
 
@@ -57,3 +60,5 @@ void delete(List L);
 void printList(FILE* out, List L);
 
 List copyList(List L);
+
+#endif
