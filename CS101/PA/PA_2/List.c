@@ -1,3 +1,12 @@
+// ==========================================
+// Author  - John Allard
+// ID      - 1437547
+// CruzID  - jhallard
+// Project - Programming Assignment #2
+// File    - List.c
+// Info    - Implementation of the List and Node data structures
+// ==========================================
+
 #include "List.h"
 
 typedef struct NodeObj {
@@ -20,8 +29,9 @@ typedef struct ListObj {
 
 } ListObj;
 
-
-// Constructors-Destructors ---------------------------------------------------
+// -----------------------------------------------------------------------
+// ------------------ Constructors-Destructors ---------------------------
+// -----------------------------------------------------------------------
 
 // @func - newList
 // @args - ?? Why does this take a void arg ??
@@ -33,6 +43,7 @@ List newList(void) {
     new_list->cursor_node = NULL;
     new_list->num_nodes = 0;
     new_list->cursor_index = -1;
+    return new_list;
 }
 
 // @func - freeList
@@ -45,7 +56,7 @@ void freeList(List* pL) {
 
 
 // -----------------------------------------------------------------------
-// Access functions -----------------------------------------------------------
+// -------------------------- Access functions ---------------------------
 // -----------------------------------------------------------------------
 
 
@@ -110,9 +121,9 @@ int equals(List A, List B) {
 }
 
 
-// -----------------------------------------------------------------------
-// Manipulation procedures ----------------------------------------------------
-// -----------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------- Manipulation procedures ----------------------------
+// --------------------------------------------------------------------------
 
 // @func - clear
 // args  - The list to be queried
@@ -200,6 +211,14 @@ void moveNext(List L) {
     if(L == NULL) {
         return;
     }
+    if(L->cursor_index >= L->num_nodes-1 || L->cursor_index == -1 || L->cursor_node == NULL) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        return;
+    }
+
+    L->cursor_node = L->cursor_node->next;
+    L->cursor_index++;
 }
 
 // @func -
@@ -265,16 +284,16 @@ void delete(List L) {
     }
 }
 
-// -----------------------------------------------------------------------
-// ------------------------ Other operations -----------------------------------
-// -----------------------------------------------------------------------
+// -------------------------------------------------------------------------
+// ------------------------ Other operations -------------------------------
+// -------------------------------------------------------------------------
 
 // @func -
 // args  - The list to be queried
 // @ret  -
 void printList(FILE* out, List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
@@ -283,6 +302,6 @@ return;
 // @ret  -
 List copyList(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
