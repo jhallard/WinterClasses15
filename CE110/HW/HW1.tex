@@ -1,0 +1,98 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=0.8in]{geometry}
+
+% \setlength{\voffset}{-0.5in}
+\setlength{\headsep}{5pt}
+\newcommand{\suchthat}{\;\ifnum\currentgrouptype=16 \middle\fi|\;}
+\newcommand{\answer}{\textbf{Answer : }}
+\newcommand{\cd}{\texttt}
+\newcommand{\benu}{\begin{enumerate}}
+\newcommand{\enu}{\end{enumerate}}
+
+
+%===========---------================
+% Author John H Allard
+% CMPE 12, HW #4
+% December 10th, 2014
+%===========---------================
+
+\begin{document}
+   % \vspace*{\stretch{-0.5}}
+   \begin{center}
+      \Large\textbf{CMPE 110 Homework \#1}\\
+      \large\texttt{John Allard} \\
+      \small\texttt{November 20th, 2014} \\
+      \small\texttt{ID : 1437547}
+   \end{center}
+   % \vspace*{\stretch{0.5}}
+
+%==========================================
+%==========================================
+%====== Begin Problems, 15 Total ==========
+%==========================================
+%==========================================
+
+\benu
+% ======== PROBLEM #1 ======== %
+\item Question \#1 - Power \\
+
+\benu
+\item Question \#1A : `...However, we discussed that nowadays power density and heat has become an issue preventing scaling of frequency. Discuss why power and temperature are becoming an issue'.
+\answer  \\
+
+\item Question \#1B : Given the rough formulations governing power and frequency for each voltage region, discuss which region (consider Near and Super-threshold only) is more energy efficient.
+\answer \\
+To start, we will make the following assumptions.
+ $$\text{Given } k \in \mathbb{R}^+ : $$ 
+ $$\text{Near-threshold voltage } = V_{nth} = k \text{, } \text{Super-threshold voltage } = V_{sth} = 2k : k \in \mathbb{R}^+ $$
+ $$ \text{Power} \propto V^3 \text{, Delay } \propto \frac{1}{V} \text{ , Energy } \propto \text{ Power } \times \text{ Delay} $$
+ $$ \text{Energy Efficiency } \propto \text{ Energy } \times \text{ Delay } = \text{ Power } \times \text{ Delay}^2 $$
+
+ The energy efficiency can then be calculated for both the near and super threshold voltage levels, as shown below. 
+
+ \begin{tabular}{l || r}
+ Near-Threshold  & Super-Threshold \\ \hline \\
+ $P_{nth} = V_{nth}^3 = k^3$ & $P_sth = V_{sth}^3 = (2k)^3 = 8k$ \\
+ $D_{nth} = \frac{1}{V_{nth}} = \frac{1}{k}$ & $D_{sth} = \frac{1}{2k}$ \\ 
+ $E_{nth} = P_{nth}*D_{nth} = \frac{k^3}{k} = {k}^2$ & $E_{sth} = P_{sth}*D_{sth} = \frac{8k^3}{2k} = {4k}^2$ \\
+ $EE_{nth} = E_{nth}*D_{nth} = \frac{k^2}{k} = k$ &  $EE_{sth} = E_{sth}*D_{sth} = \frac{4k^2}{2k} = 2k$ \\
+ \end{tabular}
+ 
+ Thus voltage levels that are near the threshold are more energy efficient. \\
+
+\enu
+
+
+\item Question \#2 Computing ISA's
+
+ \benu 
+ \item Question \#2A x86 CISC ISA \\ Fill out the first row of the above table (from the handout), but assume 32-bit data values. \\
+ \answer 
+
+
+ \item 
+
+ \enu
+
+
+\item Provide the output for each of the following code statements. \\
+
+
+\item For each of the following items, identify whether the caller fucntion or the callee function performs the actions.
+
+\item TODO
+
+\item Write a C program that computes the pig-latin translation of an english word. \\
+
+
+\enu
+
+\end{document}

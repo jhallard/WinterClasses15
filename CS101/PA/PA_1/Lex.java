@@ -54,6 +54,7 @@ public class Lex {
     public static void main(String [] args) {
 
         if(args.length != 2) {
+            System.err.println("Error : Must pass in input and output files for the program");
             return;
             // TODO print error message to stderr
         }

@@ -1,0 +1,35 @@
+;;; turtles-01 model by ralph 13 nov 2012 in 5.0.3
+;;; update and minimize in 5.1.0 13 jan 2015
+
+;;; GLOBAL VARS
+globals [ myjump ] ;; defines a global variable named myjump
+
+;;; PROCEDURES
+
+to setup  ;; Used to begin a command procedure. (in this case begins the setup procesfure)
+  ca
+  set myjump 4     ;; sets the myjump variable to 4
+  crt 1            ;; creates a single turtle
+    [ 
+    set size 5      ;; holds a number that is the turtle's apparent size
+    set heading 0   ;; sets the heading angle for the pen to 0 degrees
+    set color blue  ;; sets pen color to blue
+    pd              ;; sets the pen down
+    set pen-size 4  ;; sets pen-size to a size of 4
+    ht
+    ]
+  reset-ticks  ;; Resets the tick counter to zero, sets up all plots, then updates all plots 
+end    ;; end of the procedure
+
+to step ;; begins the step procedure
+  ask turtle 0 [ ;; tell the turtle what command to do
+    fd myjump    ;; move forwards by the value of myjump
+    set heading ( heading + 45 ) ;; change the heading by 45 degrees
+    set myjump ( myjump + 1 )    ;; increase the myjump value by 1
+    ]
+  tick ;; advance the tick count by 1
+end ;; end of the procedure 
+
+to go ;; defines the go procedure
+  step ;; perform the step procedure
+end ;; end of the procedure

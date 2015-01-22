@@ -1,0 +1,15 @@
+;;; patch-01 model by ralph 13 nov 2012
+;;; min version 13 jan 2015
+
+;;; PROCEDURES
+
+to setup ;; start of the setup procedure
+  clear-all ;; combines the effect of all of the clear calls
+end ;; end procedure
+
+to step ;; start of the step procedure
+  ask patches [ ;; set a command for the patches
+    if ( pxcor mod 3 = 0 ) [ set pcolor red ]  ;; if the x coordinate divides 3, set the color to red
+    if ( pycor mod 3 = 1 ) [ set pcolor white ];; if the y coordinate divides 3 remainder 1, set the color to white
+    ]
+end ;; end step routine
