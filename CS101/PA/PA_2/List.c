@@ -47,9 +47,9 @@ void freeList(List* pL) {
 // -----------------------------------------------------------------------
 
 
-// @func -
-// args  -
-// @ret  -
+// @func - length
+// args  - List to be queried
+// @ret  - the length of the list (if non-null)
 int length(List L) {
     if(L == NULL) {
         return;
@@ -57,9 +57,9 @@ int length(List L) {
     return L->num_nodes;
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - getIndex
+// args  - List to be queried
+// @ret  - the index that the cursor points to in this list
 int getIndex(List L) {
     if(L == NULL) {
         return;
@@ -67,9 +67,9 @@ int getIndex(List L) {
     return L->cursor_index;
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - front
+// args  - '''
+// @ret  - The value of the data inside of the front node
 int front(List L) {
     if(L == NULL || L->front_node == NULL) {
         return;
@@ -77,9 +77,9 @@ int front(List L) {
     return L->front_node->data;
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - back
+// args  - '''
+// @ret  - The value of the data inside of the back node
 int back(List L) {
     if(L == NULL || L->back_node == NULL) {
         return;
@@ -87,21 +87,23 @@ int back(List L) {
     return L->back_node->data;
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - getElement
+// args  - The list to eb queried
+// @ret  - The data that the cursor points to
 int getElement(List L) {
-    if(L == NULL) {
-return;
+    if(L == NULL || L->cursor_node == NULL || L->cursor_index = -1) {
+        return;
     }
+
+    return L->cursor_node->data;
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - equals
+// args  - #1 First list to be compared, #2 Second list to be compared for equality
+// @ret  - 1 if true, 0 if false
 int equals(List A, List B) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
@@ -110,66 +112,67 @@ return;
 // Manipulation procedures ----------------------------------------------------
 // -----------------------------------------------------------------------
 
-// @func -
-// args  -
-// @ret  -
+// @func - clear
+// args  - The list to be queried
+// @ret  - nothing
 void clear(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - moveTo
+// args  - #1 The list to be queried, #2 the index to move the cursor to
+// @ret  - nothing
+// @info - 0 <= i < L.length() else index gets set to -1
 void moveTo(List L, int i) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
-// @func -
-// args  -
+// @func - movePrev
+// args  - The list to be queried
 // @ret  -
 void movePrev(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void moveNext(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void prepend(List L, int data) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void append(List L, int data) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void insertBefore(List L, int data) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
@@ -178,34 +181,34 @@ return;
 // @ret  -
 void insertAfter(List L, int data) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void deleteFront(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void deleteBack(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void delete(List L) {
     if(L == NULL) {
-return;
+        return;
     }
 }
 
@@ -214,7 +217,7 @@ return;
 // -----------------------------------------------------------------------
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 void printList(FILE* out, List L) {
     if(L == NULL) {
@@ -223,7 +226,7 @@ return;
 }
 
 // @func -
-// args  -
+// args  - The list to be queried
 // @ret  -
 List copyList(List L) {
     if(L == NULL) {
