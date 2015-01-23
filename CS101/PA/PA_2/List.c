@@ -1,11 +1,11 @@
-// ==========================================
-// Author  - John Allard
-// ID      - 1437547
-// CruzID  - jhallard
-// Project - Programming Assignment #2
-// File    - List.c
-// Info    - Implementation of the List and Node data structures
-// ==========================================
+// |===================================================================|
+// ||  Author  - John Allard                                          ||     
+// ||  ID      - 1437547                                              || 
+// ||  CruzID  - jhallard                                             || 
+// ||  Project - Programming Assignment #2                            ||                 
+// ||  File    - List.c                                               || 
+// ||  Info    - Implementation of the List and Node data structures  ||                                             
+// |===================================================================|
 
 #include "List.h"
 
@@ -61,7 +61,7 @@ void freeList(List* pL) {
 
 
 // @func - length
-// args  - List to be queried
+// @args - List to be queried
 // @ret  - the length of the list (if non-NULL)
 int length(List L) {
     if(L == NULL) {
@@ -71,7 +71,7 @@ int length(List L) {
 }
 
 // @func - getIndex
-// args  - List to be queried
+// @args - List to be queried
 // @ret  - the index that the cursor points to in this list
 int getIndex(List L) {
     if(L == NULL) {
@@ -81,7 +81,7 @@ int getIndex(List L) {
 }
 
 // @func - front
-// args  - '''
+// @args - '''
 // @ret  - The value of the data inside of the front node
 int front(List L) {
     if(L == NULL || L->front_node == NULL) {
@@ -91,7 +91,7 @@ int front(List L) {
 }
 
 // @func - back
-// args  - '''
+// @args - '''
 // @ret  - The value of the data inside of the back node
 int back(List L) {
     if(L == NULL || L->back_node == NULL) {
@@ -101,7 +101,7 @@ int back(List L) {
 }
 
 // @func - getElement
-// args  - The list to eb queried
+// @args - The list to eb queried
 // @ret  - The data that the cursor points to
 int getElement(List L) {
     if(L == NULL || L->cursor_node == NULL || L->cursor_index == -1) {
@@ -112,7 +112,7 @@ int getElement(List L) {
 }
 
 // @func - equals
-// args  - #1 First list to be compared, #2 Second list to be compared for equality
+// @args - #1 First list to be compared, #2 Second list to be compared for equality
 // @ret  - 1 if true, 0 if false
 int equals(List A, List B) {
     if(A == NULL || B == NULL) {
@@ -126,7 +126,7 @@ int equals(List A, List B) {
 // --------------------------------------------------------------------------
 
 // @func - clear
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  - nothing
 void clear(List L) {
     if(L == NULL) {
@@ -135,7 +135,7 @@ void clear(List L) {
 }
 
 // @func - moveTo
-// args  - #1 The list to be queried, #2 the index to move the cursor to
+// @args - #1 The list to be queried, #2 the index to move the cursor to
 // @ret  - nothing
 // @info - 0 <= i < L.length() else index gets set to -1
 void moveTo(List L, int i) {
@@ -187,7 +187,7 @@ void moveTo(List L, int i) {
 }
 
 // @func - movePrev
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  -
 void movePrev(List L) {
     if(L == NULL) {
@@ -204,8 +204,8 @@ void movePrev(List L) {
     L->cursor_node = L->cursor_node->prev;
 }
 
-// @func -
-// args  - The list to be queried
+// @func - moveNext
+// @args - The list to be queried
 // @ret  -
 void moveNext(List L) {
     if(L == NULL) {
@@ -221,44 +221,128 @@ void moveNext(List L) {
     L->cursor_index++;
 }
 
-// @func -
-// args  - The list to be queried
-// @ret  -
+// @func - prepend
+// @args - #1 The list to be queried, #2 the data to prepend to the list
+// @ret  - nothing
 void prepend(List L, int data) {
     if(L == NULL) {
         return;
     }
+
+    // allocate a new node
+    Node * new_node = malloc(sizeof(Node));
+    new_node->data = data;
+
+    // special case, if the list is empty we have to set the back node to also point to this new node
+    if(L->num_nodes == 0 || L->front_node == NULL) {
+        L->front_node = new_node;
+        L->back_node = new_node;
+        L->num_nodes++;
+        return;
+    }
+    L->front_node->prev = new_node;
+    L->front_node->prev->next = L->front_node;
+    L->front_node = new_node;
+    if(L->cursor_index != -1) {
+        L->cursor_index++;
+    }
+    L->num_nodes++;
 }
 
-// @func -
-// args  - The list to be queried
-// @ret  -
+// @func - append
+// @args - #1 The list to be queried, #2 the data to append to the list
+// @ret  - nothing
 void append(List L, int data) {
     if(L == NULL) {
         return;
     }
+
+    // allocate a new node
+    Node * new_node = malloc(sizeof(Node));
+    new_node->data = data;
+
+    if(L->num_nodes == 0) {
+        L->front_node = new_node;
+        L->back_node = new_node;
+        L->num_nodes++;
+        return;
+    }
+    new_node->prev = L->back_node;
+    L->back_node->next = new_node;
+    L->back_node = new_node;
+    L->num_nodes++;
 }
 
-// @func -
-// args  - The list to be queried
-// @ret  -
+// @func - insertBefore
+// @args - #1 The list to be queried, #2 the data to be inserted before the cursor
+// @ret  - nothing
+// @info - Precondition - Cursor must be at a valid index (x >= 1 && x < L.length)
 void insertBefore(List L, int data) {
     if(L == NULL) {
         return;
     }
+    if(L->cursor_index < 0 || L->num_nodes < 1 ) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        fprintf(stderr, "Error : Cursor index is NULL\n");
+        exit(1);
+    }
+
+    // allocate a new node
+    Node * new_node = malloc(sizeof(Node));
+    new_node->data = data;
+
+    if(L->cursor_node->prev != NULL) {
+        L->cursor_node->prev->next = new_node;
+    }
+    new_node->prev = L->cursor_node->prev;
+    L->cursor_node->prev = new_node;
+    new_node->next = L->cursor_node;
+    if(L->cursor_index != -1) {
+        L->cursor_index++;
+    }
+
+    if(L->front_node == L->cursor_node) {
+        L->front_node = L->cursor_node->prev;
+    }
+    L->num_nodes++;
 }
 
-// @func -
-// args  -
-// @ret  -
+// @func - insertAfter
+// @args - #1 The list to be queried, #2 the data to be inserted after the cursor
+// @ret  - nothing
+// @info - Precondition - Cursor must be at a valid index (x >= 0 && x < L.length-1
 void insertAfter(List L, int data) {
     if(L == NULL) {
         return;
     }
+    if(L->cursor_index < 0 || L->num_nodes < 1 || L->cursor_node == NULL) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        fprintf(stderr, "Error : Invalid index to insert after\n");
+        exit(1);
+    }
+
+    // allocate a new node
+    Node * new_node = malloc(sizeof(Node));
+    new_node->data = data;
+
+    if(L->cursor_node->next != NULL) {
+        L->cursor_node->next->prev = new_node;
+    }
+    new_node->next = L->cursor_node->next;
+    L->cursor_node->next = new_node;
+    new_node->prev = L->cursor_node;
+
+    if(L->back_node == L->cursor_node) {
+        L->back_node = L->cursor_node->next;
+    }
+
+    L->num_nodes++;
 }
 
 // @func -
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  -
 void deleteFront(List L) {
     if(L == NULL) {
@@ -267,7 +351,7 @@ void deleteFront(List L) {
 }
 
 // @func -
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  -
 void deleteBack(List L) {
     if(L == NULL) {
@@ -276,7 +360,7 @@ void deleteBack(List L) {
 }
 
 // @func -
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  -
 void delete(List L) {
     if(L == NULL) {
@@ -289,7 +373,7 @@ void delete(List L) {
 // -------------------------------------------------------------------------
 
 // @func -
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  -
 void printList(FILE* out, List L) {
     if(L == NULL) {
@@ -298,7 +382,7 @@ void printList(FILE* out, List L) {
 }
 
 // @func -
-// args  - The list to be queried
+// @args - The list to be queried
 // @ret  -
 List copyList(List L) {
     if(L == NULL) {
