@@ -51,7 +51,9 @@ List newList(void) {
 // @ret  - nothing
 // @info - Cleans up all of the malloc'd data inside of the list
 void freeList(List* pL) {
-
+    clear(*pL);
+    free(*pL);
+    pL = NULL;
 }
 
 
@@ -472,7 +474,6 @@ List copyList(List L) {
     Node * walker = L->front_node;
     List ret_list = newList();
     while(walker != NULL) {
-        printf("Walker Data %d \n", walker->data);
         append(ret_list, walker->data);
         walker = walker->next;
     }
