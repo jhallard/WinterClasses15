@@ -6,14 +6,14 @@
 #
 #------------------------------------------------------------------------------
 
-StackTest : ListTest.o List.o
-	gcc -o ListTest ListTest.o List.o 
+ListClient : ListClient.o List.o
+	gcc -o ListClient ListClient.o List.o 
 
-StackTest.o : List.h ListTest.c
-	gcc -c -std=c99 -Wall ListTest.c
+ListClient.o : List.h ListClient.c
+	gcc -c -std=c99 -Wall ListClient.c
 
-Stack.o : List.h List.c
+List.o : List.h List.c
 	gcc -c -std=c99 -Wall List.c
 
 clean :
-	rm -f ListTest ListTest.o List.o
+	rm -f ListClient ListClient.o List.o

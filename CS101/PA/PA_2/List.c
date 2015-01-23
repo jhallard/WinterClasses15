@@ -65,7 +65,8 @@ void freeList(List* pL) {
 // @ret  - the length of the list (if non-NULL)
 int length(List L) {
     if(L == NULL) {
-        return;
+        //TODO printf stderr
+        exit(1);
     }
     return L->num_nodes;
 }
@@ -75,7 +76,8 @@ int length(List L) {
 // @ret  - the index that the cursor points to in this list
 int getIndex(List L) {
     if(L == NULL) {
-        return;
+        //TODO printf stderr
+        exit(1);
     }
     return L->cursor_index;
 }
@@ -85,7 +87,8 @@ int getIndex(List L) {
 // @ret  - The value of the data inside of the front node
 int front(List L) {
     if(L == NULL || L->front_node == NULL) {
-        return;
+        //TODO printf stderr
+        exit(1);
     }
     return L->front_node->data;
 }
@@ -95,7 +98,8 @@ int front(List L) {
 // @ret  - The value of the data inside of the back node
 int back(List L) {
     if(L == NULL || L->back_node == NULL) {
-        return;
+        //TODO printf stderr
+        exit(1);
     }
     return L->back_node->data;
 }
@@ -105,7 +109,8 @@ int back(List L) {
 // @ret  - The data that the cursor points to
 int getElement(List L) {
     if(L == NULL || L->cursor_node == NULL || L->cursor_index == -1) {
-        return;
+        //TODO printf stderr
+        exit(1);
     }
 
     return L->cursor_node->data;
@@ -116,8 +121,28 @@ int getElement(List L) {
 // @ret  - 1 if true, 0 if false
 int equals(List A, List B) {
     if(A == NULL || B == NULL) {
-        return;
+        //TODO printf stderr
+        exit(1);
     }
+
+    int saved_index1 = A->cursor_index;
+    int saved_index2 = B->cursor_index;
+
+    // two lists must be the same length to be the same
+    if(A->num_nodes != B->num_nodes)
+        return 0;
+
+    for(int i = 0; i < A->num_nodes; i++) {
+        moveTo(A, i);
+        moveTo(B, i);
+
+        if(A->cursor_node == NULL || A->cursor_node->data != B->cursor_node->data)
+            return 0;
+    }
+
+    moveTo(A, saved_index1);
+    moveTo(B, saved_index2);
+    return 1;
 }
 
 
@@ -348,6 +373,18 @@ void deleteFront(List L) {
     if(L == NULL) {
         return;
     }
+    if(L->num_nodes < 1 || L->front_node == NULL) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        fprintf(stderr, "Front node is NULL/ length = 0");
+    }
+
+    Node * to_delete = L->front_node;
+    L->front_node = L->front_node->next;
+    L->front_node->prev = NULL;
+    L->num_nodes--;
+    free(to_delete);
+    to_delete = NULL;
 }
 
 // @func -
@@ -357,15 +394,42 @@ void deleteBack(List L) {
     if(L == NULL) {
         return;
     }
+    if(L->num_nodes < 1 || L->back_node == NULL) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        fprintf(stderr, "Back node is NULL/ length = 0");
+    }
+
+    Node * to_delete = L->back_node;
+    L->back_node = L->back_node->prev;
+    L->back_node->next = NULL;
+    L->num_nodes--;
+    free(to_delete);
+    to_delete = NULL;
 }
 
-// @func -
+// @func - delete
 // @args - The list to be queried
-// @ret  -
+// @ret  - nothing
 void delete(List L) {
     if(L == NULL) {
         return;
     }
+    if(L->cursor_index < 0 || L->cursor_node == NULL || L->num_nodes == 0) {
+        L->cursor_index = -1;
+        L->cursor_node = NULL;
+        fprintf(stderr, "Error : Cannot delete NULL cursor\n");
+        exit(1);
+    }
+
+    if(L->cursor_node->next != NULL)
+        L->cursor_node->next->prev = L->cursor_node->prev;
+    if(L->cursor_node->prev != NULL) 
+        L->cursor_node->prev->next = L->cursor_node->next;
+
+    L->cursor_node = NULL;
+    L->cursor_index = -1;
+    L->num_nodes--;
 }
 
 // -------------------------------------------------------------------------
@@ -379,6 +443,13 @@ void printList(FILE* out, List L) {
     if(L == NULL) {
         return;
     }
+    Node * walker = L->front_node;
+
+    while(walker != NULL) {
+        int x = walker->data;
+        printf("%d ", x);
+        walker = walker->next;
+    }
 }
 
 // @func -
@@ -386,6 +457,13 @@ void printList(FILE* out, List L) {
 // @ret  -
 List copyList(List L) {
     if(L == NULL) {
-        return;
+        exit(1);
     }
+    Node * walker = L->front_node;
+    List ret_list = malloc(sizeof(List));
+    while(walker != NULL) {
+        append(ret_list, walker->data);
+        walker = walker->next;
+    }
+    return ret_list;
 }
