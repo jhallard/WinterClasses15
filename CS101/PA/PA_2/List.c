@@ -77,6 +77,7 @@ int length(List L) {
 int getIndex(List L) {
     if(L == NULL) {
         //TODO printf stderr
+        printf("Fail in getIndex\n");
         exit(1);
     }
     return L->cursor_index;
@@ -157,6 +158,14 @@ void clear(List L) {
     if(L == NULL) {
         return;
     }
+    Node * walker = L->front_node;
+    while(L->front_node != NULL) {
+        walker = L->front_node;
+        L->front_node = L->front_node->next;
+        free(walker);
+        L->num_nodes--;
+    }
+
 }
 
 // @func - moveTo
@@ -216,7 +225,7 @@ void moveTo(List L, int i) {
 // @ret  -
 void movePrev(List L) {
     if(L == NULL) {
-        return;
+        exit(1);
     }
 
     // assert that the cursor is in a valid place
@@ -225,7 +234,7 @@ void movePrev(List L) {
         L->cursor_node = NULL;
         return;
     }
-
+    L->cursor_index--;
     L->cursor_node = L->cursor_node->prev;
 }
 
@@ -447,7 +456,7 @@ void printList(FILE* out, List L) {
 
     while(walker != NULL) {
         int x = walker->data;
-        printf("%d ", x);
+        fprintf(out, "%d ", x);
         walker = walker->next;
     }
 }
@@ -457,11 +466,13 @@ void printList(FILE* out, List L) {
 // @ret  -
 List copyList(List L) {
     if(L == NULL) {
+        printf("Fail in copyList\n");
         exit(1);
     }
     Node * walker = L->front_node;
-    List ret_list = malloc(sizeof(List));
+    List ret_list = newList();
     while(walker != NULL) {
+        printf("Walker Data %d \n", walker->data);
         append(ret_list, walker->data);
         walker = walker->next;
     }

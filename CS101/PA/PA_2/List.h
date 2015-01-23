@@ -1,11 +1,11 @@
-// ==========================================
-// Author  - John Allard
-// ID      - 1437547
-// CruzID  - jhallard
-// Project - Programming Assignment #2
-// File    - List.h
-// Info    - Declaration of the List data structure interface.
-// ==========================================
+// |===================================================================|
+// ||  Author  - John Allard                                          ||     
+// ||  ID      - 1437547                                              || 
+// ||  CruzID  - jhallard                                             || 
+// ||  Project - Programming Assignment #2                            ||                 
+// ||  File    - List.h                                               || 
+// ||  Info    - Declaration of the List and Node data structures     ||                                             
+// |===================================================================|
 
 #ifndef LIST_H_CS101
 #define LIST_H_CS101
