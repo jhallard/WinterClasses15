@@ -11,11 +11,15 @@
 #include<stdlib.h>
 #include "List.h"
 
-int readFile(char * fn, char **);
+int readFile(const char * fn, const char ***);
 
-int getNumLines(char * fn);
+int getNumLines(const char * fn);
 
-int main(int argc, char *argv[]) {
+int compareTo(const char *, const char *);
+
+List insertionSort(const char ** lines, int num_words);
+
+int main(int argc, const char *argv[]) {
 
     /* argc should be 3 for correct execution */  
     if(argc != 3)  {
@@ -23,36 +27,93 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    char ** word_list = NULL;
-    int num_words = readFile(argv[1], word_list);
-    num_words++;
+    const char ** word_list;
+    printf("%s", argv[1]);
+    int num_words = readFile(argv[1], &word_list);
 
+    List new_list = insertionSort(word_list, num_words);
+
+
+    for(moveTo(new_list, 0); getIndex(new_list) >= 0; moveNext(new_list)) {
+        printf("%s \n", word_list[getElement(new_list)]);
+    }
     return 0;
 
 }
 
-int readFile(char * fn, char ** words) {
+
+List insertionSort(const char ** lines, int num_lines) {
+
+    List ret_list = newList();
+    int i = 0;
+    for(i = 0; i < num_lines; i++) {
+        append(ret_list, i);
+    }
+
+    for(i = 1; i < length(ret_list); i++) {
+
+        moveTo(ret_list, i);
+        char * i_string = lines[getElement(ret_list)];
+
+        // Go backwards along the list to find the correct insertion spot for the ith element
+        for(moveTo(ret_list, i-1); getIndex(ret_list) >= 0 && compareTo(i_string, lines[getElement(ret_list)]) < 0; movePrev(ret_list)) {
+        }
+
+        if(getIndex(ret_list) == -1) {
+            if(compareTo(i_string, lines[front(ret_list)]) <= 0) {
+                prepend(ret_list, i);
+                moveTo(ret_list, i+1);
+                delete(ret_list);
+            }
+        }
+        else if(getIndex(ret_list) < i-1) {
+            insertAfter(ret_list, i);
+            moveTo(ret_list, i+1);
+            delete(ret_list);
+        }
+    }
+
+    return ret_list;
+
+}
+
+int compareTo(const char * one, const char * two) {
+    return strcmp(one, two);
+}
+
+
+
+int readFile(const char * fn, const char *** words) {
      int current_line = 0;
      int BUFSIZE = 1000;
      int num_lines = getNumLines(fn);
-     words = malloc(num_lines*sizeof(char*));
+     *words = malloc((num_lines+1)*sizeof(char*));
 
-     FILE *fp = fopen("input.txt", "r");
+     FILE *fp = fopen(fn, "r");
      if (fp == 0){
-            fprintf(stderr, "Error while opening");
+            fprintf(stderr, "Error while opening %s", fn);
             exit(1);
      }
 
-     words[current_line] = malloc(BUFSIZE);
-      while (fgets(words[current_line], BUFSIZE, fp)) {
+     (*words)[current_line] = malloc(BUFSIZE);
+
+     if((*words)[current_line] == NULL) {
+        printf("malloc fail\n");
+        exit(1);
+     }
+      while (fgets((*words)[current_line], BUFSIZE, fp)) {
             current_line++;
-            words[current_line] = malloc(BUFSIZE);
+            (*words)[current_line] = malloc(BUFSIZE);
+            if((*words)[current_line] == NULL) {
+                printf("malloc fail\n");
+                exit(1);
+            }
      } 
 
-     return num_lines;
+     return current_line;
 }
 
-int getNumLines(char * fn) {
+int getNumLines(const char * fn) {
     int lines=0;
     char ch;
     FILE * fp=fopen(fn,"r");
