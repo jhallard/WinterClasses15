@@ -7,8 +7,8 @@
 // ||  Info    - Declaration of the List and Node data structures     ||                                             
 // |===================================================================|
 
-#ifndef LIST_H_CS101
-#define LIST_H_CS101
+#ifndef LIST_H_CS101_JOHN_A
+#define LIST_H_CS101_JOHN_A
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +18,7 @@ typedef struct ListObj* List;
 
 
 // ---------------------------------------------------------------------------
-// ------------------ Constructors-Destructors -------------------------------
+// ------------------ Constructors/Destructors -------------------------------
 // ---------------------------------------------------------------------------
 
 // @func - newList

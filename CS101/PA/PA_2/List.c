@@ -66,7 +66,7 @@ void freeList(List* pL) {
     }
     clear(*pL);
     free(*pL);
-    pL = NULL;
+    *pL = NULL;
 }
 
 

@@ -7,8 +7,8 @@
 // ||  Info    - Implementation of the Lex string sorting program     ||                                             
 // |===================================================================|
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "List.h"
 #include <string.h>
 
@@ -168,12 +168,13 @@ int writeFile(const char * fn, const char ** words, List list) {
 // @arg  - strings containing the file name
 // @ret  - the number of lines in the file
 int getNumLines(const char * fn) {
-    int lines=0;
+    int num_lines=0;
     char ch;
-    FILE * fp=fopen(fn,"r");
-    while((ch=fgetc(fp))!=EOF)
-    {
-        if (ch=='\n') { lines++; }
+    FILE * fp = fopen(fn,"r");
+    while((ch = fgetc(fp))!=EOF) {
+        if (ch=='\n') {
+            num_lines++; 
+        }
     }
     fclose(fp);
 
