@@ -9,6 +9,10 @@
 
 #include "List.h"
 
+// @type - NodeObj
+// @info - This private struct represents a simple doubly-linked node for our doubly-linked
+//         List data type. It contains pointers to the next and previous nodes in the list
+//         and an integer representing the data in the node.
 typedef struct NodeObj {
 
     struct NodeObj * prev;
@@ -16,8 +20,13 @@ typedef struct NodeObj {
     int data;
 } NodeObj;
 
+// Simplify the syntax for myself.
 typedef struct NodeObj Node;
 
+// @type - ListObj
+// @info - The main doubly-linked list for the Lex program and future programs.
+//         Consists of pointers to the front and back nodes, as well as a pointer
+//         that acts as a cursor, letting the user iterate over the nodes in the list.
 typedef struct ListObj {
 
     Node * front_node;
@@ -51,6 +60,10 @@ List newList(void) {
 // @ret  - nothing
 // @info - Cleans up all of the malloc'd data inside of the list
 void freeList(List* pL) {
+    if(pL == NULL || *pL == NULL) {
+        fprintf(stderr, "Error : Null List in freeList() \n");
+        exit(1);
+    }
     clear(*pL);
     free(*pL);
     pL = NULL;
@@ -67,7 +80,7 @@ void freeList(List* pL) {
 // @ret  - the length of the list (if non-NULL)
 int length(List L) {
     if(L == NULL) {
-        //TODO printf stderr
+        fprintf(stderr, "Error : Null List in length() \n");
         exit(1);
     }
     return L->num_nodes;
@@ -78,8 +91,7 @@ int length(List L) {
 // @ret  - the index that the cursor points to in this list
 int getIndex(List L) {
     if(L == NULL) {
-        //TODO printf stderr
-        printf("Fail in getIndex\n");
+        fprintf(stderr, "Error : Null List in getIndex() \n");
         exit(1);
     }
     return L->cursor_index;
@@ -88,9 +100,10 @@ int getIndex(List L) {
 // @func - front
 // @args - '''
 // @ret  - The value of the data inside of the front node
+// @info - Pre : List must not be empty
 int front(List L) {
     if(L == NULL || L->front_node == NULL) {
-        //TODO printf stderr
+        fprintf(stderr, "Error : Null/Empty List in front() \n");
         exit(1);
     }
     return L->front_node->data;
@@ -99,9 +112,10 @@ int front(List L) {
 // @func - back
 // @args - '''
 // @ret  - The value of the data inside of the back node
+// @info - Pre : List must not be empty
 int back(List L) {
     if(L == NULL || L->back_node == NULL) {
-        //TODO printf stderr
+        fprintf(stderr, "Error : Null/Empty List in back() \n");
         exit(1);
     }
     return L->back_node->data;
@@ -110,9 +124,11 @@ int back(List L) {
 // @func - getElement
 // @args - The list to eb queried
 // @ret  - The data that the cursor points to
+// @info - Pre : Cursor must be defined
 int getElement(List L) {
+    // precondition assertion
     if(L == NULL || L->cursor_node == NULL || L->cursor_index == -1) {
-        //TODO printf stderr
+        fprintf(stderr, "Error : Null List/Invalid cursor \n");
         exit(1);
     }
 
@@ -124,7 +140,7 @@ int getElement(List L) {
 // @ret  - 1 if true, 0 if false
 int equals(List A, List B) {
     if(A == NULL || B == NULL) {
-        //TODO printf stderr
+        fprintf(stderr, "Error : Null List/Invalid cursor \n");
         exit(1);
     }
 
@@ -222,9 +238,11 @@ void moveTo(List L, int i) {
     }
 }
 
+
 // @func - movePrev
 // @args - The list to be queried
-// @ret  -
+// @ret  - nothing
+// @info - Pre : cursor_index >= 1, cursor_index < L.length
 void movePrev(List L) {
     if(L == NULL) {
         exit(1);
@@ -242,7 +260,8 @@ void movePrev(List L) {
 
 // @func - moveNext
 // @args - The list to be queried
-// @ret  -
+// @ret  - nothing
+// @info - Pre : cursor_index >= 0, cursor_index < L.length - 1
 void moveNext(List L) {
     if(L == NULL) {
         return;
@@ -377,9 +396,10 @@ void insertAfter(List L, int data) {
     L->num_nodes++;
 }
 
-// @func -
+// @func - deleteFront
 // @args - The list to be queried
-// @ret  -
+// @ret  - nothing
+// @info - Pre : length > 0 and list not null
 void deleteFront(List L) {
     if(L == NULL) {
         return;
@@ -398,9 +418,10 @@ void deleteFront(List L) {
     to_delete = NULL;
 }
 
-// @func -
+// @func - deleteBack
 // @args - The list to be queried
-// @ret  -
+// @ret  - nothing
+// @info - Pre : Length > 0 and list not null
 void deleteBack(List L) {
     if(L == NULL) {
         return;
@@ -438,6 +459,7 @@ void delete(List L) {
     if(L->cursor_node->prev != NULL) 
         L->cursor_node->prev->next = L->cursor_node->next;
 
+    // reset the cursor position
     L->cursor_node = NULL;
     L->cursor_index = -1;
     L->num_nodes--;
@@ -447,11 +469,11 @@ void delete(List L) {
 // ------------------------ Other operations -------------------------------
 // -------------------------------------------------------------------------
 
-// @func -
-// @args - The list to be queried
-// @ret  -
+// @func - printList
+// @args - #1 output stream, #2 The list to be queried
+// @ret  - nothing
 void printList(FILE* out, List L) {
-    if(L == NULL) {
+    if(L == NULL || out == NULL) {
         return;
     }
     Node * walker = L->front_node;
@@ -463,12 +485,12 @@ void printList(FILE* out, List L) {
     }
 }
 
-// @func -
-// @args - The list to be queried
-// @ret  -
+// @func - copyList
+// @args - The list to be copied
+// @ret  - copy of the list
 List copyList(List L) {
     if(L == NULL) {
-        printf("Fail in copyList\n");
+        printf("List null in copyList\n");
         exit(1);
     }
     Node * walker = L->front_node;
