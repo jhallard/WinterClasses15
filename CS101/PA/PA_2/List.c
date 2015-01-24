@@ -103,7 +103,11 @@ int getIndex(List L) {
 // @info - Pre : List must not be empty
 int front(List L) {
     if(L == NULL || L->front_node == NULL) {
-        fprintf(stderr, "Error : Null/Empty List in front() \n");
+        fprintf(stderr, "Error : Null List in front() \n");
+        exit(1);
+    }
+    if(L->front_node == NULL) {
+        fprintf(stderr, "Error : Empty List in front() \n");
         exit(1);
     }
     return L->front_node->data;
@@ -115,7 +119,11 @@ int front(List L) {
 // @info - Pre : List must not be empty
 int back(List L) {
     if(L == NULL || L->back_node == NULL) {
-        fprintf(stderr, "Error : Null/Empty List in back() \n");
+        fprintf(stderr, "Error : Null List in back() \n");
+        exit(1);
+    }
+    if(L->back_node == NULL) {
+        fprintf(stderr, "Error : Empty List in back() \n");
         exit(1);
     }
     return L->back_node->data;
@@ -124,11 +132,15 @@ int back(List L) {
 // @func - getElement
 // @args - The list to eb queried
 // @ret  - The data that the cursor points to
-// @info - Pre : Cursor must be defined
+// @info - Pre : Cursor must be defined, length > 0
 int getElement(List L) {
+    if(L == NULL) {
+        fprintf(stderr, "Error : Null List \n");
+        exit(1);
+    }
     // precondition assertion
-    if(L == NULL || L->cursor_node == NULL || L->cursor_index == -1) {
-        fprintf(stderr, "Error : Null List/Invalid cursor \n");
+    if(L->cursor_node == NULL || L->cursor_index == -1) {
+        fprintf(stderr, "Error : Invalid Cursor Index getElement() \n");
         exit(1);
     }
 
@@ -242,9 +254,11 @@ void moveTo(List L, int i) {
 // @func - movePrev
 // @args - The list to be queried
 // @ret  - nothing
-// @info - Pre : cursor_index >= 1, cursor_index < L.length
+// @info - cursor_index >= 1, cursor_index < L.length for move to work, otherwise we leave
+//         the cursor undefined.
 void movePrev(List L) {
     if(L == NULL) {
+        fprintf(stderr, "Error : Null List in movePRev \n");
         exit(1);
     }
 
@@ -252,6 +266,8 @@ void movePrev(List L) {
     if(L->cursor_index < 1 || L->cursor_node == NULL) {
         L->cursor_index = -1;
         L->cursor_node = NULL;
+
+        // if it's invalid
         return;
     }
     L->cursor_index--;
@@ -261,7 +277,8 @@ void movePrev(List L) {
 // @func - moveNext
 // @args - The list to be queried
 // @ret  - nothing
-// @info - Pre : cursor_index >= 0, cursor_index < L.length - 1
+// @info - cursor_index >= 0, cursor_index < L.length - 1 for this to work, other we leave/make
+//         the cursor undefined.
 void moveNext(List L) {
     if(L == NULL) {
         return;

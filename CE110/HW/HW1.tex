@@ -75,7 +75,27 @@ To start, we will make the following assumptions.
 
  \benu 
  \item Question \#2A x86 CISC ISA \\ Fill out the first row of the above table (from the handout), but assume 32-bit data values. \\
- \answer 
+
+ \begin {table}[H]
+ \caption {Question \#2 Answers} \label{tab:title} 
+ \begin{center}
+ \begin{tabular}{| c | c | c | c | c |} \hline
+ Architecture & Bytes in Program & Bytes Fetched & Bytes Loaded & Bytes Stored \\ \hline 
+ x86          &      13          &               &              &              \\ \hline
+ MIPS         &                  &               &              &              \\ \hline
+ Stack ISA    &                  &               &              &              \\ \hline
+ \end{tabular}
+ \end{center}
+ \end {table}
+
+% 1 xor %eax, %eax                3
+% 2 jmp L1                        2
+% 3 loop: inc (%edx, %eax, 4)     3
+% 4 inc %eax                      1
+% 5 L1: cmp %ecx, %eax            2
+% 6 jl loop                       2
+ 
+ \answer  13 bytes in program
 
 
  \item 

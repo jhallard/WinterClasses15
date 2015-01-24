@@ -128,7 +128,7 @@ int readFile(const char * fn, const char *** words) {
             exit(1);
      }
 
-     (*words)[current_line] = malloc(BUFSIZE);
+     (*words)[current_line] = malloc(BUFSIZE*sizeof(char));
 
      if((*words)[current_line] == NULL) {
         printf("malloc fail\n");
@@ -138,7 +138,7 @@ int readFile(const char * fn, const char *** words) {
             current_line++;
             (*words)[current_line] = malloc(BUFSIZE);
             if((*words)[current_line] == NULL) {
-                printf("malloc fail\n");
+                fprintf(stderr, "malloc fail\n");
                 exit(1);
             }
      } 
@@ -149,14 +149,14 @@ int readFile(const char * fn, const char *** words) {
 
 
 int writeFile(const char * fn, const char ** words, List list) {
-    FILE *f = fopen("file.txt", "w");
+    FILE *f = fopen(fn, "w");
     if (f == NULL) {
         printf("Error opening output file %s!\n", fn);
         exit(1);
     }
 
     for(moveTo(list, 0); getIndex(list) >= 0; moveNext(list)) {
-        fprintf(f, "%s\n", words[getElement(list)]);
+        fprintf(f, "%s", words[getElement(list)]);
     }
 
     fclose(f);
@@ -178,5 +178,5 @@ int getNumLines(const char * fn) {
     }
     fclose(fp);
 
-    return lines;
+    return num_lines;
 }
