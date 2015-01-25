@@ -29,7 +29,7 @@
    \begin{center}
       \Large\textbf{CMPE 110 Homework \#1}\\
       \large\texttt{John Allard} \\
-      \small\texttt{November 20th, 2014} \\
+      \small\texttt{January 19th, 2015} \\
       \small\texttt{jhallard@ucsc.edu}
    \end{center}
    % \vspace*{\stretch{-0.5}}
@@ -66,12 +66,12 @@
  \begin{table}[H]
  \caption{Efficiency Calculations} \label{tab:effcalc} 
  \begin{center}
- \begin{tabular}{| l || r |}
- \hline Near-Threshold  & Super-Threshold \\ \hline
- $P_{nth} = V_{nth}^3 = k^3$ & $P_sth = V_{sth}^3 = (2k)^3 = 8k$ \\[0.15in]
- $D_{nth} = \frac{1}{V_{nth}} = \frac{1}{k}$ & $D_{sth} = \frac{1}{2k}$ \\[0.15in] 
- $E_{nth} = P_{nth}*D_{nth} = \frac{k^3}{k} = {k}^2$ & $E_{sth} = P_{sth}*D_{sth} = \frac{8k^3}{2k} = {4k}^2$ \\[0.15in]
- $EE_{nth} = E_{nth}*D_{nth} = \frac{k^2}{k} = k$ &  $EE_{sth} = E_{sth}*D_{sth} = \frac{4k^2}{2k} = 2k$ \\[0.05in] \hline
+ \begin{tabular}{| c | l || l |}
+ \hline Step  & Near-Threshold  & Super-Threshold \\ \hline
+ 1 & $P_{nth} = V_{nth}^3 = k^3$ & $P_sth = V_{sth}^3 = (2k)^3 = 8k$ \\[0.1in]
+ 2 & $D_{nth} = \frac{1}{V_{nth}} = \frac{1}{k}$ & $D_{sth} = \frac{1}{2k}$ \\[0.1in] 
+ 3 & $E_{nth} = P_{nth}*D_{nth} = \frac{k^3}{k} = {k}^2$ & $E_{sth} = P_{sth}*D_{sth} = \frac{8k^3}{2k} = {4k}^2$ \\[0.1in]
+ 4 &$EE_{nth} = E_{nth}*D_{nth} = \frac{k^2}{k} = k$ &  $EE_{sth} = E_{sth}*D_{sth} = \frac{4k^2}{2k} = 2k$ \\[0.1in] \hline
  \end{tabular}
 \end{center}
  \end {table}
@@ -176,7 +176,7 @@
  \item Question \#2D COMPARISON \\
  Compare the three ISAs studied with respect to static code size, number of instruction bytes fetched during execution, and memory traffic. Don’t simply summarize the table but analyze what the numbers mean. \\ \answer \\
 
- For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smaller code size than \texttt{MIPS}, because they are both 32-bit but the \texttt{x86 ISA} has variable length instructions, meaning it doesn't need to waste 4 bytes for instructions that need less. It also had the fewest lines of code because each line could accomplish so much. Compare this to the \texttt{STACK ISA}, which was much longer because each instruction only does a little bit of work. The static code size between \texttt{MIPS ISA} and the \texttt{STACK ISA} seems like it could go either way, \texttt{MIPS} instructions do more work, but each instruction is twice as large as the \texttt{STACK ISA} instructions, so depending on the cmoplexity of the code it seems like either one could be bigger than the other. \par
+For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smaller code size than \texttt{MIPS}, because they are both 32-bit but the \texttt{x86 ISA} has variable length instructions, meaning it doesn't need to waste 4 bytes for instructions that need less. It also had the fewest lines of code because each line could accomplish so much. Compare this to the \texttt{STACK ISA}, which was much longer because each instruction only does a little bit of work. The static code size between \texttt{MIPS ISA} and the \texttt{STACK ISA} seems like it could go either way, \texttt{MIPS} instructions do more work, but each instruction is twice as large as the \texttt{STACK ISA} instructions, so depending on the cmoplexity of the code it seems like either one could be bigger than the other. \par
  For the bytes fetched, this parallels the static code size in a way. Because each of these functions has to do 10 iterations plus some outside work, each of the bytes fetched will be roughly proportional to ten times the static code size. The \texttt{x86 ISA} fetched less than 10 times its static code size, because over $\frac{1}{3}$ of the bytes in the static code are outside of the loop, and thus are only executed once. The \texttt{MIPS ISA} and \texttt{STACK ISA} are a little closer to 10 times their static code size, because a larger proportion of the instructions are inside of the loop \par
  For memory traffic, all of these differents ISAs needed to do the same number of loads and stores, 10 each (one for each iteration). This means that the \texttt{MIPS ISA} and the \texttt{x86 ISA} loaded and stored the same number of bytes, because they both work on 32-bit data values. The \texttt{STACK ISA} only works on 16 bit values, so it only had half as much traffic from the data memory.
 
@@ -190,8 +190,58 @@
 %==============================%
 % ======== PROBLEM #3 ======== %
 %==============================%
-\item 
+\item Question \#3 DataPath \\ Write the control signal and wire values for the following instructions:
 
+ \begin{table}[H]
+ \caption {Question \#3A Answer Part 1} \label{tab:question3a} 
+ \begin{center}
+\begin{tabular}{| l | c | c | c | c | c | c | c | c | c | c | c |} \hline
+ Instr  &   A   &   B   &            C                     &   D  &  E  &   F   &  G  &   H     &   I   &   J   &   K    \\ \hline
+ Load   &  PC+1 &   PC  &   \texttt{ld \$r1, [\$r1-20]}    &  r1  &  x  &  -20  &  x  &  r1-20  &  r1-20 &  100  & 100   \\ \hline
+ Store  &  PC+1 &   PC  &   \texttt{st [\$r2], \$r1   }    &  r2  & r1  &   0   & r1  &  r2+0   &  r2+0  &   x   &  x    \\ \hline
+ Add    &  PC+1 &   PC  &   \texttt{add \$r1, \$r2, \$r3}  &  r1  & r2  &   0   & r2  &  r1+r2  &  r1+r2 &   x   & r1+r2 \\ \hline
+ Jump   &       &       &   \texttt{jmp \#1000          }  &      &     &       &     &         &        &       &       \\ \hline
+ \end{tabular}
+ \end{center}
+ \end {table}
+
+ \begin{table}[H]
+ \caption {Question \#3A Answers Part 2} \label{tab:question3a2} 
+ \begin{center}
+\begin{tabular}{| l | c | c | c | c | c | c | c | c |} \hline
+ Instr  &   Rwe &   Rdst &   ALUinB &   ALUop &  DMWe &   Rwd &   JP  &   BR  \\ \hline
+ Load   &    1  &    r2  &    F     &    ADD  &   0   &    J  &  PC+1 &  -16  \\ \hline
+ Store  &    0  &    x   &    F     &    ADD  &   1   &    X  &  PC+1 &   4   \\ \hline
+ Add    &    0  &    r3  &    E     &    ADD  &   0   &    I  &  PC+1 &   x   \\ \hline
+ Jump   &       &        &          &         &       &       &       &       \\ \hline
+ \end{tabular}
+ \end{center}
+ \end {table}
+\benu
+
+%===============================%
+% ======== PROBLEM #3A ======== %
+%===============================%
+\item \texttt{ld \$r2, [\$r1-20]}
+
+%===============================%
+% ======== PROBLEM #3B ======== %
+%===============================%
+\item \texttt{st [\$r2], \$r1}
+
+
+%===============================%
+% ======== PROBLEM #3C ======== %
+%===============================%
+\item \texttt{add \$r1, \$r2, \$r3}
+
+
+%===============================%
+% ======== PROBLEM #3D ======== %
+%===============================%
+\item \texttt{jmp \#1000}
+
+\enu
 
 \enu
 
