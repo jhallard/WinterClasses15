@@ -49,6 +49,7 @@
 %===============================%
 \item Question \#1A : `...However, we discussed that nowadays power density and heat has become an issue preventing scaling of frequency. Discuss why power and temperature are becoming an issue'. \\
 \answer  \\
+As we try to increase the frequency, we must scale the power and voltage of the chip. If you combine this with shrinking transistors, you can end up with leakage between the transistors. This can lead to many different types of problems, including increased power consumption and junk values being inserted into places they weren't meant to be. In addition to electrical leakage, the temperature of the chips is scaling with frequency at too great of a rate. A tiny increase in frequency can lead to a disproportionally large increase in power consumption and temperature, thus engineers have looked for other places to speed up the CPU as apposed to increasing the raw frequecny (by doing things like adding more computing cores to the processor). Frequency is also limited by the time it takes the electrical signals to propogate through the circuit, this propogation time means that the clock edges are not straight vertical, but rather sloped. If we try and make the frequency too fast, these slopes will overlap and this would imply that not all of the signals have had time to propogate through all of the required circuit components. So in summation, even though the power density stays the same when we shrink the transistors, it does not stay the same when we increase the frequency and shrink the size of the transistors, which causes engineers to have to look for different ways to speed up a cpu. 
 
 
 %===============================%
@@ -109,18 +110,6 @@
   \answer  (See Table \#2, row \#1) \\
   \textbf{Exaplanation} - There are 13 bytes in the program, we know this by summing the 6 instructions by there byte count. 89 bytes fetches is determined by tracing the routine through 10 iterations plus the intitializing instructions. Bytes loaded and Bytes stored all come from the \texttt{inc(ra, rb, imm)} instruction, which loads and stores 4 bytes for each of the 10 calls. 
 
-
-% 1 xor %eax, %eax                3
-% 2 jmp L1                        2
-% 3 loop: inc (%edx, %eax, 4)     3
-% 4 inc %eax                      1
-% 5 L1: cmp %ecx, %eax            2
-% 6 jl loop                       2
-
-%3, 2, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 
-%0     0           1           2           3           4           5           6           7           8           9          10
-
-
 %===============================%
 % ======== PROBLEM #2B ======== %
 %===============================%
@@ -134,7 +123,7 @@
       \texttt{LOOP:} & \texttt{lw r4, r3}          & \texttt{ \# load current array value} \\
       \texttt{}      & \texttt{addiu r4, r4, \#1}  & \texttt{ \# increment current array value} \\
       \texttt{}      & \texttt{sw r4, r3}          & \texttt{ \# store the incremented value} \\
-      \texttt{}      & \texttt{addiu r3, r3, \#4}  & \texttt{ \# move to the next index in the array} \\
+      \texttt{}      & \texttt{addiu r3, r3, \#4}  & \texttt{ \# move to the next indeX in the array} \\
       \texttt{}      & \texttt{addiu r1, r1, \#1}  & \texttt{ \# increment the counter} \\
       \texttt{CMPR:} & \texttt{bne r1, r2, \#-6}   & \texttt{ \# compare counter with size, loop again if =/=} \\
    \end{tabular}
@@ -198,10 +187,10 @@ For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smalle
  \begin{center}
 \begin{tabular}{| l | c | c | c | c | c | c | c | c | c | c | c |} \hline
  Instr  &   A   &   B   &            C                     &   D  &  E  &   F   &  G  &   H     &   I   &   J   &   K    \\ \hline
- Load   &  PC+4 &   PC  &   \texttt{ld \$r2, [\$r1-20]}    &  r1  &  x  &  -20  &  x  &  r1-20  &  r1-20 &  100  & 100   \\ \hline
- Store  &  PC+4 &   PC  &   \texttt{st [\$r2], \$r1   }    &  r2  & r1  &   0   & r1  &  r2+0   &  r2+0  &   x   &  x    \\ \hline
- Add    &  PC+4 &   PC  &   \texttt{add \$r1, \$r2, \$r3}  &  r1  & r2  &   0   & X   &    X    &  r1+r2 &   x   & r1+r2 \\ \hline
- Jump   &  1000 &   PC  &   \texttt{jmp \#1000          }  &      &     & 1000  &     &         &        &       &       \\ \hline
+ Load   &  PC+4 &   PC  &   \texttt{ld \$r2, [\$r1-20]}    &  r1  &  X  &  -20  &  X  &  r1-20  &  r1-20 &  100  & 100   \\ \hline
+ Store  &  PC+4 &   PC  &   \texttt{st [\$r2], \$r1   }    &  r2  & r1  &   0   & r1  &  r2+0   &  r2+0  &   X   &  X    \\ \hline
+ Add    &  PC+4 &   PC  &   \texttt{add \$r1, \$r2, \$r3}  &  r1  & r2  &   0   &  X  &    X    &  r1+r2 &   X   & r1+r2 \\ \hline
+ Jump   &  4000 &   PC  &   \texttt{jmp \#1000          }  &   X  &  X  & 1000  &  X  &    X    &    X   &   X   &  X    \\ \hline
  \end{tabular}
  \end{center}
  \end {table}
@@ -212,9 +201,9 @@ For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smalle
 \begin{tabular}{| l | c | c | c | c | c | c | c | c |} \hline
  Instr  &   Rwe &   Rdst   &   ALUinB &   ALUop &  DMWe &   Rwd &   JP  &   BR  \\ \hline
  Load   &    1  &   1 (r2) &     1    &    ADD  &   0   &    J  &    0  &  -16  \\ \hline
- Store  &    0  &    x     &     1    &    ADD  &   1   &    X  &    0  &   4   \\ \hline
- Add    &    1  &   1 (r3) &     0    &    ADD  &   0   &    I  &    0  &   x   \\ \hline
- Jump   &    0  &    x     &          &    X    &   0   &    X  &    1  &       \\ \hline
+ Store  &    0  &    X     &     1    &    ADD  &   1   &    X  &    0  &   4   \\ \hline
+ Add    &    1  &   1 (r3) &     0    &    ADD  &   0   &    I  &    0  &   X   \\ \hline
+ Jump   &    0  &    X     &     X    &    X    &   0   &    X  &    1  &   X   \\ \hline
  \end{tabular}
  \end{center}
  \end {table}
@@ -225,14 +214,14 @@ For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smalle
 %===============================%
 \item \texttt{ld \$r2, [\$r1-20]}
 
-\textbf{Explanation} : The answers to this problem are contained in the first rows of the two tables above. This load instruction only increases the PC by a single instruction, so the PC is only increased by 4 bits. This instruction uses an immediate value, (-20), to offset the value contained in register \texttt{r1}. This adjusted value serves as a memory address, which means \rexttt{r1-20} is the address value going into the data memory. Since we are not storing, the data value line going into the data memory is not important. The ALU recieves the ADD operation and performs the offset of r1 by -20. The destination register is r2, which means the the Rwe signal is high. The Rwd MUX selects from the data memory and not directly from the ALU. The JP mux selects the PC value incremented by 4, which is the top wire above the BR wire. The K wire contains the value selected by the Rwd mux.
+\textbf{Explanation} : The answers to this problem are contained in the first rows of the two tables above. This load instruction only increases the PC by a single instruction, so the PC is only increased by 4 bits. This instruction uses an immediate value, (-20), to offset the value contained in register \texttt{r1}. This adjusted value serves as a memory address, which means \texttt{r1-20} is the address value going into the data memory. Since we are not storing, the data value line going into the data memory is not important. The ALU recieves the ADD operation and performs the offset of r1 by -20. The destination register is r2, which means the the Rwe signal is high. The Rwd MUX selects from the data memory and not directly from the ALU. The JP muX selects the PC value incremented by 4, which is the top wire above the BR wire. The K wire contains the value selected by the Rwd mux. The BR wire is not important in this circuit.
 
 %===============================%
 % ======== PROBLEM #3B ======== %
 %===============================%
 \item \texttt{st [\$r2], \$r1}
 
-\textbf{Explanation} : The answers to this problem are contained in the second rows of the two tables above. This Store instruction only increases the PC by a single instruction, so the PC is only increased by 4 bits. This instruction uses an immediate value of 0 as the offset for r2. There are no registers being written to, so the Rwe signal is low. The value in R1 is passed the the E wire right to the data input for the data memory, while r2 and the 0 immediate value pass through the ALU with an ADD operation (this isn't necessary but it works just fine), which then gets fed to the address input to the data memory. The Rwd mux can select either one, because no registers are enabled for writing anyways, thus it is labeled X. The JP mux selects the PC value incremented by 4, which is the top wire above the BR wire.
+\textbf{Explanation} : The answers to this problem are contained in the second rows of the two tables above. This Store instruction only increases the PC by a single instruction, so the PC is only increased by 4 bits. This instruction uses an immediate value of 0 as the offset for r2. There are no registers being written to, so the Rwe signal is low. The value in R1 is passed the the E wire right to the data input for the data memory, while r2 and the 0 immediate value pass through the ALU with an ADD operation (this isn't necessary but it works just fine), which then gets fed to the address input to the data memory. The Rwd muX can select either one, because no registers are enabled for writing anyways, thus it is labeled X. The JP muX selects the PC value incremented by 4, which is the top wire above the BR wire. The BR wire is not important in this circuit.
 
 
 
@@ -240,7 +229,7 @@ For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smalle
 % ======== PROBLEM #3C ======== %
 %===============================%
 \item \texttt{add \$r1, \$r2, \$r3}
-\textbf{Explanation} : The answers to this problem are contained in the third rows of the two tables above. This Add instruction only increases the PC by a single instruction, so the PC is only increased by 4 bits. 
+\textbf{Explanation} : The answers to this problem are contained in the third rows of the two tables above. This Add instruction only increases the PC by a single instruction, so the PC is only increased by 4 bits. Both of the source registers are used this time and passed straight through to the ALU, which also recieves an ADD opcode. This summed value is fed into passed the data memory via the I wire to the Rwd mux, which selects the I wire instead of the junk/unimportant value coming from the data memory. No immediate value is used in this computation, thus the ALUinB muX selects the E wire instead of the sign-extended immediate value that doesn't exist here. JP once again selects the PC+4 value instead of the value that is made by offsetting the PC by immediate. The BR wire is not important in this circuit.
 
 
 
@@ -249,11 +238,24 @@ For static code size, it makes sense that the \texttt{x86 RISC ISA} had a smalle
 %===============================%
 \item \texttt{jmp \#1000}
 
-\textbf{Explanation} : The answers to this problem are contained in the fourth rows of the two tables above. 
+\textbf{Explanation} : The answers to this problem are contained in the fourth rows of the two tables above. I had some trouble understanding what exactly is going on with this circuit. The PC value is not going to be simply incremented by 4, it is going to be completely overridden by the immediate value. The immediate value is 1000, indicating that the user wants to jump to the 1000th instruction. The ALUop is undefined/not important here, because we don't need to perform any data manipulation with register data. Likewise, the data memory isn't touched, so I, G, H, J are unimportant, as is the Rwd muX because no registers are written to during this operation. The JP muX selects the bottom wire, which is the immediate value (1000) after it has been left-shifted twice (multiplied by 4), thus it is not the value 4000. This value is fed along the A wire back to the PC, which is now in the correct place.
 
 
 \enu
 
+%===============================%
+% ======== PROBLEM #4 ========= %
+%===============================%
+
+\item Propose two ways to support ARM-like branches on the datapath given in lecture and discuss their tradeoffs.
+\benu
+\item One way to do this would be to add 2 flip-flops that the decoder has access to. The reason for two flip flops is to ensure that a branch instruction is only called after a compare instruction, if a compare instruction was not called then the first flip flop will contain a zero value and we will know that there was an error in the code. The first of these flip flops is near the decoder and signals whether or not there was just a compare (cmp) instruction. If there was a compare instruction this flip-flop will store a 1. The second flip flop will store the result of the compare instruction, 1 if true 0 if false. This means the second flip flop will be set based on the value of the I wire, if it is high then the second flip flop will be high and visa versa. This second flip flop will be on the right of the data memory. The branch instruction can then use the value in the second flip flop to determine if it should branch or not. So this second flip flop would actually act as a control signal for the  JP mux, if it is high then the mux selects the shifted immediate value. Otherwise it would select the PC+4 value that propogates through the BR signal. No registers would have to be set during this routine, and no data memory has to be stored.
+
+\item A second way to do this would be to perform the subtraction of the two input registers in the ALU. We then use this output as a control signal for the JP mux to select between going to the next instruction or jumping to two instruction ahead (thus skipping the branch). So we would need the decoder to add an artificial immediate value of 2 to the instruction when it sees a compare instruction. This immediate value will be shifted left twice, making it 8. This valeu of 8 will get added to the current PC by the mux before the BR signal. This value will get fed throguh to the JP mux, which will select between the PC+8 or the PC+4 signal based on the result of the subtraction in the ALU. This choice will be fed along the A wire back to the PC, setting it up to take the branch instruction if the subtraction yielded a 0 value and skipping ahead by two instructions (8 bytes) if the contol signal yielded anything else.
+
+\item The tradeoffs of the first idea are as follows. It seems to work well because we only need to add in two simple flip-flops, which is not a large expense at all. These two bits will let the circuit know both that it is appropraite for a branch command to be seen (meaning it follows a compare command), and also whether or not this branch should actually be taken. The down side of this approach is that it seems kind of ad-hoc, if we just through in a few flip-flops for every single function we needed are CPU design would be too complicated. It seems that it would make more sense for the CPU to compress the two instructions into one in some manner, by perhaps computing the ALU inputs while waiting to grab the jump value. The second option seems to work pretty well, it will only ever look at the branch instruction if the comparison instruction yielded a differnce of 0 between the values in the two registers, which would save us an instruction to look at if the comparison fails. 
 \enu
+
+\enu 
 
 \end{document}
