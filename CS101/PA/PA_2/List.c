@@ -193,6 +193,7 @@ void clear(List L) {
         walker = L->front_node;
         L->front_node = L->front_node->next;
         free(walker);
+        walker = NULL;
         L->num_nodes--;
     }
 
@@ -477,6 +478,9 @@ void delete(List L) {
         L->cursor_node->prev->next = L->cursor_node->next;
 
     // reset the cursor position
+    Node * to_delete = L->cursor_node;
+    free(to_delete);
+    to_delete = NULL;
     L->cursor_node = NULL;
     L->cursor_index = -1;
     L->num_nodes--;

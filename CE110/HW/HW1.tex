@@ -20,25 +20,20 @@
 
 %===========---------================
 % Author John H Allard
-% CMPE 12, HW #4
+% CMPE 110, HW #1
 % December 10th, 2014
 %===========---------================
 
 \begin{document}
-   % \vspace*{\stretch{-0.5}}
+    % \vspace*{\stretch{-0.5}}
    \begin{center}
       \Large\textbf{CMPE 110 Homework \#1}\\
       \large\texttt{John Allard} \\
       \small\texttt{November 20th, 2014} \\
-      \small\texttt{ID : 1437547}
+      \small\texttt{jhallard@ucsc.edu}
    \end{center}
-   % \vspace*{\stretch{0.5}}
+   % \vspace*{\stretch{-0.5}}
 
-%==========================================
-%==========================================
-%====== Begin Problems, 15 Total ==========
-%==========================================
-%==========================================
 
 \benu
 % ======== PROBLEM #1 ======== %
@@ -73,20 +68,23 @@ To start, we will make the following assumptions.
 
 \item Question \#2 Computing ISA's
 
- \benu 
- \item Question \#2A x86 CISC ISA \\ Fill out the first row of the above table (from the handout), but assume 32-bit data values. \\
-
  \begin {table}[H]
  \caption {Question \#2 Answers} \label{tab:title} 
  \begin{center}
  \begin{tabular}{| c | c | c | c | c |} \hline
  Architecture & Bytes in Program & Bytes Fetched & Bytes Loaded & Bytes Stored \\ \hline 
- x86          &      13          &               &              &              \\ \hline
+ x86          &      13          &       89      &        40    &       40     \\ \hline
  MIPS         &                  &               &              &              \\ \hline
  Stack ISA    &                  &               &              &              \\ \hline
  \end{tabular}
  \end{center}
  \end {table}
+
+ \textbf{Exaplanation} - There are 13 bytes in the program, we know this by summing the 6 instructions by there byte count. 89 bytes fetches is determined by tracing the routine through 10 iterations plus the intitializing instructions. Bytes loaded and Bytes stored all come from the \texttt{inc(ra, rb, imm)} instruction, which loads and stores 4 bytes for each of the 10 calls. 
+
+ \benu 
+ \item Question \#2A x86 CISC ISA \\ Fill out the first row of the above table (from the handout), but assume 32-bit data values.
+
 
 % 1 xor %eax, %eax                3
 % 2 jmp L1                        2
@@ -94,12 +92,23 @@ To start, we will make the following assumptions.
 % 4 inc %eax                      1
 % 5 L1: cmp %ecx, %eax            2
 % 6 jl loop                       2
- 
- \answer  13 bytes in program
 
+%3, 2, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 3, 1, 2, 2, 
+%0     0           1           2           3           4           5           6           7           8           9          10
+ \answer  (See Table \#1, row \#1)
 
- \item 
+ \item Write the assembly code that would generate if the C code were compiled on a machine that uses the MIPS ISA. Fill out the second row of the above table. \answer \\
 
+ \texttt{r1} is the counter variable. \texttt{r2} contains the size variable (10). \texttt{r3} contains the address of the first item in the array.
+ \begin{center}
+   \begin{tabular}{l l  l}
+      \texttt{} & \texttt{subu r1, r1, r1}    & \texttt{ \# intialize counter to zero} \\
+      \texttt{} & \texttt{j COMPARE}          & \texttt{ \# jump to comparison} \\
+      \texttt{loop : } & \texttt{lw r4, r3}   & \texttt{ \# load current array value} \\
+      \texttt{} & \texttt{addiu r4, r4, \#1}   & \texttt{ \# increment current array value} \\
+      \texttt{} & \texttt{addiu r4, r4, \#1}   & \texttt{ \# increment current array value} \\
+   \end{tabular}
+ \end{center}
  \enu
 
 

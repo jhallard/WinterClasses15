@@ -13,17 +13,17 @@
 #include <string.h>
 
 // function pre-declarations
-int readFile(const char * fn, const char ***);
-int writeFile(const char * fn, const char **, List);
-int getNumLines(const char * fn);
-int compareTo(const char *, const char *);
-List insertionSort(const char ** lines, int num_words);
+int readFile(char * fn, char ***);
+int writeFile(char * fn, char **, List);
+int getNumLines(char * fn);
+int compareTo(char *, char *);
+List insertionSort(char ** lines, int num_words);
 
 
 // @func - main
 // @args - command line arguments
 // @ret  - error/success code
-int main(int argc, const char *argv[]) {
+int main(int argc, char *argv[]) {
 
     /* argc should be 3 for correct execution */  
     if(argc != 3)  {
@@ -32,7 +32,7 @@ int main(int argc, const char *argv[]) {
     }
 
     // array of strings to be loaded from the file
-    const char ** word_list;
+    char ** word_list = NULL;
 
     // populate the array of strings
     int num_words = readFile(argv[1], &word_list);
@@ -42,13 +42,15 @@ int main(int argc, const char *argv[]) {
 
     writeFile(argv[2], word_list, sorted_list);
 
-    freeList(&sorted_list);
-
-    int i;
-    for(i = 0; i < num_words; i++) {
+    int i = 0;
+    for(i = 0; i <= getNumLines(argv[1]); i++) {
         free(word_list[i]);
         word_list[i] = NULL;
     }
+    free(word_list);
+    word_list = NULL;
+
+    freeList(&sorted_list);
 
     return 0;
 
@@ -58,7 +60,7 @@ int main(int argc, const char *argv[]) {
 // @args - #1 array of strings to be sorted, #2 number of strings in this array
 // @ret  - A list containing the indices of the strings in sorted order
 // @info - function assumed that each word is terminated by a null terminator.
-List insertionSort(const char ** lines, int num_lines) {
+List insertionSort(char ** lines, int num_lines) {
 
     List ret_list = newList();
     int i = 0;
@@ -73,7 +75,7 @@ List insertionSort(const char ** lines, int num_lines) {
 
         moveTo(ret_list, i);
 
-        const char * i_string = lines[getElement(ret_list)]; // get the string to be compared from the index in the list
+        char * i_string = lines[getElement(ret_list)]; // get the string to be compared from the index in the list
 
         // Go backwards along the list to find the correct insertion spot for the ith element
         for(moveTo(ret_list, i-1); getIndex(ret_list) >= 0 && compareTo(i_string, lines[getElement(ret_list)]) < 0; movePrev(ret_list)) {
@@ -103,7 +105,7 @@ List insertionSort(const char ** lines, int num_lines) {
 // @args - #1 first string, #2 second string
 // @ret  - < 0 if one comes first, = 0 if they are the same, > 0 if two comes first
 // @ifno - basically a wrapper to emulate the compareTo function on strings in Java
-int compareTo(const char * one, const char * two) {
+int compareTo(char * one, char * two) {
     if(one == NULL || two == NULL) {
         fprintf(stderr, "Error : Null Strings in compareTo\n");
         exit(1);
@@ -116,9 +118,9 @@ int compareTo(const char * one, const char * two) {
 // @func - readFile
 // @args - #1 string containing the file name, #2 pointer to an array of strings to populate
 // @ret  - the number of lines in the file/words in the array
-int readFile(const char * fn, const char *** words) {
+int readFile(char * fn, char *** words) {
      int current_line = 0;
-     const int BUFSIZE = 1000;
+     const int BUFSIZE = 100;
      int num_lines = getNumLines(fn);
      *words = malloc((num_lines+1)*sizeof(char*));
 
@@ -148,7 +150,7 @@ int readFile(const char * fn, const char *** words) {
 }
 
 
-int writeFile(const char * fn, const char ** words, List list) {
+int writeFile(char * fn, char ** words, List list) {
     FILE *f = fopen(fn, "w");
     if (f == NULL) {
         printf("Error opening output file %s!\n", fn);
@@ -167,15 +169,13 @@ int writeFile(const char * fn, const char ** words, List list) {
 // @func - getNumLines
 // @arg  - strings containing the file name
 // @ret  - the number of lines in the file
-int getNumLines(const char * fn) {
+int getNumLines(char * fn) {
     int num_lines=0;
-    char ch;
+    char ch[100];
     FILE * fp = fopen(fn,"r");
-    while((ch = fgetc(fp))!=EOF) {
-        if (ch=='\n') {
-            num_lines++; 
-        }
-    }
+      while (fgets(ch, 100, fp)) {
+        num_lines++;
+    } 
     fclose(fp);
 
     return num_lines;
