@@ -2,15 +2,26 @@
  * @Author   - John Allard (cruzid : jhallard, id# : 1437547)
  * @File     - Matrix.java
  * @Projects - Programming Asssignment #3, CMPS 101
- * @info     - This file defines the matrx 
+ * @info     - This file defines the matrx class. This class is used to represent a sparse
+ *             matrix using an adjacency-list-like implementation. This class relies heavily on the List class 
+ *             that was implemented previously for another assignment.
  *
  *
  **/
 public class Matrix {
+ 
   // @func - Constructor
   // @args - #1 Number of rows/columns (must be the same)
   // @info - Initializes an empty matrix of size NxN
-  Matrix(int n);
+  Matrix(int n) {
+    if(n <= 0) {
+      return;
+      //TODO add in exception
+    }
+
+    List[] mat = new List[n];
+    return;
+  }
 
   // Access Functions
  
@@ -59,4 +70,15 @@ public class Matrix {
   // @ret  - A new matrix that is the sum of this one and the argument matrix
   // @info - Pre : getSize() == m.getSize()
   Matrix add(Matrix m);
+
+  // @func - sub
+  // @args - #1 Matrix to subtract from this one
+  // @ret  - A new matrix that is the difference of this matrix and the argument matrix
+  // @info - Pre : getSize() == m.getSize()
+  Matrix sub(Matrix m);
+
+  // @func - transpose
+  // @args - none
+  // @ret  - A new matrix that is the transpose of this one
+  Matrix transpose(Matrix m);
 }
