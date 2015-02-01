@@ -9,7 +9,11 @@
  *
  **/
 public class Matrix {
- 
+  
+  private int size;
+  private int nnz;
+  private List[] mat;
+
   // @func - Constructor
   // @args - #1 Number of rows/columns (must be the same)
   // @info - Initializes an empty matrix of size NxN
@@ -18,8 +22,10 @@ public class Matrix {
       return;
       //TODO add in exception
     }
-
-    List[] mat = new List[n];
+   
+    size = n;
+    nnz = 0;
+    mat = new List[n];
     return;
   }
 
@@ -28,12 +34,18 @@ public class Matrix {
   // @func - getSize
   // @args - none
   // @ret  - Number of rows/columns in this square matrix
-  int getSize();
+  int getSize() {
+
+    return size
+  }
 
   // @func - getNNZ
   // @args - none
   // @ret  - Number of non-zero entries in the matrix
-  int getNNZ();
+  int getNNZ() {
+
+    return nnz;
+  }
 
   // @func - equals
   // @args - #1 Object to be compared with
