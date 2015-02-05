@@ -1,0 +1,96 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+
+% \setlength{\voffset}{-0.5in}
+\setlength{\headsep}{5pt}
+\newcommand{\suchthat}{\;\ifnum\currentgrouptype=16 \middle\fi|\;}
+\newcommand{\answer}{\textbf{Answer : }}
+\newcommand{\cd}{\texttt}
+\newcommand{\benu}{\begin{enumerate}}
+\newcommand{\enu}{\end{enumerate}}
+
+
+%===========---------================
+% Author John H Allard
+% CMPE 110, HW #2
+% December 10th, 2014
+%===========---------================
+
+\begin{document}
+    % \vspace*{\stretch{-0.5}}
+   \begin{center}
+      \Large\textbf{CMPE 110 Homework \#2}\\
+      \large\texttt{John Allard} \\
+      \small\texttt{February 2nd, 2015} \\
+      \small\texttt{jhallard@ucsc.edu}
+   \end{center}
+   % \vspace*{\stretch{-0.5}}
+
+
+\benu
+
+%==============================%
+% ======== PROBLEM #1 ======== %
+%==============================%
+\item \textbf{Question \#1 - Pipeline Stages} \\
+
+\benu
+% ======= Question 1.A ======= %
+\item \textbf{Question 1.A Baseline} \\
+Fill out the table below for the given pipelined processor. Cycle time is the clock period at which this machine can run. Max clock frequency is the macimum frequency that can be run given the cycle time (lower frequencies are possible). Latency of instruction is the time it takes to get the first output after it starts. Throughput is the rate at which output is produced.
+
+\textbf{Explanation} - The cycle time for the baseline architecture is 400ps, which is the time associated with the memory access stage. This is the longest stage length, if we shortened the cycle length below 400ps we wouldn't be able to reliably access memory under our current architecture. Max frequency is the reciprocal of the cycle time, and instruction latency is $8*\text{cycle time}$ because there are 8 stages for an instruction to cycle through.
+
+% ======== Question 1.B ======= %
+\item \textbf{Question 1.B Faster Memory} \\
+Suppose there is an optimization that reduces the memory stage latency by 100 ps. However, the optimization in a memory stage results in a 100ps increase in the write back stage latency. How much would this improve the overall performance of the 8-stage pipeline? Fillout the second row in the table below for this pipeline. \\
+
+\textbf{Explanation} - This new configuration would improve performance by 25\%, or a 1.25x speed up. I got this number by dividing the latency of the baseline (3200 ps) by the latency f the improved pipeline (2560). The cycle time for this new configuration is 320ps, which is the time associated with the decoding stage. After reducing the memory access stage by 100ps to 300ps the new longest stage was decoding so the cycle time became associated with this stage. The max clock frequency is simply the reciprocal of the cycle time. The instruction latency is $8*\text{cycle time}$ which is 2560ps (2.56ns).
+
+% ======= Question 1.C ========= %
+\item \textbf{Question 1.C Proposed Scheme} \\
+If you had the option to rearrange the pipeline, how would you arrange it to achieve maximum frequency?
+
+\textbf{Explanation} - As given originally the total time to get through the pipeline by adding up the different times of each stage was 2240 ps. Dividing this by 8 (for 8 stages in the pipeline) gives us a round number, 280. So if we adjust the boundaries between the stages so as to give us a constant stage latency of 280ps, this would be optimal. Beyond this, decreasing the time for any one stage will necessarily increase the time it takes another stage to run. The max clock frequency is $\frac{1}{\text{Cycle Time}} $. The instructon latency in $8*(\text{cycle time})$, and since the cycle time is constant, this is just $8*280 = 2240$.
+
+\begin{tabular}{| l | l | l | l | l |}
+ \hline Processor & Cycle time & Max Clock Freq. & Instr. Latency & Throughput \\ \hline
+a.)  baseline     &     400    &   2.50 Ghz      &     3200 ps    &    5/8     \\ \hline
+b.) faster mem    &     320    &   3.125 Ghz     &     2560 ps    &            \\ \hline
+c.) new scheme    &     280    &   3.5714 Ghz    &     2240 ps    &            \\ \hline
+\end{tabular}
+
+
+\enu
+
+
+%==============================%
+% ======== PROBLEM #2 ======== %
+%==============================%
+
+\item \textbf{Question \#2 - Extended Tiny ISA} \\
+Assume we are about to use an extended version of our Tiny ISA in an embedded system (say, a washing machine). Our implementation has 5 pipeline stages, and the ISA, as explained in lecture 2, does not have a multiply instruction. Analyzing the applications required to run on the processor, we learn that the applications needs to perform integer multiply about 1\% of time. Now you as the architect have to decide whether we should add a multiply instruction to the ISA and support it in the hardware, or just use the addition instruction to perform the multiplication through multiple additions.
+\benu
+
+% ======= Question 2.A ======= %
+\item \textbf{Question 2.A} \\
+
+
+% ======= Question 2.B ======= %
+\item \textbf{Question 2.B} \\
+
+\enu % end problem #2 sub-problems
+
+
+% end list of questions
+\enu 
+
+\end{document}
