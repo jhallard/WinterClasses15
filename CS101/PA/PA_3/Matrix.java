@@ -52,7 +52,11 @@ public class Matrix {
   // @args - #1 Object to be compared with
   // @ret  - boolean, true if they are equal
   // @info - Overwrite the equals operator
-  public boolean equals(Object x);
+  public boolean equals(Object x) {
+    // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
+    return true;
+  }
+
 
   // Mainpulation Procedures
 
@@ -86,6 +90,39 @@ public class Matrix {
      // normalize the entries, for the user the matrix starts at index 1 but for us it starts at index 0
      row--;
      column--;
+
+     List list_row = mat[row];
+
+     int index = findIndex(row, column);
+     
+     // if the entry is already empty and we are trying to empty it..
+     if(index == -1 && x == 0) {
+        return;
+     }
+     // if the entry is zero and we need to set it
+     else if(index == -1 && x != 0) {
+        // @TODO insert new element then sort the list
+        temp = new Entry(row, column, x);
+        list_row.prepend(temp);
+        return;
+     }
+     // the entry is non-zero and it needs to be zero'd
+     else if(index != -1 && x == 0) {
+        list_row.moveTo(index);
+        list_row.delete();
+        return;
+     }
+     // if the entry is non zero and needs to be a diff. non zero
+     else {
+        list_row.moveTo(index);
+        list_row.insertBefore(new Entry(row, column, x);
+        list_row.delete();
+        return;
+     }
+
+     // @TODO @TODO @TODO @TODO @TODO @TODO   //
+     // SORT THE LISTS AFTER THEY ARE CHANGED //
+
   }
 
 
@@ -111,6 +148,56 @@ public class Matrix {
   // @args - none
   // @ret  - A new matrix that is the transpose of this one
   public Matrix transpose(Matrix m);
+  
+  // =============================================== //
+  // ========== PRIVATE FUNCTIONS/CLASSES ========== //
+  // ================================================//
+
+
+  //@func - find
+  //@args - #1 row in the matrix to search in, #2 column to search for
+  //@ret  - Entry object that was searched for, null if not found
+  private Entry find(int row, int col) {
+
+    Entry item = null;
+          
+    if(row < 0 || row >= size) {
+        return item;
+     }
+
+    List temp = mat[row];
+
+    for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
+       item = (Entry) temp.getElement();
+        if(item.getColumn() == col) {
+          return item;
+        }
+    }
+    return item;
+  }
+
+  
+  //@func - findIndex
+  //@args - #1 row in the matrix to search in, #2 column to search for
+  //@ret  - index in the list where the entry is stored, -1 if not found
+  private int findIndex(int row, int col) {
+
+    Entry item = null;
+          
+    if(row < 0 || row >= size) {
+        return -1;
+     }
+
+    List temp = mat[row];
+
+    for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
+       item = (Entry) temp.getElement();
+        if(item.getColumn() == col) {
+          return temp.getIndex();
+        }
+    }
+    return -1;
+  }
 
   // @class - Entry
   // @info  - This class encapsulates a pair of values, an int and a double, which correspond to a single entry in the matrix. The int corresponds to the column value, 
@@ -152,6 +239,10 @@ public class Matrix {
     public double getColumn() {
       return column;
     }
+
+    // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
+    //  implement equals and toString function   //
+    // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
 
   }
 
