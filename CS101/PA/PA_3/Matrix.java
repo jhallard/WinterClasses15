@@ -12,7 +12,7 @@
 
  
 public class Matrix {
-  
+
   private int size;
   private int nnz;
   private List[] mat;
@@ -74,7 +74,20 @@ public class Matrix {
   // @func - copy
   // @args - none
   // @ret  - Matrix having the same values/structure as this matrix
-  public Matrix copy();
+  public Matrix copy() {
+    Matrix ret = new Matrix(size);
+
+    for(int i = 0; i < mat.length; i++) {
+        int j = 0; 
+        for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
+          Entry temp = (Entry)mat[i].getElement();
+          ret.changeEntry(i+1, j+1, temp.getValue());
+          j++;
+        }
+    }
+
+    return ret;
+  }
 
   // @func - changeEntry
   // @args - #1 The row of the entry, #2 The column of the entry
@@ -104,6 +117,7 @@ public class Matrix {
         // @TODO insert new element then sort the list
         Entry temp = new Entry(column, x);
         list_row.prepend(temp);
+        insertionSort(row);
         return;
      }
      // the entry is non-zero and it needs to be zero'd
