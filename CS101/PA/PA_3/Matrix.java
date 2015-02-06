@@ -38,7 +38,7 @@ public class Matrix {
   // @args - none
   // @ret  - Number of rows/columns in this square matrix
   public int getSize() {
-    return size 
+    return size; 
   }
 
   // @func - getNNZ
@@ -66,7 +66,7 @@ public class Matrix {
   // @info - sets/resets the matrix to the zero (initial, empty) state
   public void makeZero() {    
   
-    for(int i = 0; i < mat.size(); i++) {
+    for(int i = 0; i < mat.length; i++) {
         mat[i].clear();
     }
   }
@@ -81,7 +81,7 @@ public class Matrix {
   // @ret  - none
   // @info - Pre : 1<= k <=getSize() for k in {i, j}
   public void changeEntry(int row, int column, double x) {
-     if(row >= size() || column >= size()) {
+     if(row >= size || column >= size) {
         throw new RuntimeException("Invalid row or column entry");
      }
      if(row <= 0 || column <= 0) {
@@ -102,7 +102,7 @@ public class Matrix {
      // if the entry is zero and we need to set it
      else if(index == -1 && x != 0) {
         // @TODO insert new element then sort the list
-        temp = new Entry(row, column, x);
+        Entry temp = new Entry(column, x);
         list_row.prepend(temp);
         return;
      }
@@ -115,7 +115,7 @@ public class Matrix {
      // if the entry is non zero and needs to be a diff. non zero
      else {
         list_row.moveTo(index);
-        list_row.insertBefore(new Entry(row, column, x);
+        list_row.insertBefore(new Entry(column, x));
         list_row.delete();
         return;
      }
@@ -199,6 +199,42 @@ public class Matrix {
     return -1;
   }
 
+  //@func - insertionSort
+  //@args - #1 row number to sort in the matrix
+  private boolean insertionSort(int row) {
+
+    if(row < 0 || row >= size) {
+        return false;
+    }
+    List list = mat[row];
+
+    for(int i = 1; i < list.length(); i++) {
+
+      list.moveTo(i);
+      Entry entry = (Entry) list.getElement();
+
+      // Go backwards along the list to find the correct insertion spot for the ith element
+      for(list.moveTo(i-1); list.getIndex() >= 0 && entry.getColumn() < ((Entry)list.getElement()).getColumn(); list.movePrev()) {
+      }
+
+      if(list.getIndex() == -1) {
+        if(entry.getColumn() <= ((Entry)list.front()).getColumn()) {
+          list.prepend(i);
+          list.moveTo(i+1);
+          list.delete();
+        }
+      }
+      else if(list.getIndex() < i-1) {
+         list.insertAfter(i);
+         list.moveTo(i+1);
+         list.delete();
+      }
+    }
+
+    return true;
+
+  }
+  
   // @class - Entry
   // @info  - This class encapsulates a pair of values, an int and a double, which correspond to a single entry in the matrix. The int corresponds to the column value, 
   // and double correspondign to the actual numerical value stored at that position in the matrix.
@@ -229,7 +265,7 @@ public class Matrix {
     //@ret  - boolean indicating success 
     public boolean setValue(double val) {
       value = val;
-      retun true;
+      return true;
     }
 
     public double getValue() {
