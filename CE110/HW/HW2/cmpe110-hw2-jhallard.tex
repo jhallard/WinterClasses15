@@ -65,10 +65,10 @@ If you had the option to rearrange the pipeline, how would you arrange it to ach
 \caption{Q1 Calculations} \label{tab:q1calc} 
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
-\hline Processor & Cycle time & Max Clock Freq. & Instr. Latency & Throughput \\ \hline
-a.)  baseline     &     400    &   2.50 Ghz      &     3200 ps    &    5/8     \\ \hline
-b.) faster mem    &     320    &   3.125 Ghz     &     2560 ps    &            \\ \hline
-c.) new scheme    &     280    &   3.5714 Ghz    &     2240 ps    &            \\ \hline
+\hline Processor & Cycle time & Max Clock Freq. & Instr. Latency & Throughput          \\ \hline
+a.)  baseline     &     400    &   2.50 Ghz      &     3200 ps    &    1 per cycle     \\ \hline
+b.) faster mem    &     320    &   3.125 Ghz     &     2560 ps    &    1 per cycle     \\ \hline
+c.) new scheme    &     280    &   3.5714 Ghz    &     2240 ps    &    1 per cycle     \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -147,15 +147,21 @@ Option \#3 & 1.2 &    $2f$        & $\frac{4}{5}l$ &       IC        \\ \hline
 
 Assume the instruction breakdown as defined in the table (in the handout). Branch and Jump instructions are resolved in the end of Execute stage and there is no branch delay slot. Assume no data or structural hazards. Branches are taken 80\% of the time. Answer each of the following questions. Each sub-question is independent. \\
 
+\benu 
+
 % ======== Question 4.A ======== %
 \item \textbf{Qestion 4.A : CPI} Calculate the CPI of the system given in the handout. Assume no data dependencies. \\
-\answer
+  \answer The CPI of the system is calculated almost as normal, where we take the weighted average of the individual CPIs for each instruction multiplied by their individual probabilities of occuring. The CPI for the instructions is normally 1, because there are no data hazards, but when a branch occurs the CPI will increase from 1 to 3 for that instruction. The CPI is 4 when a branch occurs because all of the instructions below it are already into their 4th stage by the end of the branch instructions execute cycle, at which time the branch instruction is resolved. This means that those 4 cycles are wasted, increasing the CPI to 4 for taken branch instructions. Jump instructions occur infrequenctly (only 5\% of the time), but when they do occur the CPI is 3, because any instructions below are already in their 3rd stage by the time the jump instruction is resolved at the end of its execute stage. Thus the total CPI is 
+  $$ .15*.8*4 + .15*.2*1 + .05*3 + 0.3*1 + 0.3*1 + 0.2*1 = 1.46 $$
+  The first two terms account for the CPI of the branch instruction (2 terms for when it taken 80\% of the time and not taken 20\% of the time). The 3rd term accounts for the jump instruction's CPI of 3, the next two terms account for load and store, and the final term accounts for all other instructions.
 
 
 
 % ======== Question 4.B ======== %
 \item \textbf{Qestion 4.B : Taken Branches} What is the CPI if all branches are assumed to be taken? Assume no data dependencies \\
-\answer
+\answer If the branch is taken 100\% of the time, then the CPI increases slightly. Adjusting the last equation slightly to account for this change yields ...
+  $$ .15*1*4 + .05*3 + 0.3*1 + 0.3*1 + 0.2*1 = 1.55 $$
+  This result is predictable, if we are always taking the branch then we are always taking an instruction with a higher CPI. This is because branch instruction has a CPI of 4 when a branch is taken and 1 when a branch is not taken. 
 
 
 
@@ -165,8 +171,8 @@ Assume the instruction breakdown as defined in the table (in the handout). Branc
 
 
 
-% ======== Question 4.A ======== %
-\item \textbf{Qestion 4.A : CPI} Calculate the CPI of the system given in the handout. Assume no data dependencies. \\
+% ======== Question 4.D ======== %
+\item \textbf{Qestion 4.D : CPI} Assume we have data hazards. Fifty percent of the instructions following Load and Other use the result from that previous instruction. Example: the following sequence has an ADD instruction following a LW that uses the LW result. This occurs in 50\% of the instructions. Notice that the instruction following the ADD also has a 50\% chance of using the result of the ADD.
 \answer
 
 
@@ -181,6 +187,37 @@ Assume the instruction breakdown as defined in the table (in the handout). Branc
 \end{tabular}
 
 \answer
+
+\enu
+
+
+\item \textbf{Question \#5 : Multipliers} In this problem, we consider several different implementations of an unsigned two-inpuit integer multiplier capable of multiplying a 32-bit operand by a 4-bit operand to produce atruncated 32-bit result. Any of these implementations may be used to allow for the Tiny ISA to support the multiply instruction mentioned in the previous problem The diagram below illustrates the datapaths for five multiplier microarchitectures: (a) a single-cycle microarchitecture, (b) a four-cycle iterative microarchitecture, (c) a two-cycle pipelined microarchitecture, (d) a four-cycle pipelined microarchitecture, and (e) a variablecycle pipelined microarchitecture. For all parts in this problem we will assume that our multiplier is processing the following sequence of four independent instructions: \\
+\texttt{mul r0, r0, 0xf} \\
+\texttt{mul r1, r1, 0x7} \\
+\texttt{mul r2, r2, 0x3} \\
+\texttt{mul r3, r3, 0x1} \\
+
+In each part, we will study one of these microarchitectures, and our goal is to gradually fill in the table below. The table already includes the results for the single-cycle multiplier microarchitecture.
+
+
+
+\begin{table}[H]
+\caption{Q 5 : Performance Calculations} \label{tab:q5calc} 
+\begin{center}
+  \begin{tabular}{|c l|c|c|c|c|c|}  \hline 
+    &                    & Num       & Cycle    & B2B Instr.        &            &   Total     \\
+    &                    & Instr.    & Time     & Latency           & Throughput & Exec. Time  \\
+    &  Microarchitecture & \(\#\)    & \(\tau\) &  \(cyc\) \(\tau\) &    CPI     & \(\tau\)    \\ \hline
+  a &    1-Cycle         & 4         & 63       & 1  63             &     1      &  252        \\ \hline            
+  b &   Iterative        &           &          &                   &            &             \\ \hline
+  c &    2-Cycle         &           &          &                   &            &             \\ \hline
+  d &    4-Cycle         &           &          &                   &            &             \\ \hline
+  e &   Var-Cycled       &           &          &                   &            &             \\ \hline
+  \end{tabular}
+\end{center}
+\end{table}
+
+
 % end list of questions
 \enu 
 
