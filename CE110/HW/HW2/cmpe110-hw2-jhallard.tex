@@ -167,7 +167,9 @@ Assume the instruction breakdown as defined in the table (in the handout). Branc
 
 % ======== Question 4.C ======== %
 \item \textbf{Qestion 4.C : Branch Delay Slot} Assume the CPU has one branch delay slot and it is taken 50\% of the time. What is the CPI, ignoring start-up? \\
-\answer
+  \answer In this case, when the branch is taken and the delay slot is filled, we save ourselves a wasted cycle and thus the CPI for that particular instance of the branch isntruction drops from 4 to 3 (because we save a single cycle). So now we not only have to account for how often branches are taken, but also how often the branch delay slot is used given that a branch is taken. This leaves us with the following calculation for overall CPI of the CPU. 
+  $$ .15*0.5*3+.15*0.5*4 + 0.5*1 +0.3*1+0.3*1+0.2*1 = 1.325$$
+  The first two terms account for the times that the branch is taken. The first one accounts for the 50\% of these occurances that use the branch delay slot, and thus have a CPI of 3, the second term accounts for the other 50\% of the time when the branch delay slot is not used, and thus the CPI is 4. The other terms match up with that of the last question, yeilding a slightly better CPI than was yielded for both of the previous questions. 
 
 
 
@@ -209,13 +211,71 @@ In each part, we will study one of these microarchitectures, and our goal is to 
     &                    & Instr.    & Time     & Latency           & Throughput & Exec. Time  \\
     &  Microarchitecture & \(\#\)    & \(\tau\) &  \(cyc\) \(\tau\) &    CPI     & \(\tau\)    \\ \hline
   a &    1-Cycle         & 4         & 63       & 1  63             &     1      &  252        \\ \hline            
-  b &   Iterative        &           &          &                   &            &             \\ \hline
-  c &    2-Cycle         &           &          &                   &            &             \\ \hline
-  d &    4-Cycle         &           &          &                   &            &             \\ \hline
-  e &   Var-Cycled       &           &          &                   &            &             \\ \hline
+  b &   Iterative        & 4         & 21       & 4  84             &     4      &  332        \\ \hline
+  c &    2-Cycle         & 4         & 33       & 1  33             &     1      &  132        \\ \hline
+  d &    4-Cycle         & 4         &          &                   &            &             \\ \hline
+  e &   Var-Cycled       & 4         &          &                   &            &             \\ \hline
   \end{tabular}
 \end{center}
 \end{table}
+
+\benu
+
+% ========= Question 5.A ======== %
+\item \textbf{Question 5.A : Iterative Microarchitecure} \\ 
+Consider the iterative multiplier microarchitecture shown in (b). This microarchitecture computes a multiplication iteratively, across four cycles. It does this by sending back intermediatevalues building up to the result which is ready by the fourth cycle. In other words, we can complete each instruction in exactly four cycles, and we are ready to start the next instruction after exactly four cycles. Fill in the instruction vs. time diagram on the next page, illustrating the execution of the four multiplication instructions on this microarchitecture. Use the symbol X0 to indicate on which cycle each instruction is using the iterative multiplier. Use your instruction vs. time diagram to fill in the row in the first table for the iterative multiplier.
+
+\begin{table}[H]
+\caption{Q 5.A Instructions vs Cycles}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+     & C0 & C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10 & C11 & C12 & C13 & C14 & C15  \\ \hline
+  I0 & X0 & X0 & X0 & X0 &    &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
+  I1 &    &    &    &    & X0 & X0 & X0 & X0 &    &     &     &     &     &     &    &      \\ \hline   
+  I2 &    &    &    &    &    &    &    &    & X0 & X0  &  X0 & X0  &     &     &    &      \\ \hline   
+  I3 &    &    &    &    &    &    &    &    &    &     &     &     & X0  &  X0 & X0 & X0   \\ \hline   
+\end{tabular}
+\end{center}
+\end{table}
+
+\textbf{Q5.A Explanation} - This is a very inefficient pipeline. Each multiply instruction takes 4 cycles, where each cycle feeds back a result to the next cycle, and the last cycle resutls in the final designated multiplication value. Each of the 4 cycles for a single multply take $21\tau$ seconds, 4 to progogate to the first register, and $17\tau$ seconds to progate through the multiply black-box and back to the first control unit. This means to complete the 4 cycles, it takes $84\tau$ seconds (4 times the cycle time). For each of the 4 multiplications to take place, it the requires $4*84\tau = 332\tau$ seconds to complete the given sequence of instructions.
+
+% ========= Question 5.B ========= %
+\item \textbf{Question 5.B : 2-Cycle Pipelined Architecture} \\
+  Consider the two-cycle pipelined multiplier microarchitecture shown in diagram (c). In this microarchitecture, we use a similar approach as in (a) but we break it up the operation intom two cycles. In this microarchitecture, two different instructions can use the multiplier at the same time (i.e., one in the X0 stage and one in the X1 stage) .Fill in the instruction vs. time diagram below, illustrating the execution of the four multiplication  instructions on this microarchitecture. Use the symbols X0 and X1 to indicate on which cycle each instruction is using that part of the multiplier. Use your instruction vs. time diagram to fill in the row in the first table for the 2-Cycle pipelined multiplier. \\
+
+
+\begin{table}[H]
+\caption{Q 5.B Instructions vs Cycles}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+     & C0 & C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10 & C11 & C12 & C13 & C14 & C15  \\ \hline
+  I0 & X0 & X1 &    &    &    &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
+  I1 &    & X0 & X1 &    &    &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
+  I2 &    &    & X0 & X1 &    &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
+  I3 &    &    &    & X0 & X1 &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
+\end{tabular}
+\end{center}
+\end{table}
+
+\textbf{Q5.B Explanation} - This architecutre is much more efficient than the last one. Each multiplication instuction is broken up into two relatively long stages ($33\tau$), but two stages for subsequent multiplication instructions can overlap, which allows us to achieve an ideal CPI of 1. The $33\tau$ run time for each instruction is calculated as adding up the tiem to run the X0 stage plus the set and retrieve times for the boardering registers. Each multiply instruction takes $66\tau$ seconds to complete, but because of the pipelined structure where subsequent instructions overlap we see a significant total time reduction over the naive $4*66\tau = 264\tau$ runtime if the instructions couldn't overlap at all.
+
+
+% ========= Question 5.C ========= %
+\item \textbf{Question 5.C : 4-Cycle Pipelined Architecture} 
+
+  
+
+% ========= Question 5.D ========= %
+\item \textbf{Question 5.D : Variable-Cycle Pipelined Architecture} 
+
+
+
+% ========= Question 5.E ========= %
+\item \textbf{Question 5.E : Composition of Designs}
+
+
+\enu
 
 
 % end list of questions
