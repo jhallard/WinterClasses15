@@ -61,13 +61,17 @@ If you had the option to rearrange the pipeline, how would you arrange it to ach
 
 \textbf{Explanation} - As given originally the total time to get through the pipeline by adding up the different times of each stage was 2240 ps. Dividing this by 8 (for 8 stages in the pipeline) gives us a round number, 280. So if we adjust the boundaries between the stages so as to give us a constant stage latency of 280ps, this would be optimal. Beyond this, decreasing the time for any one stage will necessarily increase the time it takes another stage to run. The max clock frequency is $\frac{1}{\text{Cycle Time}} $. The instructon latency in $8*(\text{cycle time})$, and since the cycle time is constant, this is just $8*280 = 2240$.
 
+\begin{table}[H]
+\caption{Q1 Calculations} \label{tab:q1calc} 
+\begin{center}
 \begin{tabular}{| l | l | l | l | l |}
- \hline Processor & Cycle time & Max Clock Freq. & Instr. Latency & Throughput \\ \hline
+\hline Processor & Cycle time & Max Clock Freq. & Instr. Latency & Throughput \\ \hline
 a.)  baseline     &     400    &   2.50 Ghz      &     3200 ps    &    5/8     \\ \hline
 b.) faster mem    &     320    &   3.125 Ghz     &     2560 ps    &            \\ \hline
 c.) new scheme    &     280    &   3.5714 Ghz    &     2240 ps    &            \\ \hline
 \end{tabular}
-
+\end{center}
+\end{table}
 
 \enu
 
@@ -81,11 +85,35 @@ Assume we are about to use an extended version of our Tiny ISA in an embedded sy
 \benu
 
 % ======= Question 2.A ======= %
-\item \textbf{Question 2.A} \\
+\item \textbf{Question 2.A} Compare options 1, 2, and 3 given above (in the handout, not rewritten here). Which option do you recommend? Show some sort of justification involving the performance of each option.c\\ 
+\answer I will start with a comparison of the three options. The table below summarizes the comparison. To begin, I define a baseline processor that has no multiply instruction or any software support for a integer multiply instruction. Such a processor has CPI = 1, frequency = $f$, latency = $l$, and instruction count = IC. All of the options will be compared by their performance relative to this baseline. The table shows the values for how the different options compare in different areas.  The formula for performance is $\frac{1}{\text{Time(A, P)}}$ where A is a given machine and P is a given program. Time is calulcated by the following formula : $\text{Time} = IC * CPI * Period_{clk} $. \par
+
+Option \#1 is the worst of the 3 options when measuring performance. This method manages to keep the CPI the same as the baseline processor, which is good, but each of those cycles is taking twice as long to complete as the baseline. This effectively reduces the frequency by half, which in turn doubles the latency of the pipeline. The time for this option was calculated as : $1*IC*2P_{clk} = \frac{2*IC}{f}$. \par
+
+Option \#2 is the second best by my calculations. This method also manages to keep the CPI at 1, which is good. The frequency and hence the latency is unchanged, which also is a good thing. The increase in instruction count isn't very significant, but it's not enough to edge out option \#2 over option \#3. This makes sense to me intuitively, forcing integer multiplication to be implemented in the software shouldn't be as performance effective as an intelligent implementation in the hardware. It is interesting that this option is better than the first, it shows that some naive hardware implementations will be slower than basic software implementations. The time calculated for this option was $1.17IC*P_{clk} = \frac{1.17IC}{f}$. \par
+
+Option \#3 is the best option by my calculations. This approach does increase CPI by 20\%, which is not insignificant. This unwanted increase in CPI is more than beaten out by the halving of the cycle time that increasing the number of stages from 5 to 8 affords us. This halving of the cycle time means the frequency doubles, so even if we are using 20\% more cycles per instruction, each cycle is happening twice as fast and thus we end up better than where we started. Interestingly, the latency of the pipeline also decreases, but this time it decreases to 80\% of the value that the baseline processor had. This is because although the frequency (and thus the delay at each stage) was halved, the number of stages was increased from 5 to 8. The time for this option was calculated as : $1.2*IC*\frac{1P_{clk}}{2} = \frac{1.2IC}{2f} = \frac{0.6IC}{f} $
+
+Since Performance = $\frac{1}{\text{Time}}$, and option 3 had the lowest time, option 3 will have the highest performance, and thus that is the option that I recommend. 
+
+\begin{table}[H]
+\caption{Q 2.A : Performance Calculations} \label{tab:q2acalc} 
+\begin{center}
+\begin{tabular}{| l | c | c | c | c |} \hline
+Processor  & CPI &    Freq.       & Latency        & \# Instructions \\ \hline
+Baseline   &  1  &    $f$         & $l$            &       IC        \\ \hline
+Option \#1 &  1  & $\frac{1}{2}f$ & $2l$           &       IC        \\ \hline  
+Option \#2 &  1  &    $f$         & $l$            &       $1.17IC$  \\ \hline 
+Option \#3 & 1.2 &    $2f$        & $\frac{4}{5}l$ &       IC        \\ \hline       
+\end{tabular}
+\end{center}
+\end{table}
 
 
 % ======= Question 2.B ======= %
-\item \textbf{Question 2.B} \\
+\item \textbf{Question 2.B} Let’s assume we decided to go with option \#3. The software team comes to you and propose a compiler optimization which helps limit the increase in CPI, so it only increases by 5\% instead of 20\%. However, the software team points out that this optimization could possibly increase the instruction count. What is the maximum increase in the instruction count that you can accept?\\
+
+        \answer The maximum percentage increase for the inctruction count that would still be acceptable is 14.29\%. At this percentage, all of the gains in performance that have been made by reducing the CPI from 1.2 to 1.05 will be erased by the increase in instruction count. Any higher of a percentage and we actually lose performance, even with the decrease in CPI. I determined this by setting $\text{Time}_{old} = 1.2*CPI*IC*P_{clk}$ and $\text{Time}_{new} = 1.05*CPI*(x*IC)*P_{clk}$, where x is the factor by which the instruction count would increase. Setting these two equations equal to eachother and solving for x yield $x = 1.14285$, thus the maximum increase is roughly 14.3\%.\\
 
 \enu % end problem #2 sub-problems
 

@@ -118,12 +118,14 @@ public class Matrix {
         Entry temp = new Entry(column, x);
         list_row.prepend(temp);
         insertionSort(row);
+        nnz++; // incrmement the number of nonzero entries
         return;
      }
      // the entry is non-zero and it needs to be zero'd
      else if(index != -1 && x == 0) {
         list_row.moveTo(index);
         list_row.delete();
+        nnz--; // decrement the number of non zero entries
         return;
      }
      // if the entry is non zero and needs to be a diff. non zero
@@ -133,10 +135,13 @@ public class Matrix {
         list_row.delete();
         return;
      }
+  }
 
-     // @TODO @TODO @TODO @TODO @TODO @TODO   //
-     // SORT THE LISTS AFTER THEY ARE CHANGED //
-
+  //@func - getRow
+  //@args - #1 int specifying which row in the matrix to retrieve
+  //@ret  - A List object that contains the items in the given row
+  public List getRow(int row) {
+     return mat[row].copy();  
   }
 
 
@@ -166,7 +171,13 @@ public class Matrix {
   // =============================================== //
   // ========== PRIVATE FUNCTIONS/CLASSES ========== //
   // ================================================//
-
+  
+  //@func - dot
+  //@args - #1 row in the this matrix, #2 row in the other matrix. Will dot product these two rows
+  //@ret  - A double value that is the dot product of the two arguments
+  private double dot(List x, List y) {
+    return 0.0; //@TODO @TODO @TODO @TODO Implement dot product
+  } 
 
   //@func - find
   //@args - #1 row in the matrix to search in, #2 column to search for
@@ -293,6 +304,21 @@ public class Matrix {
     // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
     //  implement equals and toString function   //
     // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
+
+    //@func - toString
+    //@args - None
+    //@ret  - String describing this entry pair
+    public String toString() {
+        return ""; //@TODO @TODO @TODO //
+    }
+
+    //@func - equals
+    //@args - #1 another Entry object for comparison
+    //@ret  - boolean indicating success or not
+    public boolean equals(Object x) {
+
+    }
+    
 
   }
 
