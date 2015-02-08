@@ -217,7 +217,7 @@ In each part, we will study one of these microarchitectures, and our goal is to 
     &                    & Instr.    & Time     & Latency           & Throughput & Exec. Time  \\
     &  Microarchitecture & \(\#\)    & \(\tau\) &  \(cyc\) \(\tau\) &    CPI     & \(\tau\)    \\ \hline
   a &    1-Cycle         & 4         & 63       & 1  63             &     1      &  252        \\ \hline            
-  b &   Iterative        & 4         & 22       & 4  88             &     0.25   &  352        \\ \hline
+  b &   Iterative        & 4         & 22       & 4  88             &     4      &  352        \\ \hline
   c &    2-Cycle         & 4         & 33       & 2  66             &     1      &  165        \\ \hline
   d &    4-Cycle         & 4         & 18       & 4  72             &     1      &  126        \\ \hline
   e &   Var-Cycled       & 4         & 24       & 5  120            &    1.75    &  184        \\ \hline
@@ -404,9 +404,13 @@ Fill out the pipeline diagram on the next page, illustrating the execution of th
 
   Populate the pipeline diagram on the next page to show the first 20 cycles of the execution. Assume the pipeline does NOT support data forwarding (bypassing). Assume the pipeline keeps fetching next instructions after jump and branch before they are resolved. The pipeline has to stall in case of a hazard, which is detected in decode stage, and does not have a branch delay slot. \\
 
+  \textbf{Answers shown on Page 11}\\
+
 % ======= Question 6.C ======== %
 \item \textbf{Question 6.C : Bypassing to Resolve Hazards} 
 Populate the pipeline diagram on the next page to show the instructions going through the pipeline until the end of the program. Assume the processor resolves data hazards with bypassing. Assume the processor keeps fetching next instructions after jump and branch before they are resolved. Assume that the processor resolves structural hazards by stalling. Assume the processor does not have a branch delay slot. \\
+
+\textbf{Answers shown on Page 12} \\
 
 % ======= Question 6.D ======== %
 \item \textbf{Question 6.D : Branch Delay Slot} - \\
@@ -431,7 +435,7 @@ Instruction Fetched        & C0  & C1  & C2  & C3  & C4  & C5  & C6  & C7  & C8 
 \texttt{xor r3, r3, r3}    &  F  & D   & EX  & M   & WB  &     &     &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
 \texttt{addiu r2, r3, 1}   &     & F   & D   & D   & D   & EX  & M   & WB  &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
 \texttt{j L1}              &     &     & F   & F   & F   & D   & EX  & M   & WB  &     &     &      &      &      &      &      &      &      &      &     \\ \hline
-\texttt{mul r3, r3, r3}    &     &     &     &     &     & F   & x   & x   & x   &  x  & x   &  x   &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     &     &     & F   & NOP & NOP & NOP &  NOP& NOP &  NOP &      &      &      &      &      &      &      &     \\ \hline
 \texttt{bne r2, r3, -28}   &     &     &     &     &     &     & F   & D   & EX  &  M  & WB  &      &      &      &      &      &      &      &      &     \\ \hline
 \texttt{mul r3, r3, r3}    &     &     &     &     &     &     &     & F   & D   & X1  & X2  & X3   & M    & WB   &      &      &      &      &      &     \\ \hline
 \texttt{add r4, r1, r4}    &     &     &     &     &     &     &     &     & F   & D   &  D  & D    & EX   & M    & WB   &      &      &      &      &     \\ \hline
@@ -449,7 +453,7 @@ Instruction Fetched        & C0  & C1  & C2  & C3  & C4  & C5  & C6  & C7  & C8 
   \clearpage% Flush earlier floats (otherwise order might not be correct)
   \thispagestyle{empty}% empty page style (?)
   \begin{landscape}% Landscape page
-  \textbf{Question 6.C Explanation} -\\
+  \textbf{Question 6.C Explanation} - In this situation, we are granted the power of data forwarding and its benefits show immediately. The first case of data forwarding occurs on C2 in instruction 1. This value that exits the ALU after an XOR operation is forwarded to the execution stage for the next instruction, where it can be used in an arithmetic operation. This data forwarding saves us 3 wasted cycles compared to the architecture in problem 6.A. The multiply instruction still has wasted cycles when it is loaded after the jump and link instruction on line 3. After the branch and link instruction, a NOOP is loaded into the system because there are no instructions listed after \texttt{bne} instruction. Another example of data forwarding is when we forward the \texttt{r5} value from the load instructions memory stage to the execution stage of the subtraction instruction that follows it. We still do end up with some stalling, although not nearly as much as in the previous example. One place where stalling shows up is after the multiply instruction, because it has 2 more cycles than the other instruction we must delay the following add instruction twice in the decode stage. The CPI of this system is $\frac{14}{12} = \frac{7}{6} = 1.16667$, which is an improvement from the last sub-problem which had no data forwarding. This was calculated by counting the number of cycles from when the fetch stage is first accessed to when it was last accessed. Divide this by the 12 instructions that are present in the program and you get a CPI of 1.16667. 
   \begin{table}
     \caption{Question 6.C Answers}
     \begin{center} % Center table
@@ -458,14 +462,15 @@ Instruction Fetched        & C0  & C1  & C2  & C3  & C4  & C5  & C6  & C7  & C8 
 \texttt{xor r3, r3, r3}    &  F  & D   & EX  & ME  & WB  &     &     &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
 \texttt{addiu r2, r3, 1}   &     & F   & D   & EX  & ME  & WB  &     &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
 \texttt{j L1}              &     &     & F   & D   & EX  & ME  & WB  &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
-\texttt{mul r3, r3, r3}    &     &     &     & F   & D   & x   & x   &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     & F   & D   & NOP & NOP &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
 \texttt{bne r2, r3, -28}   &     &     &     &     & F   & D   & EX  &  ME & WB  &     &     &      &      &      &      &      &      &      &      &     \\ \hline
-\texttt{mul r3, r3, r3}    &     &     &     &     &     & F   & D   & X0  & X1  & X2  & ME  & WB   &      &      &      &      &      &      &      &     \\ \hline
-\texttt{add r4, r1, r4}    &     &     &     &     &     &     & F   & D   & D   & D   & EX  & ME   & WB   &      &      &      &      &      &      &     \\ \hline
-\texttt{lw r5, 0(r4)}      &     &     &     &     &     &     &     & F   & F   & F   & D   & EX   & ME   & WB   &      &      &      &      &      &     \\ \hline
-\texttt{sub r5, r5, 1}     &     &     &     &     &     &     &     &     &     &     & F   & D    & D    & EX   &  ME  &  WB  &      &      &      &     \\ \hline
-\texttt{sw r5, 0(r6)}      &     &     &     &     &     &     &     &     &     &     &     & F    & F    & D    &  EX  &  ME  &  WB  &      &      &     \\ \hline
-\texttt{bne r2, r3, -28}   &     &     &     &     &     &     &     &     &     &     &     &      &      & F    &  D   &  EX  &  ME  & WB   &      &     \\ \hline
+\texttt{NOP}               &     &     &     &     &     & NOP & NOP & NOP & NOP &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     &     &     &     & F   & D   & X0  & X1  & X2  & ME   & WB   &      &      &      &      &      &      &     \\ \hline
+\texttt{add r4, r1, r4}    &     &     &     &     &     &     &     & F   & D   & D   & D   & EX   & ME   & WB   &      &      &      &      &      &     \\ \hline
+\texttt{lw r5, 0(r4)}      &     &     &     &     &     &     &     &     & F   & F   & F   & D    & EX   & ME   & WB   &      &      &      &      &     \\ \hline
+\texttt{sub r5, r5, 1}     &     &     &     &     &     &     &     &     &     &     &     & F    & D    & D    & EX   &  ME  &  WB  &      &      &     \\ \hline
+\texttt{sw r5, 0(r6)}      &     &     &     &     &     &     &     &     &     &     &     &      & F    & F    & D    &  EX  &  ME  &  WB  &      &     \\ \hline
+\texttt{bne r2, r3, -28}   &     &     &     &     &     &     &     &     &     &     &     &      &      &      & F    &  D   &  EX  &  ME  & WB   &     \\ \hline
   \end{tabular}
   \end{center}
   \end{table}
