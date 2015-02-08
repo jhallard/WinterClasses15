@@ -141,7 +141,7 @@ Option \#3 & 1.2 &    $2f$        & $\frac{4}{5}l$ &       IC        \\ \hline
 
 
 %==============================%
-% ======== PROBLEM #3 ======== %
+% ======== PROBLEM #4 ======== %
 %==============================%
 \item \textbf{Question \#4 : CPI Computation for Different Pipelines} \\
 
@@ -193,6 +193,11 @@ Assume the instruction breakdown as defined in the table (in the handout). Branc
 \enu
 
 
+
+
+%==============================%
+% ======== PROBLEM #5 ======== %
+%==============================%
 \item \textbf{Question \#5 : Multipliers} In this problem, we consider several different implementations of an unsigned two-inpuit integer multiplier capable of multiplying a 32-bit operand by a 4-bit operand to produce atruncated 32-bit result. Any of these implementations may be used to allow for the Tiny ISA to support the multiply instruction mentioned in the previous problem The diagram below illustrates the datapaths for five multiplier microarchitectures: (a) a single-cycle microarchitecture, (b) a four-cycle iterative microarchitecture, (c) a two-cycle pipelined microarchitecture, (d) a four-cycle pipelined microarchitecture, and (e) a variablecycle pipelined microarchitecture. For all parts in this problem we will assume that our multiplier is processing the following sequence of four independent instructions: \\
 \texttt{mul r0, r0, 0xf} \\
 \texttt{mul r1, r1, 0x7} \\
@@ -214,7 +219,7 @@ In each part, we will study one of these microarchitectures, and our goal is to 
   b &   Iterative        & 4         & 22       & 4  88             &     4      &  352        \\ \hline
   c &    2-Cycle         & 4         & 33       & 2  66             &     1      &  165        \\ \hline
   d &    4-Cycle         & 4         & 18       & 4  72             &     1      &  126        \\ \hline
-  e &   Var-Cycled       & 4         &          &                   &            &             \\ \hline
+  e &   Var-Cycled       & 4         & 24       & 5  120            &    1.75    &  184        \\ \hline
   \end{tabular}
 \end{center}
 \end{table}
@@ -291,23 +296,109 @@ Fill in the instruction vs. time diagram below illustrating the execution of the
 \caption{Q 5.C 4-Cycle Pipeline Instructions vs Cycles}
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
-     & C0 & C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10 & C11 & C12 & C13 & C14 & C15  \\ \hline
-  I0 & X0 & X1 & X2 & X3 &    &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
-  I1 &    & X0 & X1 & X2 & X3 &    &    &    &    &     &     &     &     &     &    &      \\ \hline   
-  I2 &    &    & X0 & X1 & X2 & X3 &    &    &    &     &     &     &     &     &    &      \\ \hline   
-  I3 &    &    &    & X0 & X1 & X2 & X3 &    &    &     &     &     &     &     &    &      \\ \hline   
+     & C0 & C1 & C2 & C3 & C4     & C5      & C6     & C7     & C8 & C9 & C10 & C11 & C12 & C13 & C14 & C15  \\ \hline
+  I0 & Y  & X0 & X1 & X2 & X3$_M$ &         &        &        &    &     &     &     &     &     &    &      \\ \hline   
+  I1 &    & Y  & Y  & X0 & X1     & X2$_M$  &        &        &    &     &     &     &     &     &    &      \\ \hline   
+  I2 &    &    & Y  & Y  & Y      & X0      & X1$_M$ &        &    &     &     &     &     &     &    &      \\ \hline   
+  I3 &    &    &    & Y  & Y      & Y       &  Y     & X0$_M$ &    &     &     &     &     &     &    &      \\ \hline   
 \end{tabular}
 \end{center}
 \end{table}
 
-\textbf{Question 5.D Explanation} -
+\textbf{Question 5.D Explanation} - This was an interesting problem to solve, the pipeline is set up so that it doesn't waste time on multiplication with bits that are zero, it has a mechanism set-up to forward data down the data-path when it detects that there is no more significant computation (aka on 1 bits) to perform. This can be very useful, for instance if it multiplies something by 1 it can compute this in 2 cycles (one for Y, one for X0) with some MUX overhead added on. This is much better than taking 4 cycles no matter what the multiplicaton operands are. However, this forwarding scheme introduces possible structural hazards into the mix. These hazards arise when two multiplication results are trying to be sent to the final MUX at the same time. Since we can only return one value at a time, this introduces a hazard. To prevent this, the Y stage needs to analyze the constant input operand and figure out how many stages it takes to complete, and thus whether or not it will have create a hazard with any of the previous instructions. What makes this problem so interesting is that the combination of instructions virtually nullifies the speed increase gained by the forwarding mechanism. Every instruction is succeeded by one that takes one fewer stage, so each subsequent instruction introduces another structural hazard. This means that even though the 4th instruction is multiplication by 1, which could only take 2 cycles, ends up delayed and taking 5 cycles. The CPI for this pipeline over these specific instructions is $\frac{7}{4} = 1.75$. I got this by looking at the above table, and dividing the number of cycles it takes for a single from the first time a stage is accessed till the last time it is accessed, divided by the number of instructions. This CPI is higher than one because of the multiple delays introduced into the system by the forwarding mechanism. The cycle time is the time of the longest stage plus the time it would take to forward the data through the mux and to the output register. This means the cycle time is $18\tau + 6\tau = 24\tau$, which the 18 being from the multiplication stage and the extra 6 occuring if the data needs to forwarded to the final mux and output register. Since the cycle time is $24\tau$ and there are 8 cycles, the total running time for this pipeline is $184\tau$ units of time. This time is slower than the last 4 stage pipeline, once again because of the data hazards. The instruction latency depends on whether a data hazard occurs or not, since hazards occur diring all of the instructions, all of the instructions end up taking 5 cycles to complete. 
 
 
 
 % ========= Question 5.E ========= %
-\item \textbf{Question 5.E : Composition of Designs}
+\item \textbf{Question 5.E : Composition of Designs} \\
+  Which microarchitecture has the highest performance? Explain some of the trade-offs betweenthese microarchitectures. Would we ever want to consider a multiplier with many more stages (e.g., a 20-cycle pipelined multiplier)? Discuss when we would want to choose this variable-latency pipelined multiplier over a fixed-latency design and vice-versa. What are the trade-offs between fixed-latency and variable-latency?
+
+  \answer - Over the specific instructions given to us for this problem, the 4-Cycle pipeline finished the fastest. This outcome is very instruction dependent though, if the instructions weren't ordered in such a way as to always cause a structural hazard with the next instruction, then the variable-latency pipeline would have done the best. This is because the variable-latency pipeline has the ability to perform a multiplication in a single, short cycle if the conditons are right (no hazards). As far as the fixed latency pipelines go, the 4-cycle one is the best when there are no data dependencies, this is because it maintains a throughput of 1 while reducing the cycle time significantly over both 2-Cycle and iterative pipelines. If we did have 4 consectuvie multiply instructions that were data dependent on eachother, then there is a good chance that the 2-cycle pipeline would do the best, simply becaause it isn't as deep and thus wouldn't have to perform as many stalls as the 4-cycle to resolve data dependencies. The iterative approach is interesting, there is no chance for a data or structural hazard, this is because there is no parallelism and thus by the time one instruction is ready to be executed all previous instructions are already done writing and reading their data. The iterative approach, while avoiding hazards, is still a very bad pipeline design. The CPI is always 4, and there is no way to increase it because of the pipelines fixed style. 
+
+% ======== Question 5.F ======== %
+\item \textbf{Question 5.F : Integrating with Processor} \\
+
+Suppose that we like the variable-latency multiplier design for the multiplier and decide to integrate it with our 5-stage pipelined processor. This block would exist alongside the ALU in the Execute stage so when an instruction reaches the Execute stage, it either goes through the ALU or through the multiplier. If it goes through the ALU, we denote this using Execute stage as normal. If it goes through the multiplier, we denote this using the X0, X1, X2, and X3 stages (similar to part A). Note that we no longer need the Y stage because the Y stage is replaced by the Decode stage in the processor. That means that the Decode stage will stall if it detects that letting the current instruction go down the pipeline would cause a structural hazard. \\
+
+Assume that the pipeline stalls to avoid structural hazards and uses bypassing to avoid data hazards. \\
+
+The instructions we want to run through the processor are as follows (note that they are different from the instructions in part A): \\
+\texttt{mul r0, r3, 0xf} \\
+\texttt{mul r1, r0, 0x7} \\
+\texttt{mul r2, r1, 0x3} \\
+\texttt{mul r3, r2, 0x1} \\
+
+Fill out the pipeline diagram on the next page, illustrating the execution of these four multiplication instructions on the updated pipelined processor. Use this diagram to calculate the average CPI of this newly integrated processor.
 
 
+
+\begin{table}[H]
+\caption{Q 5.C 4-Cycle Pipeline Instructions vs Cycles}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+     & C0 & C1 & C2 & C3 & C4  & C5  & C6   & C7   & C8 & C9 & C10 & C11 & C12 & C13 & C14 & C15  \\ \hline
+  I0 & F  &  D & X0 & X1 & X2  & X3  & M    & WB   &    &     &     &     &     &     &    &      \\ \hline   
+  I1 &    &  F & D  & D  & D   & D   & X0   & X1   & X2 & M   & WB  &     &     &     &    &      \\ \hline   
+  I2 &    &    & F  & F  & F   & F   & D    & D    & D  & X0  & X1  & M   &  WB &     &    &      \\ \hline   
+  I3 &    &    &    &    &     &     & F    & F    & F  & D   & D   & X0  &  M  & WB  &    &      \\ \hline   
+\end{tabular}
+\end{center}
+\end{table}
+
+\textbf{Question 5.F Explanation} - This example is even less efficient than the last one, this is because now we not only have structural hazards but now we've also introduced multipled data hazards. There are data hazards whenever an instruction tried to operate on data that is being written to by a previous instruction, which occurs in every one of the 3 instructions after the first 1. These extra hazards increase the CPI from $\frac{7}{4} = 1.75$ in example 5.D to a CPI of $\frac{9}{4}= 2.25$ in this example. I got this CPI value by counting how many cycles it takes from the first time a fetch instruction is called till the last time the fetch stage is used, which is 9 cycles. Since there are 4 instructions, we get a CPI of $\frac{9}{4}$. The data forwarding happens between the first two rows from the X3 stage of instruction \#1 to the X0 stage of instruction \#2. This is because instr. \#2 depends on the result of the multiply in instr. \#1 to perform its calculation. The value from instr. \#2 gets forwarded to the 3rd instruction after the X2 stage, since the second instruction does not need to use X3. The structural hazards arise because each instruction is trying to use less stages then the previous, which causes stalls to accumulate.
+
+% ==== end Q5 ==== %
+\enu
+
+
+
+%==============================%
+% ======== PROBLEM #6 ======== %
+%==============================%
+\item \textbf{Question \#6 : Hazards} \\
+  Consider the following MIPS assembly code where each instruction is 32-bit (4 bytes). We want to run this code on a variable length pipeline. The pipeline is a typical 5-stage, except that the Multiply instruction (mul), which uses dedicated hardware that has 3 stages. Hence, mul spends 3 cycles in the Execute stage. The figure below shows the pipeline diagram. At each cycle, 1 instruction is allowed into the Execute stage if the requested unit is not occupied. Assume that branch and jump instructions are resolved in the Decode stage.
+
+\begin{tabular}{c l l}
+\texttt{1} &  \texttt{ }    & \texttt{xor r3, r3, r3}  \\
+\texttt{2} & \texttt{ }     & \texttt{addiu r2, r3, 1} \\
+\texttt{3} & \texttt{ }     & \texttt{j L1} \\
+\texttt{4} & \texttt{loop } & \texttt{mul r3, r3, r3} \\
+\texttt{5} & \texttt{ }     & \texttt{add r4, r1, r4} \\
+\texttt{6} & \texttt{ }     & \texttt{lw r5 0(r4)} \\
+\texttt{7} & \texttt{ }     & \texttt{sub r5, r5, 1} \\
+\texttt{8} & \texttt{ }     & \texttt{ub r5, 0(r6)} \\
+\texttt{9} & \texttt{ }     & \texttt{addiu r3, r3, 1} \\
+\texttt{10} & \texttt{L1}   & \texttt{bne r2, r3, -28 } \\
+\texttt{11} & \texttt{END}  & \texttt{} \\
+\end{tabular}
+
+
+\benu
+
+% ======= Question 6.A ======== %
+\item \textbf{Question 6.A : Data Dependencies} -
+
+
+% ======= Question 6.B ======== %
+\item \textbf{Question 6.B : Stalling to Remove Hazards} -
+
+
+% ======= Question 6.C ======== %
+\item \textbf{Question 6.C : Bypassing to Resolve Hazards} -
+
+
+
+% ======= Question 6.D ======== %
+\item \textbf{Question 6.D : Branch Delay Slot} -
+
+
+
+% ======= Question 6.E ======== %
+\item \textbf{Question 6.E : Structural Hazards} -
+
+
+
+% === End Problem 6 === %
 \enu
 
 
