@@ -217,7 +217,7 @@ In each part, we will study one of these microarchitectures, and our goal is to 
     &                    & Instr.    & Time     & Latency           & Throughput & Exec. Time  \\
     &  Microarchitecture & \(\#\)    & \(\tau\) &  \(cyc\) \(\tau\) &    CPI     & \(\tau\)    \\ \hline
   a &    1-Cycle         & 4         & 63       & 1  63             &     1      &  252        \\ \hline            
-  b &   Iterative        & 4         & 22       & 4  88             &     4      &  352        \\ \hline
+  b &   Iterative        & 4         & 22       & 4  88             &     0.25   &  352        \\ \hline
   c &    2-Cycle         & 4         & 33       & 2  66             &     1      &  165        \\ \hline
   d &    4-Cycle         & 4         & 18       & 4  72             &     1      &  126        \\ \hline
   e &   Var-Cycled       & 4         & 24       & 5  120            &    1.75    &  184        \\ \hline
@@ -244,7 +244,7 @@ Consider the iterative multiplier microarchitecture shown in (b). This microarch
 \end{center}
 \end{table}
 
-\textbf{Q5.A Explanation} - This is a very inefficient pipeline. Each multiply instruction takes 4 cycles, where each cycle feeds back a result to the next cycle, and the last cycle resutls in the final designated multiplication value. Each of the 4 cycles for a single multply take $21\tau$ seconds, 4 to progogate to the first register, and $17\tau$ seconds to progate through the multiply black-box and back to the first control unit. This means to complete the 4 cycles, it takes $84\tau$ seconds (4 times the cycle time). For each of the 4 multiplications to take place, it the requires $4*84\tau = 332\tau$ seconds to complete the given sequence of instructions.
+\textbf{Q5.A Explanation} - This is a very inefficient pipeline. Each multiply instruction takes 4 cycles, where each cycle feeds back a result to the next cycle, and the last cycle resutls in the final designated multiplication value. Each of the 4 cycles for a single multply take $21\tau$ seconds, 4 to progogate to the first register, and $17\tau$ seconds to progate through the multiply black-box and back to the first control unit. This means to complete the 4 cycles, it takes $84\tau$ seconds (4 times the cycle time). For each of the 4 multiplications to take place, it the requires $4*84\tau = 332\tau$ seconds to complete the given sequence of instructions. I'm a little confused about the throughput, the CPI is 4, but I thought that throughput was measured by IPC, not CPI. I listed the CPI value in the table of 4, but the IPC value (which I thought was used to measure throughput) is 0.25.
 
 % ========= Question 5.B ========= %
 \item \textbf{Question 5.B : 2-Cycle Pipelined Architecture} \\
@@ -404,6 +404,20 @@ Fill out the pipeline diagram on the next page, illustrating the execution of th
 
   Populate the pipeline diagram on the next page to show the first 20 cycles of the execution. Assume the pipeline does NOT support data forwarding (bypassing). Assume the pipeline keeps fetching next instructions after jump and branch before they are resolved. The pipeline has to stall in case of a hazard, which is detected in decode stage, and does not have a branch delay slot. \\
 
+% ======= Question 6.C ======== %
+\item \textbf{Question 6.C : Bypassing to Resolve Hazards} 
+Populate the pipeline diagram on the next page to show the instructions going through the pipeline until the end of the program. Assume the processor resolves data hazards with bypassing. Assume the processor keeps fetching next instructions after jump and branch before they are resolved. Assume that the processor resolves structural hazards by stalling. Assume the processor does not have a branch delay slot. \\
+
+% ======= Question 6.D ======== %
+\item \textbf{Question 6.D : Branch Delay Slot} - \\
+
+
+
+% ======= Question 6.E ======== %
+\item \textbf{Question 6.E : Structural Hazards} - \\
+
+
+
 \afterpage{%
   \clearpage% Flush earlier floats (otherwise order might not be correct)
   \thispagestyle{empty}% empty page style (?)
@@ -430,18 +444,34 @@ Instruction Fetched        & C0  & C1  & C2  & C3  & C4  & C5  & C6  & C7  & C8 
   \clearpage% Flush page
 }
 
-% ======= Question 6.C ======== %
-\item \textbf{Question 6.C : Bypassing to Resolve Hazards} -
 
-
-
-% ======= Question 6.D ======== %
-\item \textbf{Question 6.D : Branch Delay Slot} -
-
-
-
-% ======= Question 6.E ======== %
-\item \textbf{Question 6.E : Structural Hazards} -
+\afterpage{%
+  \clearpage% Flush earlier floats (otherwise order might not be correct)
+  \thispagestyle{empty}% empty page style (?)
+  \begin{landscape}% Landscape page
+  \textbf{Question 6.C Explanation} -\\
+  \begin{table}
+    \caption{Question 6.C Answers}
+    \begin{center} % Center table
+    \begin{tabular}{| l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l |} \hline
+Instruction Fetched        & C0  & C1  & C2  & C3  & C4  & C5  & C6  & C7  & C8  & C9  & C10 & C11  & C12  & C13  & C14  & C15  & C16  & C17  & C18  & C19 \\ \hline
+\texttt{xor r3, r3, r3}    &  F  & D   & EX  & ME  & WB  &     &     &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{addiu r2, r3, 1}   &     & F   & D   & EX  & ME  & WB  &     &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{j L1}              &     &     & F   & D   & EX  & ME  & WB  &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     & F   & D   & x   & x   &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{bne r2, r3, -28}   &     &     &     &     & F   & D   & EX  &  ME & WB  &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     &     &     & F   & D   & X0  & X1  & X2  & ME  & WB   &      &      &      &      &      &      &      &     \\ \hline
+\texttt{add r4, r1, r4}    &     &     &     &     &     &     & F   & D   & D   & D   & EX  & ME   & WB   &      &      &      &      &      &      &     \\ \hline
+\texttt{lw r5, 0(r4)}      &     &     &     &     &     &     &     & F   & F   & F   & D   & EX   & ME   & WB   &      &      &      &      &      &     \\ \hline
+\texttt{sub r5, r5, 1}     &     &     &     &     &     &     &     &     &     &     & F   & D    & D    & EX   &  ME  &  WB  &      &      &      &     \\ \hline
+\texttt{sw r5, 0(r6)}      &     &     &     &     &     &     &     &     &     &     &     & F    & F    & D    &  EX  &  ME  &  WB  &      &      &     \\ \hline
+\texttt{bne r2, r3, -28}   &     &     &     &     &     &     &     &     &     &     &     &      &      & F    &  D   &  EX  &  ME  & WB   &      &     \\ \hline
+  \end{tabular}
+  \end{center}
+  \end{table}
+  \end{landscape}
+  \clearpage% Flush page
+}
 
 
 
