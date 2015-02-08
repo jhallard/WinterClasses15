@@ -7,6 +7,8 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{pdflscape}
+\usepackage{afterpage}
 \usepackage[margin=0.6in]{geometry}
 
 % \setlength{\voffset}{-0.5in}
@@ -151,8 +153,8 @@ Assume the instruction breakdown as defined in the table (in the handout). Branc
 
 % ======== Question 4.A ======== %
 \item \textbf{Question 4.A : CPI} Calculate the CPI of the system given in the handout. Assume no data dependencies. \\
-  \answer The CPI of the system is calculated almost as normal, where we take the weighted average of the individual CPIs for each instruction multiplied by their individual probabilities of occuring. The CPI for the instructions is normally 1, because there are no data hazards, but when a branch occurs the CPI will increase from 1 to 3 for that instruction. The CPI is 4 when a branch occurs because all of the instructions below it are already into their 4th stage by the end of the branch instructions execute cycle, at which time the branch instruction is resolved. This means that those 4 cycles are wasted, increasing the CPI to 4 for taken branch instructions. Jump instructions occur infrequenctly (only 5\% of the time), but when they do occur the CPI is 3, because any instructions below are already in their 3rd stage by the time the jump instruction is resolved at the end of its execute stage. Thus the total CPI is 
-  $$ .15*.8*4 + .15*.2*1 + .05*3 + 0.3*1 + 0.3*1 + 0.2*1 = 1.46 $$
+  \answer The CPI of the system is calculated almost as normal, where we take the weighted average of the individual CPIs for each instruction multiplied by their individual probabilities of occuring. The CPI for the instructions is normally 1, but the branch and jump instructions can introduce an increased CPI into the mix. The CPI is 5 (1+ 4 stalls) when a branch occurs because all of the instructions below it are already into their 4th stage by the end of the branch instructions execute cycle, at which time the branch instruction is resolved. This means that those 4 cycles are wasted, increasing the CPI to 5 for taken branch instructions. Jump instructions occur infrequenctly (only 5\% of the time), but when they do occur the CPI is 4, because any instructions below are already in their 3rd stage by the time the jump instruction is resolved at the end of its execute stage. Thus the total CPI is 
+  $$ .15*.8*5 + .15*.2*1 + .05*4 + 0.3*1 + 0.3*1 + 0.2*1 = 1.63 $$
   The first two terms account for the CPI of the branch instruction (2 terms for when it taken 80\% of the time and not taken 20\% of the time). The 3rd term accounts for the jump instruction's CPI of 3, the next two terms account for load and store, and the final term accounts for all other instructions.
 
 
@@ -160,17 +162,16 @@ Assume the instruction breakdown as defined in the table (in the handout). Branc
 % ======== Question 4.B ======== %
 \item \textbf{Question 4.B : Taken Branches} What is the CPI if all branches are assumed to be taken? Assume no data dependencies \\
 \answer If the branch is taken 100\% of the time, then the CPI increases slightly. Adjusting the last equation slightly to account for this change yields ...
-  $$ .15*1*4 + .05*3 + 0.3*1 + 0.3*1 + 0.2*1 = 1.55 $$
-  This result is predictable, if we are always taking the branch then we are always taking an instruction with a higher CPI. This is because branch instruction has a CPI of 4 when a branch is taken and 1 when a branch is not taken. 
+  $$ .15*1*5 + .05*4 + 0.3*1 + 0.3*1 + 0.2*1 = 1.75 $$
+  This result is predictable, if we are always taking the branch then we are always taking an instruction with a higher CPI. This is because branch instruction has a CPI of 5 when a branch is taken and 1 when a branch is not taken. 
 
 
 
 % ======== Question 4.C ======== %
 \item \textbf{Qestion 4.C : Branch Delay Slot} Assume the CPU has one branch delay slot and it is taken 50\% of the time. What is the CPI, ignoring start-up? \\
   \answer In this case, when the branch is taken and the delay slot is filled, we save ourselves a wasted cycle and thus the CPI for that particular instance of the branch isntruction drops from 4 to 3 (because we save a single cycle). So now we not only have to account for how often branches are taken, but also how often the branch delay slot is used given that a branch is taken. This leaves us with the following calculation for overall CPI of the CPU. 
-  $$ .15*0.5*3+.15*0.5*4 + 0.5*1 +0.3*1+0.3*1+0.2*1 = 1.325$$
-  The first two terms account for the times that the branch is taken. The first one accounts for the 50\% of these occurances that use the branch delay slot, and thus have a CPI of 3, the second term accounts for the other 50\% of the time when the branch delay slot is not used, and thus the CPI is 4. The other terms match up with that of the last question, yeilding a slightly better CPI than was yielded for both of the previous questions. 
-
+  $$ .15*(.8*0.5*4 + 0.8*0.5*5) + 0.15*0.2*1 + 0.05*4 + 0.3 + 0.3 + 0.2 = 1.57$$
+ The first large term account for the 15\% of the time a branch instruction occurs, then the 80\% of the time that that branch is taken, times the 50\% probabilities that the delay slot will be used or unused. The second term account for the 20\% of the time a branch instruction shows up but isn't taken, the rest of the terms are the same as in the above problems. This leaves us with the lowest CPI yet of 1.57, thanks to the branch delay slot reducing the number of hazards that occur. 
 
 
 % ======== Question 4.D ======== %
@@ -315,6 +316,8 @@ Fill in the instruction vs. time diagram below illustrating the execution of the
 
   \answer - Over the specific instructions given to us for this problem, the 4-Cycle pipeline finished the fastest. This outcome is very instruction dependent though, if the instructions weren't ordered in such a way as to always cause a structural hazard with the next instruction, then the variable-latency pipeline would have done the best. This is because the variable-latency pipeline has the ability to perform a multiplication in a single, short cycle if the conditons are right (no hazards). As far as the fixed latency pipelines go, the 4-cycle one is the best when there are no data dependencies, this is because it maintains a throughput of 1 while reducing the cycle time significantly over both 2-Cycle and iterative pipelines. If we did have 4 consectuvie multiply instructions that were data dependent on eachother, then there is a good chance that the 2-cycle pipeline would do the best, simply becaause it isn't as deep and thus wouldn't have to perform as many stalls as the 4-cycle to resolve data dependencies. The iterative approach is interesting, there is no chance for a data or structural hazard, this is because there is no parallelism and thus by the time one instruction is ready to be executed all previous instructions are already done writing and reading their data. The iterative approach, while avoiding hazards, is still a very bad pipeline design. The CPI is always 4, and there is no way to increase it because of the pipelines fixed style. 
 
+So, to summarize, for these specific 4 instructions the 4-Cycle pipeline was the best at completing the task the fastest, but for the majority of the cases (where they aren't ordered in such a way as to always cause structural hazards) the variable cycle pipeline would have the highest performance. \\
+
 % ======== Question 5.F ======== %
 \item \textbf{Question 5.F : Integrating with Processor} \\
 
@@ -366,7 +369,7 @@ Fill out the pipeline diagram on the next page, illustrating the execution of th
 \texttt{5} & \texttt{ }     & \texttt{add r4, r1, r4} \\
 \texttt{6} & \texttt{ }     & \texttt{lw r5 0(r4)} \\
 \texttt{7} & \texttt{ }     & \texttt{sub r5, r5, 1} \\
-\texttt{8} & \texttt{ }     & \texttt{ub r5, 0(r6)} \\
+\texttt{8} & \texttt{ }     & \texttt{sw r5, 0(r6)} \\
 \texttt{9} & \texttt{ }     & \texttt{addiu r3, r3, 1} \\
 \texttt{10} & \texttt{L1}   & \texttt{bne r2, r3, -28 } \\
 \texttt{11} & \texttt{END}  & \texttt{} \\
@@ -376,12 +379,56 @@ Fill out the pipeline diagram on the next page, illustrating the execution of th
 \benu
 
 % ======= Question 6.A ======== %
-\item \textbf{Question 6.A : Data Dependencies} -
+\item \textbf{Question 6.A : Data Dependencies} - Identify all data dependencies (Read After Write) \\
 
+  \answer - Below is a table that completely describes all RAW depencies found in this program. The first column shows the instruction that is dependent on the instruction in the second column. The 3rd column gives a short explanation of why (not sure if necessary, but can't hurt).\\ 
+
+
+\begin{table}[H]
+\caption{Q 6.A Data Dependncy List and Descriptions}
+\begin{center}
+\begin{tabular}{| l | l | l |} \hline
+  This depends & on this & reasons : \\ \hline 
+  line 2       & line 1  & input operand r3 is being written to by instr \#1 \\ 
+  line 10      & line 2  & comparison operand r2 is being written to by instr \#2 \\ 
+  line 6       & line 5  & address in r4 is being written to by prev. instruction \\ 
+  line 7       & line 6  & perform arithmetic on a value (r5) thats still being written to\\ 
+  line 8       & line 7  & we need to save the r5 value to memory but it's still being written by line 7\\ 
+  line 10      & line 9  & performing comparison on value being written to after arithmetic operation. \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
 
 % ======= Question 6.B ======== %
-\item \textbf{Question 6.B : Stalling to Remove Hazards} -
+\item \textbf{Question 6.B : Stalling to Remove Hazards} \\
 
+  Populate the pipeline diagram on the next page to show the first 20 cycles of the execution. Assume the pipeline does NOT support data forwarding (bypassing). Assume the pipeline keeps fetching next instructions after jump and branch before they are resolved. The pipeline has to stall in case of a hazard, which is detected in decode stage, and does not have a branch delay slot. \\
+
+\afterpage{%
+  \clearpage% Flush earlier floats (otherwise order might not be correct)
+  \thispagestyle{empty}% empty page style (?)
+  \begin{landscape}% Landscape page
+      \textbf{Question 6.B Explanation} - This questions shows how innefficient a pipeline can be without data forwarding, where it is forced to introduce stalls for every type of hazard that occurs. To fill out the first 20 cycles, we only get through 9 instructions, which is pretty poor compared to more advanced architectures. The CPI of this system is $\frac{15}{9} = 1.6667$. This will be improved significantly in the upcoming problems by using data forwarding. One thing I was confused about was what is loaded into memory after the \texttt{bne} instruction is fetched and before it is decoded, because the next instruction is a PSUEDO-OP indicating that it's the end of the code. I made the assumption that \texttt{bne} would simply load the branch location instruction right after being fetched. \\
+  \begin{table}
+  \caption{Question 6.B Answers }% Add 'table' caption
+  \begin{center} % Center table
+     \begin{tabular}{| l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l |} \hline
+Instruction Fetched        & C0  & C1  & C2  & C3  & C4  & C5  & C6  & C7  & C8  & C9  & C10 & C11  & C12  & C13  & C14  & C15  & C16  & C17  & C18  & C19 \\ \hline
+\texttt{xor r3, r3, r3}    &  F  & D   & EX  & M   & WB  &     &     &     &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{addiu r2, r3, 1}   &     & F   & D   & D   & D   & EX  & M   & WB  &     &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{j L1}              &     &     & F   & F   & F   & D   & EX  & M   & WB  &     &     &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     &     &     & F   & x   & x   & x   &  x  & x   &  x   &      &      &      &      &      &      &      &     \\ \hline
+\texttt{bne r2, r3, -28}   &     &     &     &     &     &     & F   & D   & EX  &  M  & WB  &      &      &      &      &      &      &      &      &     \\ \hline
+\texttt{mul r3, r3, r3}    &     &     &     &     &     &     &     & F   & D   & X1  & X2  & X3   & M    & WB   &      &      &      &      &      &     \\ \hline
+\texttt{add r4, r1, r4}    &     &     &     &     &     &     &     &     & F   & D   &  D  & D    & EX   & M    & WB   &      &      &      &      &     \\ \hline
+\texttt{lw r5, 0(r4)}      &     &     &     &     &     &     &     &     &     & F   &  F  & F    & D    & D    & D    & EX   & M    & WB   &      &     \\ \hline
+\texttt{sub r5, r5, 1}     &     &     &     &     &     &     &     &     &     &     &     &      & F    & F    & F    & D    & D    & D    & EX   & M   \\ \hline
+  \end{tabular}
+  \end{center}
+  \end{table}
+  \end{landscape}
+  \clearpage% Flush page
+}
 
 % ======= Question 6.C ======== %
 \item \textbf{Question 6.C : Bypassing to Resolve Hazards} -

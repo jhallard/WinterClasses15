@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1423087129 "cmpe110-hw2-jhallard.tex" "cmpe110-hw2-jhallard.pdf" "cmpe110-hw2-jhallard" 1423087129
+["pdflatex"] 1423371215 "cmpe110-hw2-jhallard.tex" "cmpe110-hw2-jhallard.pdf" "cmpe110-hw2-jhallard" 1423371215
   "/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1284331290 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty" 1335995445 7612 c47308d923ec19888707b0f1792b326a ""
@@ -28,18 +28,21 @@
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty" 1254151804 14183 42a8fc761b806986eef292369afc2988 ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty" 1156702488 7882 3bd78469d444e8d494e27cfd7ca92719 ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty" 1156702488 2266 7054435e4584a41cf53b0a7ca624d0cb ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics/lscape.sty" 1156702488 1475 c890537707f4b8611b7e92b8eb7f49aa ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty" 1156702488 3153 c50e6bd54d2dd3933fc52bcf369bec4a ""
   "/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1279039959 678 4792914a8f45be57bb98413425e4c7af ""
   "/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg" 1278958963 3563 d35e897cae3b8c6848f6677b73370b54 ""
   "/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty" 1303254447 12029 04d7fdf76e0464c23b5aa3a727952d7c ""
   "/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty" 1335995445 7075 bd0c34fbf1ae8fd1debd2a554e41b2d5 ""
   "/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty" 1335995445 22417 c74ff4af6a1aa2b65d1924020edbbe11 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/oberdiek/pdflscape.sty" 1335995445 6534 e0e842a7712d799f3e6bbcbedd28e578 ""
   "/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def" 1306616590 55368 3c8a0d99822330f2dfabc0dfb09ce897 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/tools/afterpage.sty" 1254151720 3949 89434e99c8254edc84c9da65f8a03a7f ""
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texlive/texmf-dist/tex/latex/wrapfig/wrapfig.sty" 1137111090 26220 3701aebf80ccdef248c0c20dd062fea9 ""
-  "cmpe110-hw2-jhallard.aux" 1423087129 8 a94a2480d3289e625eea47cd1b285758 ""
-  "cmpe110-hw2-jhallard.tex" 1423087123 2898 e7263096335dc750edadcb7fdfdaaf52 ""
+  "cmpe110-hw2-jhallard.aux" 1423371215 1228 91623b5db7f260649a0d4139acb3c42b ""
+  "cmpe110-hw2-jhallard.tex" 1423371214 43708 b1506cef12444c98ce4bdd2e012b789a ""
   (generated)
-  "cmpe110-hw2-jhallard.log"
-  "cmpe110-hw2-jhallard.pdf"
   "cmpe110-hw2-jhallard.aux"
+  "cmpe110-hw2-jhallard.pdf"
+  "cmpe110-hw2-jhallard.log"
