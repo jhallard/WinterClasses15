@@ -69,6 +69,7 @@ public class Matrix {
     for(int i = 0; i < mat.length; i++) {
         mat[i].clear();
     }
+    nnz = 0;
   }
 
   // @func - copy
@@ -144,21 +145,21 @@ public class Matrix {
   // @args - #1 Double value to multiply the matrix by
   // @ret  - Returns a new matrix that is the sclar multiple of this one by the argument
   public Matrix scalarMult(double x) {
-    List[] old_mat = mat;
+    
+    if(x == 0) {
+     return new Matrix(size);
+    }
+    Matrix ret_mat = new Matrix(size);
 
     for(int i = 0; i < size; i++) {
-      
+
       for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
          Entry temp = (Entry)mat[i].getElement();
-         temp.setValue(x*temp.getValue());
-         mat[i].changeElement(temp);
+         ret_mat.changeEntry(i+1, (int)temp.getColumn()+1, x*temp.getValue());
       }
     }
 
-    Matrix ret = this.copy();
-    this.set(old_mat);
-
-    return ret;
+    return ret_mat;
     
   }
   
@@ -166,19 +167,74 @@ public class Matrix {
   // @args - #1 Matrix to add to this one
   // @ret  - A new matrix that is the sum of this one and the argument matrix
   // @info - Pre : getSize() == m.getSize()
-  public Matrix add(Matrix m);
+  public Matrix add(Matrix m)  {
+
+    // precondition assertion
+    if(m.getSize() != size) {
+      throw new RuntimeException("Error : Can only add matrices of same dimension");
+    }
+    
+    Matrix ret_mat = new Matrix(size);
+    
+    // outer loop, goes through each row in the matrix
+    for(int i = 0; i < size; i++) {
+      List other_list = m.getRow(i+1);
+      List our_list = mat[i];
+
+      other_list.moveTo(0);
+      our_list.moveTo(0);
+      
+      // inner loop, walks along both lists and inserts into the new matrix
+      while(our_list.getIndex() >= 0 && other_list.getIndex() >= 0) {
+        Entry our_entry = (Entry)our_list.getElement();
+        Entry other_entry = (Entry)other_list.getElement();
+        
+        // if this is true we only insert the entry from our matrix
+        if(our_entry.getColumn() > other_entry.getColumn()) {
+          ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, our_entry.getValue());
+          our_list.moveNext();
+        }
+        // if the other column comes first then we insert that entry first
+        else if(our_entry.getColumn() < other_entry.getColumn()) {
+          ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, other_entry.getValue());
+          other_list.moveNext();
+        }
+        // else the two numbers are in the same column and must be added together then inserted
+        else {
+          ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, our_entry.getValue()+other_entry.getValue());
+          other_list.moveNext();
+          our_list.moveNext();
+        }
+
+      }// end inner while-loop
+
+    } // end outer for-loop
+
+    return ret_mat;
+  }
 
   // @func - sub
   // @args - #1 Matrix to subtract from this one
   // @ret  - A new matrix that is the difference of this matrix and the argument matrix
   // @info - Pre : getSize() == m.getSize()
-  public Matrix sub(Matrix m);
+  public Matrix sub(Matrix m) {
+    return this;
+  }
 
   // @func - transpose
   // @args - none
   // @ret  - A new matrix that is the transpose of this one
-  public Matrix transpose(Matrix m);
-  
+  public Matrix transpose(Matrix m) {
+    return this;
+  }
+
+  //@func  - mult
+  //@args  - #1 the matrix to multiply this one by
+  //@ret   - A new matrix that is the matrix multiple of the given argument
+  public Matrix mult(Matrix m) {
+    return this;
+  }
+
   //@func - getRow
   //@args - which row in the matrix to get
   //@ret  - A list object which is a copy of the requested row
@@ -341,7 +397,7 @@ public class Matrix {
     //@args - #1 another Entry object for comparison
     //@ret  - boolean indicating success or not
     public boolean equals(Object x) {
-
+      return false;
     }
     
 
