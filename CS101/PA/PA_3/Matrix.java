@@ -218,14 +218,65 @@ public class Matrix {
   // @ret  - A new matrix that is the difference of this matrix and the argument matrix
   // @info - Pre : getSize() == m.getSize()
   public Matrix sub(Matrix m) {
-    return this;
+    
+    // precondition assertion
+    if(m.getSize() != size) {
+      throw new RuntimeException("Error : Can only subtract matrices of same dimension");
+    }
+    
+    Matrix ret_mat = new Matrix(size);
+    
+    // outer loop, goes through each row in the matrix
+    for(int i = 0; i < size; i++) {
+      List other_list = m.getRow(i+1);
+      List our_list = mat[i];
+
+      other_list.moveTo(0);
+      our_list.moveTo(0);
+      
+      // inner loop, walks along both lists and inserts into the new matrix
+      while(our_list.getIndex() >= 0 && other_list.getIndex() >= 0) {
+        Entry our_entry = (Entry)our_list.getElement();
+        Entry other_entry = (Entry)other_list.getElement();
+        
+        // if this is true we only insert the entry from our matrix
+        if(our_entry.getColumn() > other_entry.getColumn()) {
+          ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, -1*our_entry.getValue());
+          our_list.moveNext();
+        }
+        // if the other column comes first then we insert that entry first
+        else if(our_entry.getColumn() < other_entry.getColumn()) {
+          ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, -1*other_entry.getValue());
+          other_list.moveNext();
+        }
+        // else the two numbers are in the same column and must be added together then inserted
+        else {
+          ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, our_entry.getValue()-other_entry.getValue());
+          other_list.moveNext();
+          our_list.moveNext();
+        }
+
+      }// end inner while-loop
+
+    } // end outer for-loop
+
+    return ret_mat;
   }
 
   // @func - transpose
   // @args - none
   // @ret  - A new matrix that is the transpose of this one
   public Matrix transpose(Matrix m) {
-    return this;
+    Matrix transposed = new Matrix(size);
+
+    for(int i = 0; i < size; i++) {
+      
+      for(mat[i].moveTo[0]; mat[i].getIndex() >= 0; mat[i].moveNext()) {
+        Entry temp = (Entry)mat[i].getElement();
+        transposed.insert(temp.getColumn()+1, i+1, temp.getValue());
+      }
+    }
+    return transposed;
   }
 
   //@func  - mult
@@ -378,7 +429,7 @@ public class Matrix {
       return value;
     }
 
-    public double getColumn() {
+    public int getColumn() {
       return column;
     }
 
