@@ -137,19 +137,30 @@ public class Matrix {
      }
   }
 
-  //@func - getRow
-  //@args - #1 int specifying which row in the matrix to retrieve
-  //@ret  - A List object that contains the items in the given row
-  public List getRow(int row) {
-     return mat[row].copy();  
-  }
 
 
 
   // @func - scalarMult
   // @args - #1 Double value to multiply the matrix by
   // @ret  - Returns a new matrix that is the sclar multiple of this one by the argument
-  public Matrix scalarMult(double x);
+  public Matrix scalarMult(double x) {
+    List[] old_mat = mat;
+
+    for(int i = 0; i < size; i++) {
+      
+      for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
+         Entry temp = (Entry)mat[i].getElement();
+         temp.setValue(x*temp.getValue());
+         mat[i].changeElement(temp);
+      }
+    }
+
+    Matrix ret = this.copy();
+    this.set(old_mat);
+
+    return ret;
+    
+  }
   
   // @func - add
   // @args - #1 Matrix to add to this one
@@ -168,10 +179,24 @@ public class Matrix {
   // @ret  - A new matrix that is the transpose of this one
   public Matrix transpose(Matrix m);
   
+  //@func - getRow
+  //@args - which row in the matrix to get
+  //@ret  - A list object which is a copy of the requested row
+  public List getRow(int row) {
+    if(row < 1 || row > size)
+      return null;
+
+   return mat[--row].copy();
+  }
+
   // =============================================== //
   // ========== PRIVATE FUNCTIONS/CLASSES ========== //
   // ================================================//
   
+  private boolean set(List[] new_mat) {
+    mat = new_mat;
+    return true;
+  }
   //@func - dot
   //@args - #1 row in the this matrix, #2 row in the other matrix. Will dot product these two rows
   //@ret  - A double value that is the dot product of the two arguments

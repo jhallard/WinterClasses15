@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1423382937 "cmpe110-hw2-jhallard.tex" "cmpe110-hw2-jhallard.pdf" "cmpe110-hw2-jhallard" 1423382992
+["pdflatex"] 1423387951 "cmpe110-hw2-jhallard.tex" "cmpe110-hw2-jhallard.pdf" "cmpe110-hw2-jhallard" 1423387952
   "/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1284331290 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty" 1335995445 7612 c47308d923ec19888707b0f1792b326a ""
@@ -40,8 +40,8 @@
   "/usr/share/texlive/texmf-dist/tex/latex/tools/afterpage.sty" 1254151720 3949 89434e99c8254edc84c9da65f8a03a7f ""
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texlive/texmf-dist/tex/latex/wrapfig/wrapfig.sty" 1137111090 26220 3701aebf80ccdef248c0c20dd062fea9 ""
-  "cmpe110-hw2-jhallard.aux" 1423382938 1430 f60849a09eb82aebfc5cf20d1321aeab ""
-  "cmpe110-hw2-jhallard.tex" 1423382990 54846 37a1a4ed902d0196f05e171dfd3aedd8 ""
+  "cmpe110-hw2-jhallard.aux" 1423387951 1430 f60849a09eb82aebfc5cf20d1321aeab ""
+  "cmpe110-hw2-jhallard.tex" 1423387951 54846 bc0b83d32df8e6753a70d3cbd7f9cdeb ""
   (generated)
   "cmpe110-hw2-jhallard.aux"
   "cmpe110-hw2-jhallard.log"

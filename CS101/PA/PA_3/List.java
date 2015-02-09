@@ -42,6 +42,7 @@ public class List {
         if(front_node == null || num_nodes == 0)
             throw new RuntimeException("Length = 0, no front item exists");
         return front_node.getData();
+      
     }
 
     public Object back() {  // Returns back element in this List. Pre: length()>0
@@ -90,6 +91,12 @@ public class List {
         cursor_node = null;
         cursor_index = -1;
         num_nodes = 0;
+    }
+
+    public boolean changeElement(Object x) {
+      
+      cursor_node.setData(x);
+      return true;
     }
 
     public void  moveTo(int i) { // If 0<=i<=length()-1, moves the cursor to the element
