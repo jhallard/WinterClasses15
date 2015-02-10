@@ -22,14 +22,15 @@ public class Matrix {
   // @info - Initializes an empty matrix of size NxN
   public Matrix(int n) {
     if(n <= 0) {
-      return;
-      //TODO add in exception
+      throw new RuntimeException("Error : Matrix size must be > 0");
     }
    
     size = n;
     nnz = 0;
     mat = new List[n];
-    return;
+    for(int i = 0; i < size; i++) {
+      mat[i] = new List();
+    }
   }
 
   // Access Functions
@@ -55,6 +56,24 @@ public class Matrix {
   public boolean equals(Object x) {
     // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
     return true;
+  }
+
+  public String toString() {
+    String ret = "";
+    for(int i = 0; i < size; i++) {
+      List temp = mat[i];
+
+      if(temp == null || temp.length() <= 0) {
+        continue;
+      }
+      for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
+        Entry temp_entry = (Entry)temp.getElement();
+        ret += temp_entry.toString();
+      }
+      ret += "\n";
+    }     
+
+    return ret;
   }
 
 
@@ -95,10 +114,10 @@ public class Matrix {
   // @ret  - none
   // @info - Pre : 1<= k <=getSize() for k in {i, j}
   public void changeEntry(int row, int column, double x) {
-     if(row >= size || column >= size) {
+     if(row > size || column > size) {
         throw new RuntimeException("Invalid row or column entry");
      }
-     if(row <= 0 || column <= 0) {
+     if(row < 1 || column < 1) {
         throw new RuntimeException("Error : Row & Column Entry must be Positive");
      }
      // normalize the entries, for the user the matrix starts at index 1 but for us it starts at index 0
@@ -108,7 +127,7 @@ public class Matrix {
      List list_row = mat[row];
 
      int index = findIndex(row, column);
-     
+    
      // if the entry is already empty and we are trying to empty it..
      if(index == -1 && x == 0) {
         return;
@@ -132,8 +151,7 @@ public class Matrix {
      // if the entry is non zero and needs to be a diff. non zero
      else {
         list_row.moveTo(index);
-        list_row.insertBefore(new Entry(column, x));
-        list_row.delete();
+        list_row.changeElement(new Entry(column, x));
         return;
      }
   }
@@ -266,14 +284,14 @@ public class Matrix {
   // @func - transpose
   // @args - none
   // @ret  - A new matrix that is the transpose of this one
-  public Matrix transpose(Matrix m) {
+  public Matrix transpose() {
     Matrix transposed = new Matrix(size);
 
     for(int i = 0; i < size; i++) {
       
-      for(mat[i].moveTo[0]; mat[i].getIndex() >= 0; mat[i].moveNext()) {
+      for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
         Entry temp = (Entry)mat[i].getElement();
-        transposed.insert(temp.getColumn()+1, i+1, temp.getValue());
+        transposed.changeEntry(temp.getColumn()+1, i+1, temp.getValue());
       }
     }
     return transposed;
@@ -346,9 +364,12 @@ public class Matrix {
      }
 
     List temp = mat[row];
+    if(temp == null || temp.length() <= 0) {
+      return -1;
+    }
 
     for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
-       item = (Entry) temp.getElement();
+       item = (Entry)temp.getElement();
         if(item.getColumn() == col) {
           return temp.getIndex();
         }
@@ -376,13 +397,13 @@ public class Matrix {
 
       if(list.getIndex() == -1) {
         if(entry.getColumn() <= ((Entry)list.front()).getColumn()) {
-          list.prepend(i);
+          list.prepend(entry);
           list.moveTo(i+1);
           list.delete();
         }
       }
       else if(list.getIndex() < i-1) {
-         list.insertAfter(i);
+         list.insertAfter(entry);
          list.moveTo(i+1);
          list.delete();
       }
@@ -441,7 +462,9 @@ public class Matrix {
     //@args - None
     //@ret  - String describing this entry pair
     public String toString() {
-        return ""; //@TODO @TODO @TODO //
+        String ret = "";
+        ret = "  ("+column+"), ("+value+")  ";
+        return ret;
     }
 
     //@func - equals

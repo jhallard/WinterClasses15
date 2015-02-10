@@ -8,6 +8,6 @@
  *            in attempt of catching bugs before they show up in the actual implementation file.
  **/ 
 
-class Public ListTest {
+public class ListTest {
 
 }

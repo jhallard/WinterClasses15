@@ -52,7 +52,7 @@ public class List {
     }
 
     public Object getElement() { // Returns cursor element in this list.
-                             // Pre: length()>0, getIndex()>=0
+                                 // Pre: length()>0, getIndex()>=0
         if(cursor_node != null)
             return cursor_node.getData();
         else
@@ -179,7 +179,7 @@ public class List {
     }
 
     public void prepend(Object data) {         // Inserts new element before front element in this List.
-        Node new_node = new Node(data);
+        Node new_node = new Node((Object)data);
         if(num_nodes == 0 || front_node == null) {
             front_node = new_node;
             back_node = new_node;
@@ -196,7 +196,7 @@ public class List {
     }
 
     public void append(Object data) {          // Inserts new element after back element in this List.
-        Node new_node = new Node(data);
+        Node new_node = new Node((Object)data);
         if(num_nodes == 0) {
             front_node = new_node;
             back_node = new_node;
@@ -217,7 +217,7 @@ public class List {
             throw new RuntimeException("Cannot insert before null cursor node");
         }
 
-        Node new_node = new Node(data);
+        Node new_node = new Node((Object)data);
         if(cursor_node.getPrev() != null) {
             cursor_node.getPrev().setNext(new_node);
         }
@@ -242,7 +242,7 @@ public class List {
             throw new RuntimeException();
         }
 
-        Node new_node = new Node(data);
+        Node new_node = new Node((Object)data);
         if(cursor_node.getNext() != null) {
             cursor_node.getNext().setPrev(new_node);
         }
