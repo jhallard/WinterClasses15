@@ -171,27 +171,25 @@ public class Matrix {
      }
      // if the entry is zero and we need to set it
      else if(index == -1 && x != 0) {
-        // @TODO insert new element then sort the list
         Entry temp = new Entry(column, x);
         list_row.append(temp);
         insertionSort(row);
         nnz++; // incrmement the number of nonzero entries
-        // printRow(row);
         return;
      }
      // the entry is non-zero and it needs to be zero'd
      else if(index != -1 && x == 0) {
+        System.out.println("Index : " + index);
+        printRow(row);
         list_row.moveTo(index);
         list_row.delete();
         nnz--; // decrement the number of non zero entries
-        // printRow(row);
         return;
      }
      // if the entry is non zero and needs to be a diff. non zero
      else {
         list_row.moveTo(index);
         list_row.changeElement(new Entry(column, x));
-        // printRow(row);
         return;
      }
   }
@@ -387,6 +385,8 @@ public class Matrix {
   //@ret   - A new matrix that is the matrix multiple of the given argument
   public Matrix mult(Matrix m) {
     
+    if(m.getSize() != size)
+      throw new RuntimeException("Error : Both matrices must be same size in mult()");
     Matrix ret = new Matrix(size);
     m = m.transpose();
 
@@ -492,7 +492,7 @@ public class Matrix {
         return -1;
      }
 
-    List temp = mat[row].copy();
+    List temp = mat[row];
 
     if(temp == null || temp.length() <= 0) {
       return -1;

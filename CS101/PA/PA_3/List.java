@@ -1,5 +1,5 @@
  /**
- * Created by John Allard on 1/24/2015.
+ * Created by John Allard on 2/5/2015.
  * ID : 1437547
  * CruzID : jhallard
  * CS101 PA #3
@@ -65,7 +65,7 @@ public class List {
 
         if(x != null && x instanceof List)
             L = (List)x;
-        
+
         if(L == null)
             return false;
 

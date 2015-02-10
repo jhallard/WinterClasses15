@@ -1,3 +1,12 @@
+ /**
+ * Created by John Allard on 2/5/2015.
+ * ID : 1437547
+ * CruzID : jhallard
+ * CS101 PA #3
+ * This is the implementation of the Sparse program. This program reads into two matrices from a given input file,
+ * performs multiple mathematical operations on these two matrices, then writes the results to a given output
+ * file for inspection by the user.
+ */
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
