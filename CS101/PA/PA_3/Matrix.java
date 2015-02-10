@@ -54,7 +54,37 @@ public class Matrix {
   // @ret  - boolean, true if they are equal
   // @info - Overwrite the equals operator
   public boolean equals(Object x) {
-    // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
+
+    if(x == null || !(x instanceof Matrix))
+      return false;
+
+    Matrix matrix = (Matrix)x;
+
+    if(matrix.getSize() != size || matrix.getNNZ() != nnz)
+      return false;
+
+    for(int i = 0; i < size; i++) {
+
+       List other = matrix.getRow(i+1);
+
+       if(other.length() <= 0 || mat[i].length() <= 0)
+         continue;
+       if(other.length() != mat[i].length())
+        return false;
+
+       mat[i].moveTo(0); other.moveTo(0);
+
+       while(mat[i].getIndex() >= 0 && other.getIndex() >= 0) {
+          Entry one = (Entry)mat[i].getElement();
+          Entry two = (Entry)other.getElement();
+
+          if(!one.equals(two))
+            return false;
+
+          mat[i].moveNext();other.moveNext();
+       }
+    }
+
     return true;
   }
 
@@ -104,7 +134,7 @@ public class Matrix {
           continue;
         for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
           Entry temp = (Entry)mat[i].getElement();
-          ret.changeEntry(i+1, j+1, temp.getValue());
+          ret.changeEntry(i+1, temp.getColumn()+1, temp.getValue());
           j++;
         }
     }
@@ -550,10 +580,6 @@ public class Matrix {
     public int getColumn() {
       return column;
     }
-
-    // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
-    //  implement equals and toString function   //
-    // @TODO @TODO @TODO @TODO @TODO @TODO @TODO //
 
     //@func - toString
     //@args - None
