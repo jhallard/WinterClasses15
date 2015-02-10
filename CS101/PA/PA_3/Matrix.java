@@ -121,6 +121,8 @@ public class Matrix {
         throw new RuntimeException("Error : Row & Column Entry must be Positive");
      }
      // normalize the entries, for the user the matrix starts at index 1 but for us it starts at index 0
+
+     System.out.println(row + ": " + row + ", " + column + ", " + x );
      row--;
      column--;
 
@@ -136,9 +138,10 @@ public class Matrix {
      else if(index == -1 && x != 0) {
         // @TODO insert new element then sort the list
         Entry temp = new Entry(column, x);
-        list_row.prepend(temp);
+        list_row.append(temp);
         insertionSort(row);
         nnz++; // incrmement the number of nonzero entries
+        printRow(row);
         return;
      }
      // the entry is non-zero and it needs to be zero'd
@@ -146,17 +149,29 @@ public class Matrix {
         list_row.moveTo(index);
         list_row.delete();
         nnz--; // decrement the number of non zero entries
+        printRow(row);
         return;
      }
      // if the entry is non zero and needs to be a diff. non zero
      else {
         list_row.moveTo(index);
         list_row.changeElement(new Entry(column, x));
+        printRow(row);
         return;
      }
   }
 
+  private void printRow(int x) {
+    String ret = "";
+    ret += (x + ", ");
+    for(mat[x].moveTo(0); mat[x].getIndex() >= 0; mat[x].moveNext()) {
 
+      Entry temp = (Entry)mat[x].getElement();
+      ret += (temp.getColumn() + ", " + temp.getValue() + "    ");
+    }
+    System.out.println(ret);
+
+  }
 
 
   // @func - scalarMult
@@ -171,6 +186,9 @@ public class Matrix {
 
     for(int i = 0; i < size; i++) {
 
+      if(mat[i].length() <= 0) {
+        continue;
+      }
       for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
          Entry temp = (Entry)mat[i].getElement();
          ret_mat.changeEntry(i+1, (int)temp.getColumn()+1, x*temp.getValue());
@@ -199,8 +217,10 @@ public class Matrix {
       List other_list = m.getRow(i+1);
       List our_list = mat[i];
 
-      other_list.moveTo(0);
-      our_list.moveTo(0);
+      if(other_list.length() > 0) 
+        other_list.moveTo(0);
+      if(our_list.length() > 0)
+        our_list.moveTo(0);
       
       // inner loop, walks along both lists and inserts into the new matrix
       while(our_list.getIndex() >= 0 && other_list.getIndex() >= 0) {
@@ -226,6 +246,19 @@ public class Matrix {
 
       }// end inner while-loop
 
+      // now we throw on the rest of the individual lists
+      while(our_list.getIndex() >= 0) {
+        Entry our_entry = (Entry)our_list.getElement();
+        ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, our_entry.getValue());
+        our_list.moveNext();
+      }
+      // same as above
+      while(other_list.getIndex() >= 0) {
+        Entry other_entry = (Entry)other_list.getElement();
+        ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, other_entry.getValue());
+        other_list.moveNext();
+      }
+
     } // end outer for-loop
 
     return ret_mat;
@@ -237,9 +270,9 @@ public class Matrix {
   // @info - Pre : getSize() == m.getSize()
   public Matrix sub(Matrix m) {
     
-    // precondition assertion
+      // precondition assertion
     if(m.getSize() != size) {
-      throw new RuntimeException("Error : Can only subtract matrices of same dimension");
+      throw new RuntimeException("Error : Can only add matrices of same dimension");
     }
     
     Matrix ret_mat = new Matrix(size);
@@ -249,8 +282,10 @@ public class Matrix {
       List other_list = m.getRow(i+1);
       List our_list = mat[i];
 
-      other_list.moveTo(0);
-      our_list.moveTo(0);
+      if(other_list.length() > 0) 
+        other_list.moveTo(0);
+      if(our_list.length() > 0)
+        our_list.moveTo(0);
       
       // inner loop, walks along both lists and inserts into the new matrix
       while(our_list.getIndex() >= 0 && other_list.getIndex() >= 0) {
@@ -259,7 +294,7 @@ public class Matrix {
         
         // if this is true we only insert the entry from our matrix
         if(our_entry.getColumn() > other_entry.getColumn()) {
-          ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, -1*our_entry.getValue());
+          ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, our_entry.getValue());
           our_list.moveNext();
         }
         // if the other column comes first then we insert that entry first
@@ -276,6 +311,19 @@ public class Matrix {
 
       }// end inner while-loop
 
+      // now we throw on the rest of the individual lists
+      while(our_list.getIndex() >= 0) {
+        Entry our_entry = (Entry)our_list.getElement();
+        ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, our_entry.getValue());
+        our_list.moveNext();
+      }
+      // same as above
+      while(other_list.getIndex() >= 0) {
+        Entry other_entry = (Entry)other_list.getElement();
+        ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, -1*other_entry.getValue());
+        other_list.moveNext();
+      }
+
     } // end outer for-loop
 
     return ret_mat;
@@ -289,6 +337,8 @@ public class Matrix {
 
     for(int i = 0; i < size; i++) {
       
+      if(mat[i].length() <= 0)
+        continue;
       for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
         Entry temp = (Entry)mat[i].getElement();
         transposed.changeEntry(temp.getColumn()+1, i+1, temp.getValue());
@@ -359,7 +409,7 @@ public class Matrix {
 
     Entry item = null;
           
-    if(row < 0 || row >= size) {
+    if(row < 0 || row >= size || col < 0 || col >= size) {
         return -1;
      }
 
@@ -395,7 +445,7 @@ public class Matrix {
       for(list.moveTo(i-1); list.getIndex() >= 0 && entry.getColumn() < ((Entry)list.getElement()).getColumn(); list.movePrev()) {
       }
 
-      if(list.getIndex() == -1) {
+      if(list.getIndex() < 0) {
         if(entry.getColumn() <= ((Entry)list.front()).getColumn()) {
           list.prepend(entry);
           list.moveTo(i+1);
@@ -463,7 +513,7 @@ public class Matrix {
     //@ret  - String describing this entry pair
     public String toString() {
         String ret = "";
-        ret = "  ("+column+"), ("+value+")  ";
+        ret = "  ("+(column+1)+"), ("+value+")  ";
         return ret;
     }
 
@@ -471,6 +521,11 @@ public class Matrix {
     //@args - #1 another Entry object for comparison
     //@ret  - boolean indicating success or not
     public boolean equals(Object x) {
+      if(x instanceof Entry) {
+        Entry y = (Entry)x;
+        if(column == y.getColumn() && value == y.getValue())
+          return true;
+      }
       return false;
     }
     

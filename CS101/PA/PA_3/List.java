@@ -59,9 +59,13 @@ public class List {
             throw new RuntimeException("Cursor node is null");
     }
 
-    public boolean equals(List L) { // Returns true if this List and L are the same integer
+    public boolean equals(Object x) { // Returns true if this List and L are the same integer
                                    // sequence. The cursor is ignored in both lists.
+        List L = null;
 
+        if(x != null && x instanceof List)
+            L = (List)x;
+        
         if(L == null)
             return false;
 
