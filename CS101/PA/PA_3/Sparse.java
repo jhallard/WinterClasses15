@@ -3,6 +3,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class Sparse {
 
@@ -36,7 +39,7 @@ public class Sparse {
         Matrix mat_two = new Matrix(size);
 
         // populate the first matrix
-        for(int i = 2; i <= a; i++) {
+        for(int i = 2; i <= a+1; i++) {
             String[] parts = in_lines[i].split(" ");
 
             if(parts.length != 3) {
@@ -52,7 +55,7 @@ public class Sparse {
         }
 
                 // populate the first matrix
-        for(int i = a+3; i <= b+a+2; i++) {
+        for(int i = a+3; i < in_lines.length; i++) {
             String[] parts = in_lines[i].split(" ");
 
             if(parts.length != 3) {
@@ -66,10 +69,37 @@ public class Sparse {
             mat_two.changeEntry(row, col, val);
         }
 
-        System.out.println(mat_one);
-        System.out.println(mat_two);
+        printToFile(out_fn, mat_one, "Matrix A : \n");
+        printToFile(out_fn, mat_two, "Matrix B : \n");
+        printToFile(out_fn, mat_one.scalarMult(1.5), "1.5*A : \n");
+        Matrix m = mat_one.add(mat_two);
+        printToFile(out_fn, m, "A+B : \n");
+        printToFile(out_fn, mat_one.add(mat_one), "A+A : \n");
+        m = mat_two.sub(mat_one);
+        printToFile(out_fn, m, "B-A : \n");
+        printToFile(out_fn, mat_one.sub(mat_one), "A-A : \n");
+        printToFile(out_fn, mat_one.transpose(), "Atranspose : \n");
+        printToFile(out_fn, mat_one.mult(mat_two), "A*B : \n");
+        printToFile(out_fn, mat_two.mult(mat_two), "B*B : \n");
+
+
 
     }
+
+    public static void printToFile(String out_fn, Matrix m, String desc) {
+        try{
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(out_fn, true)));
+            out.println(desc);
+            out.println(m.toString());
+            out.println("\n");
+            out.close();
+        }
+        catch(Exception E) {
+            System.out.println(E);//return;
+            E.printStackTrace();
+        }
+    }
+
 
     public static String[] parseInputFile(String in_fn) {
 

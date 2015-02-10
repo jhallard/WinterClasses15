@@ -91,14 +91,16 @@ public class Matrix {
   public String toString() {
     String ret = "";
     for(int i = 0; i < size; i++) {
-      List temp = mat[i];
+      List temp = mat[i].copy();
 
       if(temp == null || temp.length() <= 0) {
         continue;
       }
       for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
         Entry temp_entry = (Entry)temp.getElement();
-        ret += temp_entry.toString();
+
+        if(temp_entry != null)
+          ret += temp_entry.toString();
       }
       ret += "\n";
     }     
@@ -470,7 +472,7 @@ public class Matrix {
     List temp = mat[row];
 
     for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
-       item = (Entry) temp.getElement();
+       item = (Entry)temp.getElement();
         if(item.getColumn() == col) {
           return item;
         }
@@ -490,13 +492,14 @@ public class Matrix {
         return -1;
      }
 
-    List temp = mat[row];
+    List temp = mat[row].copy();
+
     if(temp == null || temp.length() <= 0) {
       return -1;
     }
 
     for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
-       item = (Entry)temp.getElement();
+        item = (Entry)temp.getElement();
         if(item.getColumn() == col) {
           return temp.getIndex();
         }
