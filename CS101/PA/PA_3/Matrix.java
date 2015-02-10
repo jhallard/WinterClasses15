@@ -135,7 +135,7 @@ public class Matrix {
         if(mat[i].length() <= 0)
           continue;
         for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
-          Entry temp = (Entry)mat[i].getElement();
+          Entry temp = ((Entry)mat[i].getElement()).copy();
           ret.changeEntry(i+1, temp.getColumn()+1, temp.getValue());
           j++;
         }
@@ -179,8 +179,8 @@ public class Matrix {
      }
      // the entry is non-zero and it needs to be zero'd
      else if(index != -1 && x == 0) {
-        System.out.println("Index : " + index);
-        printRow(row);
+        //System.out.println("Index : " + index);
+        //printRow(row);
         list_row.moveTo(index);
         list_row.delete();
         nnz--; // decrement the number of non zero entries
@@ -261,12 +261,12 @@ public class Matrix {
         Entry other_entry = (Entry)other_list.getElement();
         
         // if this is true we only insert the entry from our matrix
-        if(our_entry.getColumn() > other_entry.getColumn()) {
+        if(our_entry.getColumn() < other_entry.getColumn()) {
           ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, our_entry.getValue());
           our_list.moveNext();
         }
         // if the other column comes first then we insert that entry first
-        else if(our_entry.getColumn() < other_entry.getColumn()) {
+        else if(our_entry.getColumn() > other_entry.getColumn()) {
           ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, other_entry.getValue());
           other_list.moveNext();
         }
@@ -326,12 +326,12 @@ public class Matrix {
         Entry other_entry = (Entry)other_list.getElement();
         
         // if this is true we only insert the entry from our matrix
-        if(our_entry.getColumn() > other_entry.getColumn()) {
+        if(our_entry.getColumn() < other_entry.getColumn()) {
           ret_mat.changeEntry(i+1, (int)our_entry.getColumn()+1, our_entry.getValue());
           our_list.moveNext();
         }
         // if the other column comes first then we insert that entry first
-        else if(our_entry.getColumn() < other_entry.getColumn()) {
+        else if(our_entry.getColumn() > other_entry.getColumn()) {
           ret_mat.changeEntry(i+1, (int)other_entry.getColumn()+1, -1*other_entry.getValue());
           other_list.moveNext();
         }
@@ -387,8 +387,11 @@ public class Matrix {
     
     if(m.getSize() != size)
       throw new RuntimeException("Error : Both matrices must be same size in mult()");
+
     Matrix ret = new Matrix(size);
     m = m.transpose();
+
+    System.out.println(this + "\n\n" + m);
 
     for(int i = 0; i < size; i++) {
       List row = mat[i];
@@ -397,7 +400,7 @@ public class Matrix {
         continue;
 
       for(int j = 0; j < size; j++) {
-        List col = m.getRow(j);
+        List col = m.getRow(j+1);
         double sum = dot(row, col);
 
         ret.changeEntry(i+1,j+1,sum);
@@ -413,7 +416,21 @@ public class Matrix {
     if(row < 1 || row > size)
       return null;
 
-   return mat[--row].copy();
+    List l = mat[--row];
+    List ret = new List();
+
+    if(l == null || l.length() <= 0) {
+      return l;
+    }
+
+    //printRow(row);
+
+    for(l.moveTo(0); l.getIndex() >= 0; l.moveNext()) {
+       Entry new_entry = ((Entry)l.getElement()).copy();
+       ret.append((Object)new_entry);
+    }
+
+    return ret;
   }
 
   // =============================================== //
@@ -492,7 +509,7 @@ public class Matrix {
         return -1;
      }
 
-    List temp = mat[row];
+    List temp = getRow(row+1);
 
     if(temp == null || temp.length() <= 0) {
       return -1;
@@ -591,6 +608,11 @@ public class Matrix {
         String ret = "";
         ret = "  ("+(column+1)+"), ("+value+")  ";
         return ret;
+    }
+
+    public Entry copy() {
+      Entry ret = new Entry(column, value);
+      return ret;
     }
 
     //@func - equals

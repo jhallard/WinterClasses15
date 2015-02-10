@@ -16,16 +16,16 @@ public class MatrixTest {
             emptyTest()        &&
             sizeTest()         &&
             simpleInsertDeleteTest() &&
-            // simpleInsertTest(); &&
-            // insertErrorTest(); &&
-            // addErrorTest()     &&
-            // subErrorTest()     &&
-            multErrorTest();//    && 
-            // simpleTransposeTest()  &&
-            // simpleMultTest()    &&
-            // simpleAddTest()    &&
-            // addToZeroTest()    &&
-            // multToZeroTest();
+            simpleInsertTest()    &&
+            insertErrorTest()     &&
+            addErrorTest()        &&
+            subErrorTest()        &&
+            multErrorTest()       && 
+            simpleTransposeTest() &&
+            //simpleMultTest();//   &&
+            simpleAddTest()    &&
+            addToZeroTest()    &&
+            multToZeroTest();
 
         if(b) {
             System.out.println("\n\n All tests passed for Matrix class");
@@ -157,7 +157,6 @@ public class MatrixTest {
             mat.changeEntry(1, 1, 0);
 
             if(mat.getNNZ() != 2) {
-                System.out.println("222");
                 return false;
             }
 
@@ -165,7 +164,6 @@ public class MatrixTest {
             mat.changeEntry(10, 9, 0);
 
             if(mat.getNNZ() != 0) {
-                System.out.println("333");
                 return false;
             }
 
@@ -173,167 +171,187 @@ public class MatrixTest {
 
         }catch(Exception E) {
             E.printStackTrace();
-            System.out.println("333");
             return false;
         }
     }
 
-    //     // insert a few elements then delete thems
-    // public static boolean simpleTransposeTest() {
-    //     try{
-    //         Matrix mat = new Matrix(2);
+        // insert a few elements then delete thems
+    public static boolean simpleTransposeTest() {
+        try{
+            Matrix mat = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 1);
-    //         mat.changeEntry(1, 2, 2);
-    //         mat.changeEntry(2, 1, 3);
-    //         mat.changeEntry(2, 2, 4);
+            mat.changeEntry(1, 1, 1);
+            mat.changeEntry(1, 2, 2);
+            mat.changeEntry(2, 1, 3);
+            mat.changeEntry(2, 2, 4);
 
-    //         if(mat.getNNZ() != 4)
-    //             return false;
+            if(mat.getNNZ() != 4)
+                return false;
 
-    //         Matrix mat_new = mat.transpose();
+            Matrix mat_new = mat.transpose();
 
-    //         if(mat_new.getNNZ() != 4)
-    //             return false;
+            if(mat_new.getNNZ() != 4)
+                return false;
 
-    //         System.out.println(mat_new);
+            System.out.println(mat_new);
 
-    //         return true;
+            return true;
 
-    //     }catch(Exception E) {
-    //         return false;
-    //     }
-    // }
+        }catch(Exception E) {
+            E.printStackTrace();
+            return false;
+        }
+    }
 
-    // // insert a few elements then delete thems
-    // public static boolean simpleAddTest() {
-    //     try{
-    //         Matrix mat = new Matrix(2);
+    // insert a few elements then delete thems
+    public static boolean simpleAddTest() {
+        try{
+            Matrix mat = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 1);
-    //         mat.changeEntry(1, 2, 2);
-    //         mat.changeEntry(2, 1, 3);
-    //         mat.changeEntry(2, 2, 4);
+            mat.changeEntry(1, 1, 1);
+            mat.changeEntry(1, 2, 2);
+            mat.changeEntry(2, 1, 3);
+            mat.changeEntry(2, 2, 4);
 
-    //         Matrix mat2 = new Matrix(2);
+            Matrix mat2 = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 5);
-    //         mat.changeEntry(1, 2, 6);
-    //         mat.changeEntry(2, 1, 7);
-    //         mat.changeEntry(2, 2, 8);
+            mat2.changeEntry(1, 1, 5);
+            mat2.changeEntry(1, 2, 6);
+            mat2.changeEntry(2, 1, 7);
+            mat2.changeEntry(2, 2, 8);
 
-    //         if(mat.getNNZ() != 4 || mat2.getNNZ() != 4)
-    //             return false;
+            if(mat.getNNZ() != 4 || mat2.getNNZ() != 4) {
+                System.out.println("SimpleAddTest: 1111" + mat);
+                return false;
+            }
 
-    //         Matrix mat_new = mat.add(mat2);
+            Matrix mat_new = mat.add(mat2);
 
-    //         if(mat_new.getNNZ() != 4)
-    //             return false;
+            if(mat_new.getNNZ() != 4) {
+                System.out.println("SimpleAddTest: 2222" + mat_new);
+                return false;
+            }
 
-    //         System.out.println(mat_new);
+            System.out.println(mat_new);
 
-    //         return true;
-    //     }catch(Exception E) {
-    //         return false;
-    //     }
-    // }
+            return true;
+        }catch(Exception E) {
+            E.printStackTrace();
+            return false;
+        }
+    }
 
-    // // insert a few elements then delete thems
-    // public static boolean simpleMultTest() {
-    //     try{
-    //         Matrix mat = new Matrix(2);
+    // insert a few elements then delete thems
+    public static boolean simpleMultTest() {
+        try{
+            Matrix mat = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 1);
-    //         mat.changeEntry(1, 2, 2);
-    //         mat.changeEntry(2, 1, 3);
-    //         mat.changeEntry(2, 2, 4);
+            mat.changeEntry(1, 1, 1);
+            mat.changeEntry(1, 2, 2);
+            mat.changeEntry(2, 1, 3);
+            mat.changeEntry(2, 2, 4);
 
-    //         Matrix mat2 = new Matrix(2);
+            Matrix mat2 = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 5);
-    //         mat.changeEntry(1, 2, 6);
-    //         mat.changeEntry(2, 1, 7);
-    //         mat.changeEntry(2, 2, 8);
+            mat2.changeEntry(1, 1, 5);
+            mat2.changeEntry(1, 2, 6);
+            mat2.changeEntry(2, 1, 7);
+            mat2.changeEntry(2, 2, 8);
 
-    //         if(mat.getNNZ() != 4 || mat2.getNNZ() != 4)
-    //             return false;
+            if(mat.getNNZ() != 4 || mat2.getNNZ() != 4) {
+                System.out.println("111");
+                return false;
+            }
 
-    //         Matrix mat_new = mat.mult(mat2);
+            Matrix mat_new = mat.mult(mat2);
 
-    //         if(mat_new.getNNZ() != 4)
-    //             return false;
+            if(mat_new.getNNZ() != 4) {
+                System.out.println("222  : "+mat_new.getNNZ() +"\n\n\n"+mat+"\n\n"+mat2+"\n\n"+ mat_new);
+                return false;
+            }
 
-    //         System.out.println(mat_new);
+            System.out.println(mat_new);
 
-    //         return true;
-    //     }catch(Exception E) {
-    //         return false;
-    //     }
-    // }
+            return true;
+        }catch(Exception E) {
+            E.printStackTrace();
+            return false;
+        }
+    }
 
-    // // insert a few elements then delete thems
-    // public static boolean addToZeroTest() {
-    //     try{
-    //         Matrix mat = new Matrix(2);
+    // insert a few elements then delete thems
+    public static boolean addToZeroTest() {
+        try{
+            Matrix mat = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 1);
-    //         mat.changeEntry(1, 2, 2);
-    //         mat.changeEntry(2, 1, 3);
-    //         mat.changeEntry(2, 2, 4);
+            mat.changeEntry(1, 1, 1);
+            mat.changeEntry(1, 2, 2);
+            mat.changeEntry(2, 1, 3);
+            mat.changeEntry(2, 2, 4);
 
-    //         Matrix mat2 = new Matrix(2);
+            Matrix mat2 = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, -1);
-    //         mat.changeEntry(1, 2, -2);
-    //         mat.changeEntry(2, 1, -3);
-    //         mat.changeEntry(2, 2, -4);
+            mat2.changeEntry(1, 1, -1);
+            mat2.changeEntry(1, 2, -2);
+            mat2.changeEntry(2, 1, -3);
+            mat2.changeEntry(2, 2, -4);
 
-    //         if(mat.getNNZ() != 4 || mat2.getNNZ() != 4)
-    //             return false;
+            if(mat.getNNZ() != 4 || mat2.getNNZ() != 4) {
+                System.out.println("Add2Zero : 111");
+                return false;
+            }
 
-    //         Matrix mat_new = mat.mult(mat2);
+            Matrix mat_new = mat.add(mat2);
 
-    //         if(mat_new.getNNZ() != 0)
-    //             return false;
+            if(mat_new.getNNZ() != 0) {
+                System.out.println("Add2Zero : 222");
+                return false;
+            }
 
-    //         System.out.println(mat_new);
-    //         return true;
-    //     }catch(Exception E) {
-    //         return false;
-    //     }
-    // }
+            System.out.println(mat_new);
+            return true;
+        }catch(Exception E) {
+            E.printStackTrace();
+            return false;
+        }
+    }
 
-    // // insert a few elements then delete thems
-    // public static boolean multToZeroTest() {
-    //     try{
-    //         Matrix mat = new Matrix(2);
+    // insert a few elements then delete thems
+    public static boolean multToZeroTest() {
+        try{
+            Matrix mat = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 1);
-    //         mat.changeEntry(1, 2, 2);
-    //         mat.changeEntry(2, 1, 3);
-    //         mat.changeEntry(2, 2, 4);
+            mat.changeEntry(1, 1, 1);
+            mat.changeEntry(1, 2, 2);
+            mat.changeEntry(2, 1, 3);
+            mat.changeEntry(2, 2, 4);
 
-    //         Matrix mat2 = new Matrix(2);
+            Matrix mat2 = new Matrix(2);
 
-    //         mat.changeEntry(1, 1, 0);
-    //         mat.changeEntry(1, 2, 0);
-    //         mat.changeEntry(2, 1, 0);
-    //         mat.changeEntry(2, 2, 0);
+            mat2.changeEntry(1, 1, 0);
+            mat2.changeEntry(1, 2, 0);
+            mat2.changeEntry(2, 1, 0);
+            mat2.changeEntry(2, 2, 0);
 
-    //         if(mat.getNNZ() != 4 || mat2.getNNZ() != 4)
-    //             return false;
+            if(mat.getNNZ() != 4) {
+                System.out.println("MultoZero: 111" + mat);
+                return false;
+            }
 
-    //         Matrix mat_new = mat.mult(mat2);
+            Matrix mat_new = mat.mult(mat2);
 
-    //         if(mat_new.getNNZ() != 0)
-    //             return false;
+            if(mat_new.getNNZ() != 0) {
+                System.out.println("MultoZero: 222" + mat_new);
+                return false;
+            }
 
-    //         System.out.println(mat_new);
+            System.out.println(mat_new);
 
-    //         return true;
-    //     }catch(Exception E) {
-    //         return false;
-    //     }
-    // }
+            return true;
+        }catch(Exception E) {
+            E.printStackTrace();
+            return false;
+        }
+    }
 }
 

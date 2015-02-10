@@ -1,0 +1,36 @@
+John Allard Jr.
+CruzID : jhallard
+ID : 1437547
+CS101 PA_3
+1/16/2015
+
+This is the README file for programming assignment #3, CMPS 101 at UCSC during Winter quarter, 2015.
+This project contains the following files
+
+List.java
+===================
+This file declares the list class and its associated interface functions. This data structure includes a cursor which allows one to iterate over the contents of the list. This list is modified from previous ones in that it stores generic objects instead of only ints.
+
+ListTest.java
+====================
+This is a testing suite for the List class.
+
+Matrix.java
+===================
+This file declares the Matrix class and its associated interface functions. This matrix uses an internal array of lists to represent sparse matrices very efficiently. It includes it's own math functions like add, transpose, mult, etc.
+
+MatrixTest.java
+====================
+This is a more complex and thorough testing suite for the Matrix class than the one given to us by the professor.
+
+Sparse.java
+====================
+This file defines the Sparse program, which reads in two matrices from a file, performs various operations on them, then writes the results to another file.
+
+README
+====================
+This file that you are reading, description of the project.
+
+Makefile
+====================
+Builds all of the necessary components for this project

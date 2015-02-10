@@ -106,7 +106,7 @@ public class List {
     public void  moveTo(int i) { // If 0<=i<=length()-1, moves the cursor to the element
      // at index i, otherwise the cursor becomes undefined.
 
-        if(i < 0 || i > num_nodes-1)  {// pre-condition assertion
+        if(i < 0 || i >= num_nodes)  {// pre-condition assertion
             cursor_index = -1;
             cursor_node = null;
             throw new RuntimeException("Index out of bounds\n");
@@ -115,6 +115,12 @@ public class List {
         if(i == num_nodes-1) {
             cursor_node = back_node;
             cursor_index = num_nodes-1;
+            return;
+        }
+
+        if(i == 0) {
+            cursor_node = front_node;
+            cursor_index = 0;
             return;
         }
 
@@ -201,7 +207,7 @@ public class List {
 
     public void append(Object data) {          // Inserts new element after back element in this List.
         Node new_node = new Node((Object)data);
-        if(num_nodes == 0) {
+        if(num_nodes == 0 || back_node == null || front_node == null) {
             front_node = new_node;
             back_node = new_node;
             num_nodes++;
