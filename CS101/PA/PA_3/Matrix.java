@@ -92,10 +92,10 @@ public class Matrix {
     String ret = "";
     for(int i = 0; i < size; i++) {
       List temp = mat[i].copy();
-
       if(temp == null || temp.length() <= 0) {
         continue;
       }
+      ret += i+": ";
       for(temp.moveTo(0); temp.getIndex() >= 0; temp.moveNext()) {
         Entry temp_entry = (Entry)temp.getElement();
 
@@ -156,8 +156,6 @@ public class Matrix {
         throw new RuntimeException("Error : Row & Column Entry must be Positive");
      }
      // normalize the entries, for the user the matrix starts at index 1 but for us it starts at index 0
-
-     // System.out.println(row + ": " + row + ", " + column + ", " + x );
      row--;
      column--;
 
@@ -179,8 +177,6 @@ public class Matrix {
      }
      // the entry is non-zero and it needs to be zero'd
      else if(index != -1 && x == 0) {
-        //System.out.println("Index : " + index);
-        //printRow(row);
         list_row.moveTo(index);
         list_row.delete();
         nnz--; // decrement the number of non zero entries
@@ -391,8 +387,6 @@ public class Matrix {
     Matrix ret = new Matrix(size);
     m = m.transpose();
 
-    System.out.println(this + "\n\n" + m);
-
     for(int i = 0; i < size; i++) {
       List row = mat[i];
 
@@ -437,10 +431,15 @@ public class Matrix {
   // ========== PRIVATE FUNCTIONS/CLASSES ========== //
   // ================================================//
   
+  // @func - set
+  // @args - array of list to replace the current matrix
+  // @ret  - boolean if successful
+  // @info - private function that allows us to work on a copy of ourselves and then reset to the previous state. 
   private boolean set(List[] new_mat) {
     mat = new_mat;
     return true;
   }
+
   //@func - dot
   //@args - #1 row in the this matrix, #2 row in the other matrix. Will dot product these two rows
   //@ret  - A double value that is the dot product of the two arguments
@@ -606,7 +605,7 @@ public class Matrix {
     //@ret  - String describing this entry pair
     public String toString() {
         String ret = "";
-        ret = "  ("+(column+1)+"), ("+value+")  ";
+        ret = "  ("+(column+1)+", "+value+")  ";
         return ret;
     }
 

@@ -22,7 +22,7 @@ public class MatrixTest {
             subErrorTest()        &&
             multErrorTest()       && 
             simpleTransposeTest() &&
-            //simpleMultTest();//   &&
+            simpleMultTest()  &&
             simpleAddTest()    &&
             addToZeroTest()    &&
             multToZeroTest();
@@ -221,14 +221,12 @@ public class MatrixTest {
             mat2.changeEntry(2, 2, 8);
 
             if(mat.getNNZ() != 4 || mat2.getNNZ() != 4) {
-                System.out.println("SimpleAddTest: 1111" + mat);
                 return false;
             }
 
             Matrix mat_new = mat.add(mat2);
 
             if(mat_new.getNNZ() != 4) {
-                System.out.println("SimpleAddTest: 2222" + mat_new);
                 return false;
             }
 
@@ -259,14 +257,12 @@ public class MatrixTest {
             mat2.changeEntry(2, 2, 8);
 
             if(mat.getNNZ() != 4 || mat2.getNNZ() != 4) {
-                System.out.println("111");
                 return false;
             }
 
             Matrix mat_new = mat.mult(mat2);
 
             if(mat_new.getNNZ() != 4) {
-                System.out.println("222  : "+mat_new.getNNZ() +"\n\n\n"+mat+"\n\n"+mat2+"\n\n"+ mat_new);
                 return false;
             }
 
@@ -297,14 +293,12 @@ public class MatrixTest {
             mat2.changeEntry(2, 2, -4);
 
             if(mat.getNNZ() != 4 || mat2.getNNZ() != 4) {
-                System.out.println("Add2Zero : 111");
                 return false;
             }
 
             Matrix mat_new = mat.add(mat2);
 
             if(mat_new.getNNZ() != 0) {
-                System.out.println("Add2Zero : 222");
                 return false;
             }
 
@@ -334,14 +328,12 @@ public class MatrixTest {
             mat2.changeEntry(2, 2, 0);
 
             if(mat.getNNZ() != 4) {
-                System.out.println("MultoZero: 111" + mat);
                 return false;
             }
 
             Matrix mat_new = mat.mult(mat2);
 
             if(mat_new.getNNZ() != 0) {
-                System.out.println("MultoZero: 222" + mat_new);
                 return false;
             }
 

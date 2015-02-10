@@ -275,8 +275,14 @@ public class List {
             throw new RuntimeException("Front node is null/ length = 0");
         }
 
+        if(num_nodes == 1) {
+            back_node = null;
+        }
+
         front_node = front_node.getNext();
-        front_node.setPrev(null);
+
+        if(front_node != null)
+            front_node.setPrev(null);
         num_nodes--;
     }
 
@@ -288,7 +294,9 @@ public class List {
         }
 
         back_node = back_node.getPrev();
-        back_node.setNext(null);
+
+        if(back_node != null)
+            back_node.setNext(null);
         num_nodes--;
     }
 
