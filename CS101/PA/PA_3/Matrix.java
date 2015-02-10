@@ -99,6 +99,9 @@ public class Matrix {
 
     for(int i = 0; i < mat.length; i++) {
         int j = 0; 
+
+        if(mat[i].length() <= 0)
+          continue;
         for(mat[i].moveTo(0); mat[i].getIndex() >= 0; mat[i].moveNext()) {
           Entry temp = (Entry)mat[i].getElement();
           ret.changeEntry(i+1, j+1, temp.getValue());
@@ -122,7 +125,7 @@ public class Matrix {
      }
      // normalize the entries, for the user the matrix starts at index 1 but for us it starts at index 0
 
-     System.out.println(row + ": " + row + ", " + column + ", " + x );
+     // System.out.println(row + ": " + row + ", " + column + ", " + x );
      row--;
      column--;
 
@@ -141,7 +144,7 @@ public class Matrix {
         list_row.append(temp);
         insertionSort(row);
         nnz++; // incrmement the number of nonzero entries
-        printRow(row);
+        // printRow(row);
         return;
      }
      // the entry is non-zero and it needs to be zero'd
@@ -149,14 +152,14 @@ public class Matrix {
         list_row.moveTo(index);
         list_row.delete();
         nnz--; // decrement the number of non zero entries
-        printRow(row);
+        // printRow(row);
         return;
      }
      // if the entry is non zero and needs to be a diff. non zero
      else {
         list_row.moveTo(index);
         list_row.changeElement(new Entry(column, x));
-        printRow(row);
+        // printRow(row);
         return;
      }
   }
@@ -351,7 +354,24 @@ public class Matrix {
   //@args  - #1 the matrix to multiply this one by
   //@ret   - A new matrix that is the matrix multiple of the given argument
   public Matrix mult(Matrix m) {
-    return this;
+    
+    Matrix ret = new Matrix(size);
+    m = m.transpose();
+
+    for(int i = 0; i < size; i++) {
+      List row = mat[i];
+
+      if(row == null || row.length() <= 0)
+        continue;
+
+      for(int j = 0; j < size; j++) {
+        List col = m.getRow(j);
+        double sum = dot(row, col);
+
+        ret.changeEntry(i+1,j+1,sum);
+      }
+    }
+    return ret;
   }
 
   //@func - getRow
@@ -376,7 +396,34 @@ public class Matrix {
   //@args - #1 row in the this matrix, #2 row in the other matrix. Will dot product these two rows
   //@ret  - A double value that is the dot product of the two arguments
   private double dot(List x, List y) {
-    return 0.0; //@TODO @TODO @TODO @TODO Implement dot product
+    
+    double sum = 0.0;
+
+    if(x == null || y == null || x.length() <= 0 || y.length() <= 0)
+      return 0.0;
+
+    x.moveTo(0);y.moveTo(0);
+
+    while(x.getIndex() >= 0 && y.getIndex() >= 0) {
+      Entry x_entry = (Entry)x.getElement();
+      Entry y_entry = (Entry)y.getElement();
+
+      if(y_entry.getColumn() == x_entry.getColumn()) {
+        sum += x_entry.getValue()*y_entry.getValue();
+        y.moveNext();
+        x.moveNext();
+      }
+      else if(y_entry.getColumn() < x_entry.getColumn()) {
+        y.moveNext();
+      }
+      else {
+        x.moveNext();
+      }
+
+    }
+
+    return sum;
+
   } 
 
   //@func - find
