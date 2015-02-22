@@ -12,6 +12,8 @@
 #define GRAPH_H_JOHN_A_CS101
 
 #include "List.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // typedef our private struct as a user accessable Graph class
 typedef struct GraphObj * Graph;

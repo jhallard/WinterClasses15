@@ -8,6 +8,8 @@
 // |===================================================================|
 
 #include "List.h"
+#include "stdio.h"
+#include "stdlib.h"
 
 // @type - NodeObj
 // @info - This private struct represents a simple doubly-linked node for our doubly-linked
