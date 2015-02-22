@@ -1,27 +1,25 @@
 #------------------------------------------------------------------------------
-#  Makefile for CMPS 101 pa3
-#  Creates an executable jar file called Sparse.  This makefile will compile 
-#  all .java files in your current working directory.  
+# Makefile for CMPS 101 Programming Assignment 2
+#
+#       make                   makes Lex
+#       make ListClient        makes ListClient
+#
 #------------------------------------------------------------------------------
 
-MAINCLASS  = Sparse
-JAVAC      = javac 
-JAVASRC    = $(wildcard *.java)
-SOURCES    = $(JAVASRC) Makefile README
-CLASSES    = $(patsubst %.java, %.class, $(JAVASRC))
-JARCLASSES = $(patsubst %.class, %*.class, $(CLASSES))
-JARFILE    = $(MAINCLASS) 
+Lex : Lex.o List.o
+	gcc -o Lex Lex.o List.o
 
-all: $(JARFILE)
-	
-$(JARFILE): $(CLASSES)
-	echo Main-class: $(MAINCLASS) > Manifest
-	jar cvfm $(JARFILE) Manifest $(JARCLASSES)
-	chmod +x $(JARFILE)
-	rm Manifest
+Lex.o : Lex.c List.h
+	gcc -c -std=c99 -Wall Lex.c
 
-%.class: %.java
-	$(JAVAC) $<
+ListClient: ListClient.o List.o
+	gcc -o ListClient ListClient.o List.o
 
-clean:
-	rm -f *.class $(JARFILE)
+ListClient.o : ListClient.c List.h
+	gcc -c -std=c99 -Wall ListClient.c
+
+List.o : List.c List.h
+	gcc -c -std=c99 -Wall List.c
+
+clean :
+	rm -f Lex ListClient Lex.o ListClient.o List.o
