@@ -15,7 +15,7 @@
 \setlength{\headsep}{7pt}
 \newcommand{\suchthat}{\;\ifnum\currentgrouptype=16 \middle\fi|\;}
 \newcommand{\answer}{\textbf{Answer : }}
-\newcommand{\cd}{\texttt}
+\newcommand{\T}{\texttt}
 \newcommand{\benu}{\begin{enumerate}}
 \newcommand{\enu}{\end{enumerate}}
 
@@ -44,25 +44,12 @@
 %==============================%
 \item \textbf{Question \#1 - Basic Cache} \\
 
-  Consider a 512-KByte cache with 32 word cache lines.This cache uses write-back scheme, and the address is 32 bits wide.
+  Consider a 512-KByte cache with 32 word cache lines.This cache uses write-back scheme, and the address is 32 bits wide. (The three tables for parts A, B, and C have been condensed into a single table found below part C).
 
 \benu
 % ======= Question 1.A ======= %
 \item \textbf{Question 1.A Direct-Mapped, Cache fields}
 Assume the cache is direct mapped. Fill in the table below to specify the size of each address field.
-
-
-\begin{table}[H]
-\caption{Q1A Calculations} \label{tab:q1calc} 
-\begin{center}
-\begin{tabular}{| l | l |}
-\hline Field             &  Size     \\ \hline
-  a.) Cache line offset  &  400      \\ \hline
-  b.) Cache line index   &  320      \\ \hline
-  c.) Tag                &  280      \\ \hline
-\end{tabular}
-\end{center}
-\end{table}
 
 \textbf{Explanation} - 
 
@@ -70,18 +57,6 @@ Assume the cache is direct mapped. Fill in the table below to specify the size o
 \item \textbf{Question 1.B Fully Associative Cache Fields} \\
 Assume the cache is fully associative,  fill in the table below to specify the size of each address field. \\
 
-
-\begin{table}[H]
-\caption{Q1B Calculations} \label{tab:q1calc} 
-\begin{center}
-\begin{tabular}{| l | l |}
-\hline Field             &  Size     \\ \hline
-  a.) Cache line offset  &  400      \\ \hline
-  b.) Cache line index   &  320      \\ \hline
-  c.) Tag                &  280      \\ \hline
-\end{tabular}
-\end{center}
-\end{table}
 
 \textbf{Explanation} -
 
@@ -91,19 +66,42 @@ Assume the cache is fully associative,  fill in the table below to specify the s
 Assume the cache is 8-way associative, fill in the table below to specify the size of each address field. \\
 
 \begin{table}[H]
-\caption{Q1C Calculations} \label{tab:q1calc} 
+\caption{Q 1A, 1B, and 1C Calculations} \label{tab:q1calc} 
 \begin{center}
-\begin{tabular}{| l | l |}
-\hline Field             &  Size     \\ \hline
-  a.) Cache line offset  &  400      \\ \hline
-  b.) Cache line index   &  320      \\ \hline
-  c.) Tag                &  280      \\ \hline
+\begin{tabular}{| l | l | l | l |} \hline 
+   Field              &  Size (1A) & Size (1B) & Size (1C)     \\ \hline
+   Cache line offset  &  5         &           &               \\ \hline
+   Cache line index   &  14        &           &               \\ \hline
+   Tag                &  13        &           &               \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
 
 \textbf{Explanation} - 
 
+
+% ======= Question 1.D ========= %
+\item \textbf{Question 1.D Direct Mapped Cache Transactions } \\
+
+Assume the cache is direct-mapped. Fill in the table on the next page to ifentify the content of the cache after each of the following memory accesses. Assume the cache is initially empty (aka cold). Specify if an entry causes another line to be replaced from the cache, and if an entry has to write its data back to memory. For the data column, specify the data in the block by referring to its address like M[address]
+
+
+\begin{table}[H]
+\caption{Q1D Calculations} \label{tab:q1calc} 
+\begin{center}
+\begin{tabular}{| l | l | l | l | l | l | l | l | l |}
+\hline
+Address  &  Request  & Cacheline Ind & Valid & Modified & Tag & Data & Caused Replace & Write-back?    \\ \hline
+\T{0x128}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
+\T{0xF40}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
+\T{0xC00024}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
+\T{0x014}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
+\T{0x100F44}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\textbf{Explanation} - 
 
 \enu
 
