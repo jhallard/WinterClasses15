@@ -55,7 +55,7 @@ int getDist(Graph g, int vertex);
 // @func - getPath
 // @args - #1 List to be worked on, #2 graph to be queried, #3 destination vertex to find the path
 // @ret  - nothing
-int getPath(List L, Graph g, int vertex);
+void getPath(List L, Graph g, int vertex);
 
 // @func - makeNull
 // @args - Graph object to nullify

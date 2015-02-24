@@ -36,9 +36,13 @@ typedef struct GraphObj {
     Graph new_graph = malloc(sizeof(GraphObj));
     new_graph->adj_list = malloc(n*sizeof(List));
     new_graph->order = n;
-    new_grap->size = 0;
+    new_graph->size = 0;
     new_graph->source = 0;
     new_graph->parents = malloc(n*sizeof(int));
+
+    for(int i = 0; i < n; i++) {
+      new_graph->adj_list[i] = newList();
+    }
     new_graph->distances = malloc(n*sizeof(int));
     return new_graph;
   }
@@ -92,11 +96,11 @@ typedef struct GraphObj {
       fprintf(stderr, "Error : Graph null in getParent");
       exit(1);
     }
-    else if(G->parent == NULL || G->parent-[u] == NULL) {
+    else if(G->parents == NULL || G->parents[u] == NULL) {
       fprintf(stderr, "Invalid inquiry");
       exit(1);
     }
-    return G->parent[u];
+    return G->parents[u];
   }
 
   // @func - getDist
@@ -120,8 +124,8 @@ typedef struct GraphObj {
       fprintf(stderr, "Graph null in make null");
       exit(1);
     }
-    for(int i = 0; i < order; i++) {
-      adjList[i].clear()
+    for(int i = 0; i < G->order; i++) {
+      clear(G->adj_list[i]);
     }
 
   }
@@ -135,13 +139,13 @@ typedef struct GraphObj {
       fprintf(stderr, "Graph null in addEdge");
       exit(1);
     }
-    else if(u > order || v > order || u <= 0 || v <= 0) {
+    else if(u > G->order || v > G->order || u <= 0 || v <= 0) {
       fprintf(stderr, "Error : Invalid index, out of range (addEdge function)");
       exit(1);
     }
     --u;--v;
-    adjList[u].insertSorted(v);
-    adjList[v].insertSorted(u);
+    insertSorted(G->adj_list[u], v);
+    insertSorted(G->adj_list[v], u);
     
   }
 
@@ -154,12 +158,12 @@ typedef struct GraphObj {
       fprintf(stderr, "Graph null in addArc");
       exit(1);
     }
-    else if(u > order || v > order || u <= 0 || v <= 0) {
+    else if(u > G->order || v > G->order || u <= 0 || v <= 0) {
       fprintf(stderr, "Error : Invalid index, out of range (addArc function)");
       exit(1);
     }
     --u;--v;
-    adjList[u].insertSorted(v);
+    insertSorted(G->adj_list[u], v);
         
 
   }
@@ -185,8 +189,8 @@ typedef struct GraphObj {
       exit(1); 
     }
 
-    for(int i = 0; i < order; i++) {
-      List * L = adjList[i];
+    for(int i = 0; i < G->order; i++) {
+      List L = G->adj_list[i];
 
       fprintf(out, "%d :", i+1);
       for(moveTo(L, 0); getIndex(L) >= 0; moveNext(L)) {

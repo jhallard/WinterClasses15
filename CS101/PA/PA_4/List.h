@@ -156,6 +156,8 @@ void printList(FILE* out, List L);
 // @ret  - copy of the list
 List copyList(List L);
 
+void insertSorted(List l, int n);
+
 
 
 #endif

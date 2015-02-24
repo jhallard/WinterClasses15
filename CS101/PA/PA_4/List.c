@@ -207,7 +207,8 @@ void clear(List L) {
 // @info - 0 <= i < L.length() else index gets set to -1
 void moveTo(List L, int i) {
     if(L == NULL) {
-        return;
+        fprintf(stderr, "List null in moveTo");
+        exit(1);
     }
     if(i < 0 || i > L->num_nodes-1)  {// pre-condition assertion
         L->cursor_index = -1;
@@ -534,7 +535,7 @@ List copyList(List L) {
 void insertSorted(List L, int val) {
 
   for(moveTo(L, 0); getIndex(L) >= 0; moveNext(L)) {
-    if(getElement(L) <= val) {
+    if(getElement(L) > val) {
       insertBefore(L, val);
       return;
     }
