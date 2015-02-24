@@ -114,12 +114,36 @@ typedef struct GraphObj {
   // @func - makeNull
   // @args - Graph object to nullify
   // @ret  - nothing
-  void makeNull(Graph G);
+  void makeNull(Graph G) {
+     
+    if(G == NULL) {
+      fprintf(stderr, "Graph null in make null");
+      exit(1);
+    }
+    for(int i = 0; i < order; i++) {
+      adjList[i].clear()
+    }
+
+  }
 
   // @func - addEdge
   // @args - #1 Graph in question, #2 first vertex, #3 second vertex
   // @ret  - nothing
-  void addEdge(Graph G, int u, int v);
+  void addEdge(Graph G, int u, int v) {
+
+    if(G == NULL) {
+      fprintf(stderr, "Graph null in make null");
+      exit(1);
+    }
+    else if(u > order || v > order || u <= 0 || v <= 0) {
+      fprintf(stderr, "Error : Invalid index, out of range (addEdge function)");
+      exit(1);
+    }
+    --u;--v;
+    adjList[u].prepend(v);
+    adjList[v].prepend(u);
+    
+  }
 
   // @func - addArc
   // @args - #1 Graph object in question, #2 first vertex, #3 second vertex
