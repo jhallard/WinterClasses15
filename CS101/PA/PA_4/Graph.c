@@ -167,14 +167,35 @@ typedef struct GraphObj {
   // @func - BFS
   // @args - #1 Graph in question, #2 source vertex for the algorithm
   // @ret  - nothing, results of BFS are stored internally
-  void BFS(Graph G, int s);
+  void BFS(Graph G, int s) {
+
+
+
+  }
 
   /*** Other operations ***/
 
   // @func - printGraph
   // @args - #1 output stream, #2 Graph object to print
   // @ret  - nothing
-  void printGraph(FILE* out, Graph G);
+  void printGraph(FILE* out, Graph G) {
+    
+    if(G == NULL || out == NULL) {
+      fprintf(stderr, "Error : Null input in printGraph");
+      exit(1); 
+    }
+
+    for(int i = 0; i < order; i++) {
+      List * L = adjList[i];
+
+      fprintf(out, "%d :", i+1);
+      for(moveTo(L, 0); getIndex(L) >= 0; moveNext(L)) {
+        fprintf(out, " %d ", getElement(L));
+      } 
+      fprintf(out, "\n");
+    }
+
+  }
 
 
 
