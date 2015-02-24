@@ -136,6 +136,12 @@ void deleteBack(List L);
 // @ret  - nothing
 void delete(List L);
 
+// @func - sortList
+// @args - the list to be sorted
+// @ret  - nothing
+// @info - sorts the list in ascending order
+void sortList(List L);
+
 // --------------------------------------------------------------------------
 // ------------------------ Other operations --------------------------------
 // --------------------------------------------------------------------------

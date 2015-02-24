@@ -524,3 +524,22 @@ List copyList(List L) {
     }
     return ret_list;
 }
+
+
+
+// @func - sortList
+// @args - the list to be sorted
+// @ret  - nothing
+// @info - sorts the list in ascending order
+void insertSorted(List L, int val) {
+
+  for(moveTo(L, 0); getIndex(L) >= 0; moveNext(L)) {
+    if(getElement(L) <= val) {
+      insertBefore(L, val);
+      return;
+    }
+  }
+
+  append(L, val);
+
+}

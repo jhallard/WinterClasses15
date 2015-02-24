@@ -132,7 +132,7 @@ typedef struct GraphObj {
   void addEdge(Graph G, int u, int v) {
 
     if(G == NULL) {
-      fprintf(stderr, "Graph null in make null");
+      fprintf(stderr, "Graph null in addEdge");
       exit(1);
     }
     else if(u > order || v > order || u <= 0 || v <= 0) {
@@ -140,15 +140,29 @@ typedef struct GraphObj {
       exit(1);
     }
     --u;--v;
-    adjList[u].prepend(v);
-    adjList[v].prepend(u);
+    adjList[u].insertSorted(v);
+    adjList[v].insertSorted(u);
     
   }
 
   // @func - addArc
   // @args - #1 Graph object in question, #2 first vertex, #3 second vertex
   // @ret  - nothing
-  void addArc(Graph G, int u, int v);
+  void addArc(Graph G, int u, int v) {
+
+    if(G == NULL) {
+      fprintf(stderr, "Graph null in addArc");
+      exit(1);
+    }
+    else if(u > order || v > order || u <= 0 || v <= 0) {
+      fprintf(stderr, "Error : Invalid index, out of range (addArc function)");
+      exit(1);
+    }
+    --u;--v;
+    adjList[u].insertSorted(v);
+        
+
+  }
 
   // @func - BFS
   // @args - #1 Graph in question, #2 source vertex for the algorithm
@@ -161,4 +175,13 @@ typedef struct GraphObj {
   // @args - #1 output stream, #2 Graph object to print
   // @ret  - nothing
   void printGraph(FILE* out, Graph G);
+
+
+
+  
+
+  
+  
+  
+
 
