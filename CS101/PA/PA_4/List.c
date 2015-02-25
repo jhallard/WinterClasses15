@@ -104,7 +104,7 @@ int getIndex(List L) {
 // @ret  - The value of the data inside of the front node
 // @info - Pre : List must not be empty
 int front(List L) {
-    if(L == NULL || L->front_node == NULL) {
+    if(L == NULL) {
         fprintf(stderr, "Error : Null List in front() \n");
         exit(1);
     }
@@ -435,7 +435,9 @@ void deleteFront(List L) {
     if(L->front_node != NULL) {
       L->front_node = L->front_node->next;
     }
-    L->front_node->prev = NULL;
+    if(L->front_node != NULL) {
+      L->front_node->prev = NULL;
+    }
     L->num_nodes--;
     free(to_delete);
     to_delete = NULL;

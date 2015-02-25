@@ -108,13 +108,24 @@ typedef struct GraphObj {
       fprintf(stderr, "Invalid inquiry");
       exit(1);
     }
-    return G->parent[u];
+    return G->parent[--u];
   }
 
   // @func - getDist
   // @args - #1 Graph to be queried, #2 the vertex to find the distance to
   // @ret  - The distance (each edge = 1) between the source and target vertices
-  int getDist(Graph G, int u);
+  int getDist(Graph G, int u) {
+
+    if(G == NULL) {
+      fprintf(stderr, "Error : Graph null in getParent");
+      exit(1);
+    }
+    else if(G->parent == NULL || G->parent[u] == NULL) {
+      fprintf(stderr, "Invalid inquiry");
+      exit(1);
+    }
+    return G->distance[--u];
+  }
 
   // @func - getPath
   // @args - #1 List to be worked on, #2 graph to be queried, #3 destination vertex to find the path
@@ -206,16 +217,16 @@ typedef struct GraphObj {
 
     while(length(queue) > 0) { 
       
-      printf("In main loop\n"); 
+     // printf("In main loop\n"); 
       int x = front(queue);
       List adj_temp = G->adj_list[x];
-      printList(stdout, adj_temp);
+     // printList(stdout, adj_temp);
       deleteFront(queue);
 
-      printf("From Queue\n"); 
+     // printf("From Queue\n"); 
       for(moveTo(adj_temp, 0); getIndex(adj_temp) >= 0; moveNext(adj_temp)) {
           
-        printf("In inner loop\n"); 
+       // printf("In inner loop\n"); 
         int vert = getElement(adj_temp);
         if(G->color[vert] == WHITE) {
           G->color[vert] = GRAY;

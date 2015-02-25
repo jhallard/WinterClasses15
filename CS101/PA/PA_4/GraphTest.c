@@ -12,4 +12,9 @@ int main() {
   printGraph(stdout, g);
 
   BFS(g, 2);
+
+  int i = 0;
+  for(i = 1; i <= 10; i++) {
+    printf("%d ", getParent(g, i));
+  }
 }
