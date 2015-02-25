@@ -104,7 +104,7 @@ typedef struct GraphObj {
       fprintf(stderr, "Error : Graph null in getParent");
       exit(1);
     }
-    else if(G->parent == NULL || G->parent[u] == NULL) {
+    else if(G->parent == NULL) {
       fprintf(stderr, "Invalid inquiry");
       exit(1);
     }
@@ -120,7 +120,7 @@ typedef struct GraphObj {
       fprintf(stderr, "Error : Graph null in getParent");
       exit(1);
     }
-    else if(G->parent == NULL || G->parent[u] == NULL) {
+    else if(G->parent == NULL) {
       fprintf(stderr, "Invalid inquiry");
       exit(1);
     }
@@ -130,7 +130,10 @@ typedef struct GraphObj {
   // @func - getPath
   // @args - #1 List to be worked on, #2 graph to be queried, #3 destination vertex to find the path
   // @ret  - nothing
-  void getPath(List L, Graph G, int u);
+  void getPath(List L, Graph G, int u) {
+    if(u == G->source)
+      return;
+  }
 
   /*** Manipulation procedures ***/
 
@@ -199,7 +202,7 @@ typedef struct GraphObj {
       fprintf(stderr, "Invalid Arguments in BFS");
       exit(1);
     }
-    
+    G->source = s;
     --s; // normalize s to our working space
     for(int i = 0; i < G->order; i++) {
       if(i == s) continue;
@@ -236,6 +239,8 @@ typedef struct GraphObj {
         }
 
       } // end inner for loop
+
+      G->color[x] = BLACK;
 
     } // end main while loop
 
