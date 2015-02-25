@@ -432,7 +432,9 @@ void deleteFront(List L) {
     }
 
     Node * to_delete = L->front_node;
-    L->front_node = L->front_node->next;
+    if(L->front_node != NULL) {
+      L->front_node = L->front_node->next;
+    }
     L->front_node->prev = NULL;
     L->num_nodes--;
     free(to_delete);

@@ -196,21 +196,26 @@ typedef struct GraphObj {
       G->parent[i] = INF;
       G->distance[i] = NIL;
     }
-  
+
     G->color[s] = GRAY;
     G->parent[s] = NIL;
     G->distance[s] = 0;
     List queue = newList();
     prepend(queue, s);
 
-    while(length(queue) > 0) {
+
+    while(length(queue) > 0) { 
       
+      printf("In main loop\n"); 
       int x = front(queue);
       List adj_temp = G->adj_list[x];
+      printList(stdout, adj_temp);
       deleteFront(queue);
 
+      printf("From Queue\n"); 
       for(moveTo(adj_temp, 0); getIndex(adj_temp) >= 0; moveNext(adj_temp)) {
           
+        printf("In inner loop\n"); 
         int vert = getElement(adj_temp);
         if(G->color[vert] == WHITE) {
           G->color[vert] = GRAY;
@@ -242,7 +247,7 @@ typedef struct GraphObj {
 
       fprintf(out, "%d :", i+1);
       for(moveTo(L, 0); getIndex(L) >= 0; moveNext(L)) {
-        fprintf(out, " %d ", getElement(L));
+        fprintf(out, " %d ", getElement(L)+1);
       } 
       fprintf(out, "\n");
     }
