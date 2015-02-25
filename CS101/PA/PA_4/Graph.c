@@ -9,6 +9,11 @@
 
 #include "Graph.h"
 
+// These defines are used to keep track of the vertex 'colors' during BFS
+#define WHITE 0
+#define GRAY  1
+#define BLACK 2
+
 // @type - GraphObj
 // @info - This struct represents a simple, undirected, unwieghted graph data structure.
 //         It performs operations over integer vertex data, and is used by the FindPath function
@@ -18,8 +23,9 @@ typedef struct GraphObj {
   int size;
   int source;
   List * adj_list;
-  int * parents;
-  int * distances;
+  int * parent;
+  int * color;
+  int * distance;
 
 } GraphObj;
 
@@ -38,12 +44,14 @@ typedef struct GraphObj {
     new_graph->order = n;
     new_graph->size = 0;
     new_graph->source = 0;
-    new_graph->parents = malloc(n*sizeof(int));
 
     for(int i = 0; i < n; i++) {
       new_graph->adj_list[i] = newList();
     }
-    new_graph->distances = malloc(n*sizeof(int));
+
+    new_graph->parent = malloc(n*sizeof(int));
+    new_graph->distance = malloc(n*sizeof(int));
+    new_graph->color = malloc(n*sizeof(int));
     return new_graph;
   }
   
@@ -96,11 +104,11 @@ typedef struct GraphObj {
       fprintf(stderr, "Error : Graph null in getParent");
       exit(1);
     }
-    else if(G->parents == NULL || G->parents[u] == NULL) {
+    else if(G->parent == NULL || G->parent[u] == NULL) {
       fprintf(stderr, "Invalid inquiry");
       exit(1);
     }
-    return G->parents[u];
+    return G->parent[u];
   }
 
   // @func - getDist
@@ -173,9 +181,49 @@ typedef struct GraphObj {
   // @ret  - nothing, results of BFS are stored internally
   void BFS(Graph G, int s) {
 
+    const int INF = -2;
+    const int NIL = -1;
 
+    if(G == NULL || s <= 0 || s > G->order) {
+      fprintf(stderr, "Invalid Arguments in BFS");
+      exit(1);
+    }
+    
+    --s; // normalize s to our working space
+    for(int i = 0; i < G->order; i++) {
+      if(i == s) continue;
+      G->color[i] = WHITE;
+      G->parent[i] = INF;
+      G->distance[i] = NIL;
+    }
+  
+    G->color[s] = GRAY;
+    G->parent[s] = NIL;
+    G->distance[s] = 0;
+    List queue = newList();
+    prepend(queue, s);
 
-  }
+    while(length(queue) > 0) {
+      
+      int x = front(queue);
+      List adj_temp = G->adj_list[x];
+      deleteFront(queue);
+
+      for(moveTo(adj_temp, 0); getIndex(adj_temp) >= 0; moveNext(adj_temp)) {
+          
+        int vert = getElement(adj_temp);
+        if(G->color[vert] == WHITE) {
+          G->color[vert] = GRAY;
+          G->distance[vert] = G->distance[x]+1;
+          G->parent[vert] = x;
+          append(queue, vert);
+        }
+
+      } // end inner for loop
+
+    } // end main while loop
+
+  } // end BFS function
 
   /*** Other operations ***/
 
