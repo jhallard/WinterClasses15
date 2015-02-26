@@ -17,48 +17,49 @@ Graph readFile(char *);
 
 int main(int argc, char ** argv) {
 
-  if(argc != 2 || argv == NULL) {
+  if(argc != 3 || argv == NULL) {
     fprintf(stderr, "Must pass in filename as command-line argument");
     exit(1);
   }
 
   char * fn = argv[1];
+  char * out_fn = argv[2];
   Graph graph = readFile(fn);
+  printGraph(stdout, graph);
   BFS(graph, 2);
-
 }
 
 
 Graph readFile(char * fn) {
   
   FILE * fp = fopen(fn, "r");
-  char line[80];
+  char line[81];
 
   if(fp == NULL) {
     fprintf(stderr, "Error : Invalid Filename Argument");
     exit(1);
   }
 
-  fgets(line, 80, fp);
+  fgets(line, 10, fp);
   int order = 0;
-  int count = 0;
   sscanf(line, "%d", &order);
   if(order <= 0) {
     fprintf(stderr, "Error parsing input file, order < 0");
     exit(1);
   }
   Graph new_graph = newGraph(order);
-
-  while(fgets(line, 80, fp) != NULL && line != "0 0\n")
+  int origin = -1;
+  int terminus = -1; 
+  while(fgets(line, 10, fp) != NULL)
   {
-    int origin = -1;
-    int terminus = -1; 
     sscanf(line, "%d %d", &origin, &terminus);
     if(origin > 0 && terminus > 0 && origin <= order && terminus <= order) {
-      addEdge(new_graph, origin , terminus);
+      addEdge(new_graph, origin, terminus);
+    }
+    else {
+      break;
     }
   }
    fclose(fp);
-
    return new_graph;
 }

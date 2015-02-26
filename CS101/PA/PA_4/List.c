@@ -40,6 +40,18 @@ typedef struct ListObj {
 
 } ListObj;
 
+Node * newNode(void) {
+    Node * new_node = malloc(sizeof(struct NodeObj));
+    if(new_node == NULL) {
+        fprintf(stderr, "Error : Malloc returned null node");
+        exit(1);
+    }
+    new_node->prev = NULL;
+    new_node->next = NULL;
+    new_node->data = -1;
+    return new_node;
+}
+
 // -----------------------------------------------------------------------
 // ------------------ Constructors-Destructors ---------------------------
 // -----------------------------------------------------------------------
@@ -48,7 +60,10 @@ typedef struct ListObj {
 // @args - ?? Why does this take a void arg ??
 // @ret  - Returns a newly allocated list struct.
 List newList(void) {
-    List new_list = malloc(sizeof(ListObj));
+    List new_list = malloc(sizeof(struct ListObj));
+    if(new_list == NULL) {
+      fprintf(stderr, "Error : Malloc Fail in Append");
+    }
     new_list->front_node = NULL;
     new_list->back_node = NULL;
     new_list->cursor_node = NULL;
@@ -302,11 +317,15 @@ void moveNext(List L) {
 // @ret  - nothing
 void prepend(List L, int data) {
     if(L == NULL) {
-        return;
+      fprintf(stderr, "Error : L null in append\n");
+      exit(1);
     }
 
     // allocate a new node
-    Node * new_node = malloc(sizeof(Node));
+    Node * new_node = newNode();
+    if(new_node == NULL) {
+      fprintf(stderr, "Error : Malloc Fail in Append");
+    }
     new_node->data = data;
 
     // special case, if the list is empty we have to set the back node to also point to this new node
@@ -317,7 +336,9 @@ void prepend(List L, int data) {
         return;
     }
     L->front_node->prev = new_node;
-    L->front_node->prev->next = L->front_node;
+    if(L->front_node->prev != NULL) {
+      L->front_node->prev->next = L->front_node;
+    }
     L->front_node = new_node;
     if(L->cursor_index != -1) {
         L->cursor_index++;
@@ -330,11 +351,14 @@ void prepend(List L, int data) {
 // @ret  - nothing
 void append(List L, int data) {
     if(L == NULL) {
-        return;
+        fprintf(stderr, "Error : L null in append\n");
+        exit(1);
     }
 
-    // allocate a new node
     Node * new_node = malloc(sizeof(Node));
+    if(new_node == NULL) {
+      fprintf(stderr, "Error : Malloc Fail in Append");
+    }
     new_node->data = data;
 
     if(L->num_nodes == 0) {
@@ -365,7 +389,10 @@ void insertBefore(List L, int data) {
     }
 
     // allocate a new node
-    Node * new_node = malloc(sizeof(Node));
+    Node * new_node = newNode();
+    if(new_node == NULL) {
+      fprintf(stderr, "Error : Malloc Fail in insertBefore");
+    }
     new_node->data = data;
 
     if(L->cursor_node->prev != NULL) {
@@ -400,7 +427,7 @@ void insertAfter(List L, int data) {
     }
 
     // allocate a new node
-    Node * new_node = malloc(sizeof(Node));
+    Node * new_node = newNode();
     new_node->data = data;
 
     if(L->cursor_node->next != NULL) {
@@ -537,7 +564,9 @@ List copyList(List L) {
 // @ret  - nothing
 // @info - sorts the list in ascending order
 void insertSorted(List L, int val) {
-
+  if(L == NULL) {
+    fprintf(stderr, "Error : List NULL in insertSorted");
+  }
   for(moveTo(L, 0); getIndex(L) >= 0; moveNext(L)) {
     if(getElement(L) > val) {
       insertBefore(L, val);

@@ -220,17 +220,13 @@ typedef struct GraphObj {
 
     while(length(queue) > 0) { 
       
-     // printf("In main loop\n"); 
       int x = front(queue);
       List adj_temp = G->adj_list[x];
-     // printList(stdout, adj_temp);
       deleteFront(queue);
 
-     // printf("From Queue\n"); 
       for(moveTo(adj_temp, 0); getIndex(adj_temp) >= 0; moveNext(adj_temp)) {
-          
-       // printf("In inner loop\n"); 
         int vert = getElement(adj_temp);
+
         if(G->color[vert] == WHITE) {
           G->color[vert] = GRAY;
           G->distance[vert] = G->distance[x]+1;
