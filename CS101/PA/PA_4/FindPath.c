@@ -8,6 +8,12 @@
 // ||            between two vertices in a given graph.               ||                              
 // |===================================================================|
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "Graph.h"
+
+Graph readFile(char *);
 
 int main(int argc, char ** argv) {
 
@@ -23,4 +29,36 @@ int main(int argc, char ** argv) {
 }
 
 
-Graph readFile(char * fn);
+Graph readFile(char * fn) {
+  
+  FILE * fp = fopen(fn, "r");
+  char line[80];
+
+  if(fp == NULL) {
+    fprintf(stderr, "Error : Invalid Filename Argument");
+    exit(1);
+  }
+
+  fgets(line, 80, fp);
+  int order = 0;
+  int count = 0;
+  sscanf(line, "%d", &order);
+  if(order <= 0) {
+    fprintf(stderr, "Error parsing input file, order < 0");
+    exit(1);
+  }
+  Graph new_graph = newGraph(order);
+
+  while(fgets(line, 80, fp) != NULL && line != "0 0\n")
+  {
+    int origin = -1;
+    int terminus = -1; 
+    sscanf(line, "%d %d", &origin, &terminus);
+    if(origin > 0 && terminus > 0 && origin <= order && terminus <= order) {
+      addEdge(new_graph, origin , terminus);
+    }
+  }
+   fclose(fp);
+
+   return new_graph;
+}

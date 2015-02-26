@@ -16,8 +16,8 @@ LINK           = gcc -o
 REMOVE         = rm -f
 MEMCHECK       = valgrind --leak-check=full
 
-#FindPath : FindPath.o $(BASE_OBJECTS)
-#	$(LINK) FindPath FindPath.o $(BASE_OBJECTS)
+FindPath : FindPath.o $(BASE_OBJECTS)
+	$(LINK) FindPath FindPath.o $(BASE_OBJECTS)
 
 #GraphClient : GraphClient.o $(BASE_OBJECTS)
 #	$(LINK) GraphClient GraphClient.o $(BASE_OBJECTS)
