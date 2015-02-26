@@ -14,6 +14,7 @@
 #include "Graph.h"
 
 Graph readFile(char *);
+void computeOutput(Graph, char *, char *);
 
 int main(int argc, char ** argv) {
 
@@ -25,9 +26,11 @@ int main(int argc, char ** argv) {
   char * fn = argv[1];
   char * out_fn = argv[2];
   Graph graph = readFile(fn);
+  // computeOutput(graph, fn, out_fn);
   printGraph(stdout, graph);
   BFS(graph, 2);
 }
+
 
 
 Graph readFile(char * fn) {
@@ -60,6 +63,40 @@ Graph readFile(char * fn) {
       break;
     }
   }
-   fclose(fp);
-   return new_graph;
+
+
+  while(fgets(line, 10, fp) != NULL)
+  {
+    sscanf(line, "%d %d", &origin, &terminus);
+    if(origin > 0 && terminus > 0 && origin <= order && terminus <= order) {
+      BFS(new_graph, origin);
+      List l = newList();
+      getPath(l, new_graph, terminus);
+      printList(stdout, l);
+      fprintf(stdout, "\n");
+    }
+    else {
+      break;
+    }
+  }
+
+
+  fclose(fp);
+  return new_graph;
+}
+
+
+
+
+
+void computeOutput(Graph graph, char * fn, char * out_fn) {
+  FILE * fp = fopen(fn, "r");
+  char line[81];
+
+  if(fp == NULL) {
+    fprintf(stderr, "Error : Invalid Filename Argument");
+    exit(1);
+  }
+
+  fclose(fp);
 }

@@ -355,7 +355,7 @@ void append(List L, int data) {
         exit(1);
     }
 
-    Node * new_node = malloc(sizeof(Node));
+    Node * new_node = newNode();
     if(new_node == NULL) {
       fprintf(stderr, "Error : Malloc Fail in Append");
     }

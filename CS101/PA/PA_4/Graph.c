@@ -13,6 +13,8 @@
 #define WHITE 0
 #define GRAY  1
 #define BLACK 2
+#define INF  -2
+#define NIL  -1
 
 // @type - GraphObj
 // @info - This struct represents a simple, undirected, unwieghted graph data structure.
@@ -50,7 +52,14 @@ typedef struct GraphObj {
     }
 
     new_graph->parent = malloc(n*sizeof(int));
+
+    for(int i = 0; i < n; i++) {
+      new_graph->parent[i] = NIL;
+    }
     new_graph->distance = malloc(n*sizeof(int));
+    for(int i = 0; i < n; i++) {
+      new_graph->distance[i] = INF;
+    }
     new_graph->color = malloc(n*sizeof(int));
     return new_graph;
   }
@@ -131,8 +140,15 @@ typedef struct GraphObj {
   // @args - #1 List to be worked on, #2 graph to be queried, #3 destination vertex to find the path
   // @ret  - nothing
   void getPath(List L, Graph G, int u) {
-    if(u == G->source)
+    if(u-1 == G->source)
       return;
+
+    int x = u-1;
+    prepend(L,x+1);
+    while(G->parent[x] >= 0 && x != G->source) {
+      x = G->parent[x];
+      append(L, x+1);
+    }
   }
 
   /*** Manipulation procedures ***/
@@ -195,20 +211,17 @@ typedef struct GraphObj {
   // @ret  - nothing, results of BFS are stored internally
   void BFS(Graph G, int s) {
 
-    const int INF = -2;
-    const int NIL = -1;
-
     if(G == NULL || s <= 0 || s > G->order) {
       fprintf(stderr, "Invalid Arguments in BFS");
       exit(1);
     }
-    G->source = s;
-    --s; // normalize s to our working space
+    G->source = --s;
+    // --s; // normalize s to our working space
     for(int i = 0; i < G->order; i++) {
       if(i == s) continue;
       G->color[i] = WHITE;
-      G->parent[i] = INF;
-      G->distance[i] = NIL;
+      G->parent[i] = NIL;
+      G->distance[i] = INF;
     }
 
     G->color[s] = GRAY;
@@ -234,13 +247,10 @@ typedef struct GraphObj {
           append(queue, vert);
         }
 
-      } // end inner for loop
-
+      } 
       G->color[x] = BLACK;
-
-    } // end main while loop
-
-  } // end BFS function
+    } 
+  } 
 
   /*** Other operations ***/
 
