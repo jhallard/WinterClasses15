@@ -11,6 +11,9 @@
 #ifndef GRAPH_H_JOHN_A_CS101
 #define GRAPH_H_JOHN_A_CS101
 
+#define INF  -2
+#define NIL  -1
+
 #include "List.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -13,8 +13,6 @@
 #define WHITE 0
 #define GRAY  1
 #define BLACK 2
-#define INF  -2
-#define NIL  -1
 
 // @type - GraphObj
 // @info - This struct represents a simple, undirected, unwieghted graph data structure.
@@ -67,9 +65,27 @@ typedef struct GraphObj {
   // @func - freeGraph
   // @args - pointer to a graph, which is a double pointer to a GraphObj struct
   void freeGraph(Graph* pG) {
-  // --------------------------------------------------//
-  // TODO - Free the graph pointer and set it to null
-  //---------------------------------------------------//
+
+    if(pG == NULL || *pG == NULL) {
+      fprintf(stderr, "Error : Trying to free null graph\n");
+      exit(1);
+    }
+
+    for(int i = 0; i < (*pG)->order; i++) {
+      freeList(&(*pG)->adj_list[i]);
+    }
+    free((*pG)->parent);
+    (*pG)->parent = NULL;
+    free((*pG)->color);
+    (*pG)->color = NULL;
+    free((*pG)->distance);
+    (*pG)->distance = NULL;
+    free((*pG)->adj_list);
+    (*pG)->adj_list = NULL;
+
+    free(*pG);
+    *pG = NULL;
+
   }
 
   /*** Access functions ***/  
@@ -250,6 +266,7 @@ typedef struct GraphObj {
       } 
       G->color[x] = BLACK;
     } 
+    freeList(&queue);
   } 
 
   /*** Other operations ***/

@@ -1,10 +1,10 @@
 John Allard Jr.
 CruzID : jhallard
 ID : 1437547
-CS101 PA_2
+CS101 PA_4
 1/16/2015
 
-This is the README file for programming assignment #2, CMPS 101 at UCSC during Winter quarter, 2015.
+This is the README file for programming assignment #4, CMPS 101 at UCSC during Winter quarter, 2015.
 This project contains the following files
 
 List.c
@@ -15,13 +15,21 @@ List.h
 ===================
 This file declares the list struct and its associated interface functions. This data structure includes a cursor which allows one to iterate over the contents of the list.
 
-ListClient.c
+Graph.c
 ====================
-This is a simple test file for the List datatype. It helps to ensure that the various components of the List class are working correctly
+Definition of the GraphObj data structure, including its members and associated functions.
 
-Lex.c
+Graph.h
 ====================
-This file defines the Lex program, which sorts a list of lines read from a file using the aforementioned List class.
+Declaration of the Graph data type, which is based off of the GraphObj defined in Graph.c This file exports all publically available data/functionality to the client.
+
+GraphTest.c
+====================
+This is a simple test file for the Graph datatype. We add a bunch of edges to a large graph and perform some BFS runs on them.
+
+FindPath.c
+====================
+This file defines the FindPath command line utility. This utility takes in two arguments, an input file and an output file. The input file defines a graph and the paths it would like to find on that graph. The program writes this information to the output file before exiting.
 
 README.txt
 ====================

@@ -13,8 +13,7 @@
 
 #include "Graph.h"
 
-Graph readFile(char *);
-void computeOutput(Graph, char *, char *);
+void processFile(char *, char *);
 
 int main(int argc, char ** argv) {
 
@@ -25,17 +24,15 @@ int main(int argc, char ** argv) {
 
   char * fn = argv[1];
   char * out_fn = argv[2];
-  Graph graph = readFile(fn);
-  // computeOutput(graph, fn, out_fn);
-  printGraph(stdout, graph);
-  BFS(graph, 2);
+  processFile(fn, out_fn);
 }
 
 
 
-Graph readFile(char * fn) {
+void processFile(char * fn, char * fn_out) {
   
   FILE * fp = fopen(fn, "r");
+  FILE * fp_out = fopen(fn_out, "w");
   char line[81];
 
   if(fp == NULL) {
@@ -64,6 +61,8 @@ Graph readFile(char * fn) {
     }
   }
 
+  printGraph(fp_out, new_graph);
+  fprintf(fp_out, "\n\n");
 
   while(fgets(line, 10, fp) != NULL)
   {
@@ -72,31 +71,23 @@ Graph readFile(char * fn) {
       BFS(new_graph, origin);
       List l = newList();
       getPath(l, new_graph, terminus);
-      printList(stdout, l);
-      fprintf(stdout, "\n");
+      if(getDist(new_graph, terminus) == INF) {
+        fprintf(fp_out, "The distance from %d to %d is infinity \n", origin, terminus);
+        fprintf(fp_out, "No %d-%d path exists \n\n", origin, terminus);
+      }
+      else {
+        fprintf(fp_out, "The distance from %d to %d is : %d \n", origin, terminus, getDist(new_graph, terminus));
+        fprintf(fp_out, "A shortest %d-%d path is : ", origin, terminus);
+        printList(fp_out, l);
+        fprintf(fp_out, "\n\n");
+      }
+      freeList(&l);
     }
     else {
       break;
     }
   }
-
-
+  freeGraph(&new_graph);
   fclose(fp);
-  return new_graph;
-}
-
-
-
-
-
-void computeOutput(Graph graph, char * fn, char * out_fn) {
-  FILE * fp = fopen(fn, "r");
-  char line[81];
-
-  if(fp == NULL) {
-    fprintf(stderr, "Error : Invalid Filename Argument");
-    exit(1);
-  }
-
-  fclose(fp);
+  fclose(fp_out);
 }

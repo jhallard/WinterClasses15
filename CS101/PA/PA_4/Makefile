@@ -18,12 +18,12 @@ MEMCHECK       = valgrind --leak-check=full
 
 FindPath : FindPath.o $(BASE_OBJECTS)
 	$(LINK) FindPath FindPath.o $(BASE_OBJECTS)
-# 
-# GraphTest : GraphTest.o $(BASE_OBJECTS)
-	# $(LINK) GraphTest GraphTest.o $(BASE_OBJECTS)
 
-# GraphClient : GraphClient.o $(BASE_OBJECTS)
-	# $(LINK) GraphClient GraphClient.o $(BASE_OBJECTS)
+GraphTest : GraphTest.o $(BASE_OBJECTS)
+	$(LINK) GraphTest GraphTest.o $(BASE_OBJECTS)
+
+GraphClient : GraphClient.o $(BASE_OBJECTS)
+	$(LINK) GraphClient GraphClient.o $(BASE_OBJECTS)
 
 FindPath.o : FindPath.c $(HEADERS)
 	$(COMPILE) FindPath.c
