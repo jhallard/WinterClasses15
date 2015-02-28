@@ -106,6 +106,27 @@ Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data 
 
 \textbf{Explanation} - 
 
+
+% ======= Question 1.E ========= %
+\item \textbf{Question 1.E 8-Way Set Associative, Cache Transactions } \\
+Assume the cache is 8-way set-associative. Fill the table below to identify the content of the cache after each of the following memory accesses. Assume the cache is empty in the beginning (also known as cold cache). Specify if an entry causes another line to be replaced from the cache, and if an entry has to write its data back to memory. For the data column, specify the data in the block by referring to its address like M[address]. Write accesses will modify the data, so lets indicate the data after a write access with D[address].
+
+\begin{table}[H]
+\caption{Q1D Calculations} \label{tab:q1calc2} 
+\begin{center}
+\begin{tabular}{| l | l | l | l | l | l | l | l | l |}
+\hline
+Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
+\T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xF40}     &  \T{write} & \T{30 }       & \T{0}  & \T{0}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{0}  & \T{0}     & \T{96} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
+\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{0}     & \T{0}  & \T{D[0x000]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16} & \T{D[0x100F00]} &      \T{0}      & \T{0}    \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
 \enu
 
 
