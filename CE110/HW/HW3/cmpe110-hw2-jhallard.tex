@@ -46,35 +46,37 @@
 
   Consider a 512-KByte cache with 32 word cache lines.This cache uses write-back scheme, and the address is 32 bits wide. (The three tables for parts A, B, and C have been condensed into a single table found below part C).
 
+  Note - Since it is not stated, I am assuming that the lower 2 bits are hard-coded as \texttt{00}, which means all accesses are word-aligned. I am also including both the word offset and byte offset in my calculation of cacheline offset, as we are supposed to do as stated in question \@436 on Piazza.
+
 \benu
 % ======= Question 1.A ======= %
 \item \textbf{Question 1.A Direct-Mapped, Cache fields}
 Assume the cache is direct mapped. Fill in the table below to specify the size of each address field.
 
-\textbf{Explanation} - For a direct-mapped cache, we need to have a 5-bit offset because each cache-line is 32bytes wide. Since our cache is 52-KByte large, and each line is 32 words,  we have 16,384 cache lines. The amount of bits needed to address this amount of cache-lines is 14 ($2^{14} = 16,384$). This leaves 13 bits for the tag.
+\textbf{Explanation} - For a direct-mapped cache, we need to have a 5-bit word offset because each cache-line is 32 words wide, we then need the 2 hard-coded bits to account for byte offset within each word, for a total of 7 bits for cacheline offset. Since our cache is 52-KByte large, and each line is 32 words,  we have 16,384 cache lines. The amount of bits needed to address this amount of cache-lines is 14 ($2^{14} = 16,384$). This leaves 13 bits for the tag.
 
 % ======== Question 1.B ======= %
 \item \textbf{Question 1.B Fully Associative Cache Fields} \\
 Assume the cache is fully associative,  fill in the table below to specify the size of each address field. \\
 
 
-\textbf{Explanation} - For a fully-associative cache, we still need 5 bits for the offset, which determines which of the 32 bytes in a cache-line our data is stored at. Since fully-associative caches do not use an index, this leaves 27 bits left for the tag. 
+\textbf{Explanation} - For a fully-associative cache, we still need 7 bits for the offset, which determines which of the 32 words in a cache-line our data is stored at. Since fully-associative caches do not use an index, this leaves 25 bits left for the tag. 
 
 % ======= Question 1.C ========= %
 
 \item \textbf{Question 1.C 8-Way Set-Associative, Cache Fields} \\
 Assume the cache is 8-way associative, fill in the table below to specify the size of each address field. \\
 
-\textbf{Explanation} - Once again, we need 5 bits for the offset because each cache-line is 32-bits wide. With 512Kbyte of memory and an 8-way set-associative cache, we will need 11 bits to state which set we are looking for ($2^{11} =16,384/8$). Finally we have 16 bits left to form the tag.
+\textbf{Explanation} - Once again, we need 7 bits for the offset because each cache-line is 32-words wide. With 512Kbyte of memory and an 8-way set-associative cache, we will need 11 bits to state which set we are looking for ($2^{11} =16,384/8$). Finally we have 16 bits left to form the tag.
 
 \begin{table}[H]
 \caption{Q 1A, 1B, and 1C Calculations} \label{tab:q1calc} 
 \begin{center}
 \begin{tabular}{| l | l | l | l |} \hline 
    Field              &  Size (1A) & Size (1B) & Size (1C)     \\ \hline
-   Cache line offset  &  5         &   5       &   5           \\ \hline
+   Cache line offset  &  7         &   7       &   7           \\ \hline
    Cache line index   &  14        &   0       &   11          \\ \hline
-   Tag                &  13        &   27      &   16          \\ \hline
+   Tag                &  11        &   25      &   14          \\ \hline
 \end{tabular}
 \end{center}
 \end{table}

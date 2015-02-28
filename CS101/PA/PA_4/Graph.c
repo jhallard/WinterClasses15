@@ -158,12 +158,16 @@ typedef struct GraphObj {
   void getPath(List L, Graph G, int u) {
     if(u-1 == G->source)
       return;
-
+    List temp_list = newList();
     int x = u-1;
-    prepend(L,x+1);
+    prepend(temp_list,x+1);
     while(G->parent[x] >= 0 && x != G->source) {
       x = G->parent[x];
-      append(L, x+1);
+      prepend(temp_list, x+1);
+    }
+
+    for(moveTo(temp_list, 0); getIndex(temp_list) >= 0;  moveNext(temp_list)) {
+      append(L, getElement(temp_list));
     }
   }
 
