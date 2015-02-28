@@ -95,11 +95,11 @@ Assume the cache is direct-mapped. Fill in the table on the next page to identif
 \begin{tabular}{| l | l | l | l | l | l | l | l | l |}
 \hline
 Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
-\T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0xF40}     &  \T{write} & \T{30 }       & \T{0}  & \T{0}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{0}  & \T{0}     & \T{24} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
-\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{0}     & \T{0}  & \T{D[0x000]}    &      \T{1}      & \T{0}    \\ \hline
-\T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{2}  & \T{D[0x100F00]} &      \T{1}      & \T{1}    \\ \hline
+\T{0x128}     &  \T{read}  & \T{ 2 }       & \T{1}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xF40}     &  \T{write} & \T{30 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{1}  & \T{0}     & \T{24} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
+\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0x000]}    &      \T{1}      & \T{0}    \\ \hline
+\T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{1}     & \T{2}  & \T{D[0x100F00]} &      \T{1}      & \T{1}    \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -118,13 +118,21 @@ Assume the cache is 8-way set-associative. Fill the table below to identify the 
 \hline
 Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
 \T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0xF40}     &  \T{write} & \T{30 }       & \T{0}  & \T{0}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{0}  & \T{0}     & \T{96} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
-\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{0}     & \T{0}  & \T{D[0x000]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xF40}     &  \T{write} & \T{30 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{1}  & \T{0}     & \T{96} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
+\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0x000]}    &      \T{0}      & \T{0}    \\ \hline
 \T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16} & \T{D[0x100F00]} &      \T{0}      & \T{0}    \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
+
+\textbf{Explanation} -
+
+
+\item \textbf{Question 1.F Overhead} \\
+What is the overhead and actual size of the direct-mapped cache? What is the overhead and actual size of the 8-way set-associative cache? Does the structure change the overhead in terms of number of memory bits?
+
+\answer 
 
 
 \enu
@@ -134,17 +142,28 @@ Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data 
 % ======== PROBLEM #2 ======== %
 %==============================%
 
-\item \textbf{Question \#2 -} \\
+\item \textbf{Question \#2 -  Impact of Cache Access Time} \\ 
+In this problem, we will be comparing various microarchitectures for a simple data cache. For all parts, the memory requests use a 32-bit address, although you should assume that all addresses are word aligned. Since words are four bytes, this means the bottom two bits of the address will always be zero. All caches contain exactly eight cache lines, and each cache line contains four words (i.e., each cache line is 16 bytes long). Thus the total cache capacity is $8 \times 16B = 128B$ \par
+
+This problem will require you to identify the critical path of a specific microarchitecture. The table below lists simplified delay equations for the cache hardware components. These delay equations are parameterized by the size of each component. Delay is measured in normalized gate delays, where 1$\tau$ is the delay of a single inverter driving four identical inverters. To simplify things, assume that the delay of a component is always the same regardless of the order in which different inputs arrive at a component. More specifically, the delay of a write access is the same regardless of whether the address arrives before the write data or vice versa. Also assume that we are using combinational memories (i.e., the address is set and the data is returned on the same cycle). 
 
 \benu
 
 % ======= Question 2.A ======= %
-\item \textbf{Question 2.A}
+\item \textbf{Question 2.A -  Sequential Tag Check then Memory Access} \\
 
+The diagram on the previous page illustrates two cache microarchitectures that serialize the tag check before data access. This means that for both reads and writes, the cache completely finishes the tag check and accesses the data memory only on a cache hit. figure (a) is for a directed-mapped cache, while figure (b) is for a two-way set-associative cache. We now want to determine the critical path and cycle time in units of $\tau$ for each cache microarchitecture. As an example, the table below shows the critical path and cycle time for the directed-mapped cache from (a). Note that because we are serializing the tag check before data access and because the delay equations are the same for both read and write accesses, the critical path is the same regardless of whether we are doing a read or a write. This is a simplification, but it will do for the purposes of this part. Note that the tag is 25 bits, but each row of the tag memory requires 26 bits since it must also include a valid bit. Create a table similar to the one in the example which identifies the critical path and cycle time in units of $\tau$ for the two-way set-associative cache in (b). Compare the cycle times of the two cache microarchitectures. What is the primary reason one microarchitecture is slower than the other microarchitecture?
 
 % ======= Question 2.B ======= %
-\item \textbf{Question 2.B}
+\item \textbf{Question 2.B - Parallel Read Hit Path} \\ 
+
+The diagram on the next page illustrates two cache microarchitectures with parallel read hit paths and pipelined write hit paths. This means that for a single read request, the tag check is done in parallel with the data memory read access, while for for a single write request the tag check is done in stage M0 and the data memory write access is done in stage M1. Figure (a) is for a directed-mapped cache, while figure (b) is for a two-way set-associative cache. For this part we will focus just on the parallel read hit path for both the direct-mapped and set-associative caches. Create two tables similar to the one from the previous part which identifies the critical path and cycle time in units of τ for just the parallel read hit paths. Note that since the tag check and the data memory read access are done in parallel, you will need to examine both of these paths to determine which one is in fact the critical path. Compare the cycle times of the two cache microarchitectures. What is the primary reason one microarchitecture is slower than the other microarchitecture?
   
+% ======= Question 2.C ======= %
+\item \textbf{Question 2.C - Pipelined Write Hit Path} \\
+For this part we will focus just on the pipelined write hit path for both the direct-mapped and set-associative caches shown on the next page. Create two tables similar to the one in the previous parts which identifies the critical path and cycle time in units of τ for just the pipelined write hit path. Note that since the tag check and the data memory write access happen in two different stages, you will need to examine both of these paths to determine which one is in fact the critical path. Compare the cycle times of the two cache microarchitectures. What is the primary reason one microarchitecture is slower than the other microarchitecture?
+
+
 \enu % end problem #2 sub-problems
 
 
@@ -152,11 +171,24 @@ Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data 
 %==============================%
 % ======== PROBLEM #3 ======== %
 %==============================%
-\item  \textbf{Question \#3 : CPI Changes}  
+\item  \textbf{Question \#3 : Cache Hierarchies} \\
+Assume a processor uses a dedicated L1 cache for instructions (IL1) and a dedicated L1 cache for data (DL1). The processor also uses a shared L2 cache that serves as an intermediate level between each of the L1 caches and memory.  
   
+The processor has a cycle time of 1 ns (i.e., operates at 1 GHz frequency). A hit to either IL1 or DL1 takes 1 cycle (time to look up the cache and return the data to processor). IL1 has 8\% miss rate. DL1 has 15\% miss rate. Assume load/store instructions comprise 25\% of the total instructions. Hit access to L2 from either of the IL1 or DL1 caches takes 6 cycles (time to lookup the cache and return the data to either of higher level caches). L2 has total miss rate of 30\%. From L2, it takes 50 cycles to access memory
 \benu
 
-\item
+% ======= Question 3.A ======= %
+\item \textbf{Question 3.A AMAT} \\
+What is the average memory access time? \\
+
+\answer
+
+% ======= Question 3.B ======= %
+\item \textbf{Question 3.B AMAT} \\
+What is the average memory access time? \\
+
+\answer
+
 \enu
 
 

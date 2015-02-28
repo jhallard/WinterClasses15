@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.9.9)  28 FEB 2015 00:46
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.9.9)  28 FEB 2015 03:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -346,21 +346,40 @@ Overfull \hbox (28.40288pt too wide) in paragraph at lines 117--126
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--138
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
+
+ []
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 158--159
+
+ []
+
+Missing character: There is no Ï in font cmr10!
+Missing character: There is no „ in font cmr10!
+Missing character: There is no Ï in font cmr10!
+Missing character: There is no „ in font cmr10!
+
+Underfull \hbox (badness 10000) in paragraph at lines 181--183
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--168
+Underfull \hbox (badness 10000) in paragraph at lines 187--189
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 199--200
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 192--193
+Underfull \hbox (badness 10000) in paragraph at lines 224--225
 
  []
 
-[2] (./cmpe110-hw2-jhallard.aux)
+[4] (./cmpe110-hw2-jhallard.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -368,22 +387,23 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  3225 strings out of 495028
  42961 string characters out of 6181498
- 116484 words of memory out of 5000000
+ 118484 words of memory out of 5000000
  6375 multiletter control sequences out of 15000+600000
  10004 words of font info for 39 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 38i,7n,43p,565b,417s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,7n,43p,1348b,417s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on cmpe110-hw2-jhallard.pdf (2 pages, 88284 bytes).
+fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmtt12.pfb>
+Output written on cmpe110-hw2-jhallard.pdf (4 pages, 103745 bytes).
 PDF statistics:
- 39 PDF objects out of 1000 (max. 8388607)
- 27 compressed objects within 1 object stream
+ 49 PDF objects out of 1000 (max. 8388607)
+ 34 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
