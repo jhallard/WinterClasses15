@@ -53,7 +53,7 @@
 \item \textbf{Question 1.A Direct-Mapped, Cache fields}
 Assume the cache is direct mapped. Fill in the table below to specify the size of each address field.
 
-\textbf{Explanation} - For a direct-mapped cache, we need to have a 5-bit word offset because each cache-line is 32 words wide, we then need the 2 hard-coded bits to account for byte offset within each word, for a total of 7 bits for cacheline offset. Since our cache is 52-KByte large, and each line is 32 words,  we have 16,384 cache lines. The amount of bits needed to address this amount of cache-lines is 14 ($2^{14} = 16,384$). This leaves 13 bits for the tag.
+\textbf{Explanation} - For a direct-mapped cache, we need to have a 5-bit word offset because each cache-line is 32 words wide, we then need the 2 hard-coded bits to account for byte offset within each word, for a total of 7 bits for cacheline offset. Since our cache is 52-KByte large, and each line is 32 words,  we have 4,096 cache lines. The amount of bits needed to address this amount of cache-lines is 12 ($2^{12} = 4,096$). This leaves 13 bits for the tag.
 
 % ======== Question 1.B ======= %
 \item \textbf{Question 1.B Fully Associative Cache Fields} \\
@@ -67,7 +67,7 @@ Assume the cache is fully associative,  fill in the table below to specify the s
 \item \textbf{Question 1.C 8-Way Set-Associative, Cache Fields} \\
 Assume the cache is 8-way associative, fill in the table below to specify the size of each address field. \\
 
-\textbf{Explanation} - Once again, we need 7 bits for the offset because each cache-line is 32-words wide. With 512Kbyte of memory and an 8-way set-associative cache, we will need 11 bits to state which set we are looking for ($2^{11} =16,384/8$). Finally we have 16 bits left to form the tag.
+\textbf{Explanation} - Once again, we need 7 bits for the offset because each cache-line is 32-words wide. With 512Kbyte of memory and an 8-way set-associative cache, we will need 11 bits to state which set we are looking for ($2^{9} =4,096/8$). Finally we have 16 bits left to form the tag.
 
 \begin{table}[H]
 \caption{Q 1A, 1B, and 1C Calculations} \label{tab:q1calc} 
@@ -75,8 +75,8 @@ Assume the cache is 8-way associative, fill in the table below to specify the si
 \begin{tabular}{| l | l | l | l |} \hline 
    Field              &  Size (1A) & Size (1B) & Size (1C)     \\ \hline
    Cache line offset  &  7         &   7       &   7           \\ \hline
-   Cache line index   &  14        &   0       &   11          \\ \hline
-   Tag                &  11        &   25      &   14          \\ \hline
+   Cache line index   &  12        &   0       &   9           \\ \hline
+   Tag                &  13        &   25      &   16          \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -94,12 +94,12 @@ Assume the cache is direct-mapped. Fill in the table on the next page to identif
 \begin{center}
 \begin{tabular}{| l | l | l | l | l | l | l | l | l |}
 \hline
-Address  &  Request  & Cacheline Ind & Valid & Modified & Tag & Data & Caused Replace & Write-back?    \\ \hline
-\T{0x128}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
-\T{0xF40}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
-\T{0xC00024}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
-\T{0x014}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
-\T{0x100F44}  &  \T{read} & \T{  } & \T{} & \T{} & \T{} & \T{} & \T{} & \T{}    \\ \hline
+Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
+\T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xF40}     &  \T{write} & \T{30 }       & \T{0}  & \T{0}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{0}  & \T{0}     & \T{24} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
+\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{0}     & \T{0}  & \T{D[0x000]}    &      \T{1}      & \T{0}    \\ \hline
+\T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{2}  & \T{D[0x100F00]} &      \T{1}      & \T{1}    \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
