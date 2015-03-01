@@ -188,7 +188,7 @@ The diagram on the next page illustrates two cache microarchitectures with paral
 \answer The following is for the direct-mapped cache with parallel read and pipelined writes. To find the critical path, I actually had to calculate the times for 2 different paths, then compare those to find the longest. The first path I look at was the one from the \T{idx} line, through the \V.add_reg_M1., through the \V.idk mux., through the \V.data_decoder., and finally through the \V.data_memory. and \V.rdata_reg_M1.. This is the path that the circuit uses to forward the index to the data memory before the tag has even been compared for correctness. I found that this path takes $39\tau$ to finish. The second path I checked was the path that compared the tags, this path starts like the one in 2.A but doesn't end up going into the data memory (on reads). This path was the critical path and is listed below.
 
 \begin{table}[H]
-\caption{Q1D Calculations} \label{tab:q2Btable1} 
+\caption{Q2B Calculations, sub-part A} \label{tab:q2Btable1} 
 \begin{center}
 \begin{tabular}{| l | l | l |}
 \hline
@@ -210,7 +210,7 @@ I then did the same calculations on the Two-Way Set Associative Cache, finding t
 
 
 \begin{table}[H]
-\caption{Q1D Calculations} \label{tab:q2Btable2} 
+\caption{Q2D Calculations, sub-part B} \label{tab:q2Btable2} 
 \begin{center}
 \begin{tabular}{| l | l | l |}
 \hline
@@ -257,12 +257,27 @@ The processor has a cycle time of 1 ns (i.e., operates at 1 GHz frequency). A hi
 What is the average memory access time? \\
 
 \answer
+AMAT = hit time + (miss \%)*(mis penalty) \\
+AMAT = 1 cycle + $\frac{1}{2}*[0.08+0.15]$*(miss penalty) \\
+miss penalty is another layered memory access, this time between the L2 cache and main memory, so I will once again calculate the average memory access time after a miss on the L1 cache. \\
+miss penalty = 6 + 0.3*50 (6 cycles to reach L2, 30\% of the time we have to go MM which takes 50 cycles).\\
+
+AMAT = 1 cycle + $\frac{1}{2}*[[.08+.15]*[6 + 0.3*50] ]$ \\
+AMAT = 3.415
 
 % ======= Question 3.B ======= %
-\item \textbf{Question 3.B AMAT} \\
-What is the average memory access time? \\
+\item \textbf{Question 3.B No Caches} \\
 
-\answer
+Assume CPI = 1 if the processor has no memory stalls. Without the caches, each memory access would take 52 cycles. What is the CPI of the processor without any caches? \\
+
+\answer The CPI would be equal to $1 \times 0.75 + 50 \times 0.25 = 13.75$. This is because 75\% of the time an instruction occurs which has a CPI of 1, during the 25\% of the time that a load or store occurs, the CPI drops to 52. Taking a weighted average gives 13.75 as the CPI.
+
+% ======= Question 3.C ======= %
+\item \textbf{Question 3.C All Caches} \\
+
+Assume CPI = 1 if the processor has no memory stalls. Without the caches, each memory access would take 52 cycles. What is the CPI of the processor with all of the caches? Remember it takes 50 cycles to access memory from  \\
+
+\answer The CPI would be equal to $1 \times 0.75 + 0.25 \times 3.415 = 1.603$. I got this by using the AMAT calculated in part 3.A as the number of cycles it would take for each memory access, which occurs 25\% of the time. The other 75\% of the time the CPI remains 1. Contrasting this result with the one from problem 3.B highlights the importance of caches.
 
 \enu
 
@@ -272,11 +287,34 @@ What is the average memory access time? \\
 % ======== PROBLEM #4 ======== %
 %==============================%
 \item \textbf{Question \#4 : } \\
+Assume we have a processor that support virtual memory with 4KB page size. The processor uses one page table per program to track the mapping of virtual addresses to physical addresses, and has 24-bit virtual address. Assume we have 4-entry fully associative TLB, with the content specified in table below
+
+\begin{table}[H]
+\caption{} \label{tab:q4table1} 
+\begin{center}
+\begin{tabular}{| l | l | l |}
+\hline
+  Valid  &  Tag       & Phys. Address    \\ \hline
+  0      &   \T{0xB}  & \T{0x1B}         \\ \hline
+  1      &   \T{0x5}  & \T{0x15}         \\ \hline
+  1      &   \T{0x3}  & \T{0x13}         \\ \hline
+  1      &   \T{0x6}  & \T{0x16}         \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
 
 
 \benu 
 
-\item nothing
+\item \textbf{Question 4.A - Program Table Entries} \\
+Assume each entry in page table is 3-bytes. How many entries does the processor need to have in the page table for each program, and what is the total page table size? How about if the processor supports 16KB page size? \\
+
+\answer - Each virtual address is 3 bytes, which is 24 bits, which means it can map to $2^{24}$ unique addresses. Each page is 4KB, which is $2^{12}$ unqique addresses. This means that our page table must support $\frac{2^{24}}{2^{12}} = 2^{12} = 4096$ entries in the page table. Having this many entries gives the user access to the entire 24 bits of address space they are allocated. The total page table size would then be $4096$ entries multiples by the 3 bytes per entry, so $12,288$ bytes total. \par
+If the page size was 16KB instead of 4KB, we would then have 4 times as few entries, or $1024$ entries in the page table. This is because each entry in the page table points to 4 times as many addresses, so we only need a quarter of the entries to address the entire 24 bits of address space. The page table in this case would be $3 \times 1024 = 3072$ bytes. \\
+
+
+\item \textbf{Question 4.B - Program Table Entries} \\
 \enu
 
 
