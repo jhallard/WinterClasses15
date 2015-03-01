@@ -117,7 +117,7 @@ Assume the cache is 8-way set-associative. Fill the table below to identify the 
 \begin{center}
 \begin{tabular}{| l | l | l | l | l | l | l | l | l |}
 \hline
-Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
+Address       & Request    & Set Index & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
 \T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
 \T{0xF40}     &  \T{write} & \T{30 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
 \T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{1}  & \T{0}     & \T{96} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
@@ -169,7 +169,7 @@ The diagram on the previous page illustrates two cache microarchitectures that s
   \V.tag_or.        &   \T{2}                 & \T{2}                  \\ \hline
   \V.data_mem.      &   \T{$12+(8+128)/32$}   & \T{17}                 \\ \hline
   \V.data_mux.      &   \T{$1+2$log$_2(4)$}   & \T{5}                  \\ \hline
-  \V.rdata_reg_M1.  &   \T{1}                 & \T{1}                  \\ \hline \hline
+  \V.rdata_reg_M1.  &   \T{1}                 & \T{1}                  \\ \hline 
   \V.Total.         &   \T{}                  & \T{65}                 \\ \hline
 \end{tabular}
 \end{center}
@@ -314,31 +314,57 @@ Assume each entry in page table is 3-bytes. How many entries does the processor 
 If the page size was 16KB instead of 4KB, we would then have 4 times as few entries, or $1024$ entries in the page table. This is because each entry in the page table points to 4 times as many addresses, so we only need a quarter of the entries to address the entire 24 bits of address space. The page table in this case would be $3 \times 1024 = 3072$ bytes. \\
 
 
-\item \textbf{Question 4.B - Program Table Entries} \\
+\item \textbf{Question 4.B - TLB and Page Table States} \\
+Given the address sequence and the initial state of TLB and page table, what would be the final state of the TLB and page table? Assume ideal LRU replacement for the TLB. Specify what accesses hit on TLB, what addresses hit on page table, and what addresses are page fault. \\
+
+
+\begin{table}[H]
+\caption{ Question 4.B - TLB Page Table} \label{tab:q4Btable} 
+\begin{center}
+\begin{tabular}{| l | l | l |}
+\hline
+  Valid  &  Tag       & Phys. Address    \\ \hline
+  1      &   \T{0x0}  & \T{0x1B}         \\ \hline
+  1      &   \T{0x5}  & \T{0x15}         \\ \hline
+  1      &   \T{0x3}  & \T{0x13}         \\ \hline
+  1      &   \T{0x6}  & \T{0x16}         \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\textbf{Explanation - } The page table doesn't seem much different in the end then in the beginning, but it actually changed quite a bit. To start, the \T{0x5D10} request hit on the TLB, so it didn't need to go to the page table. The next request, \T{B000} was in the page table but the valid bit was not set, so we needed to go to the page table. The page table also was invalid for tag B, so we had a page miss and had to go to disk. This replaced the previous first for in the TLB, setting the valid bit to high. tHe page table now also will not hit a page fault for tag B. The next call was \T{0x7200}, which was a miss in the TLB but a hit in the page table. This value was loaded into the TLB in the 3rd row. Technically the 3rd and 4th row were equally unused, so I chose the first one in the table. The next was \T{0x6800}, which was a hit in the TLB (4th row). The next call, \T{5800} was also a hit in the TLB. the \T{0x0000} call is a TLB miss and a miss in the page table, resulting in a page fault. After being loaded from disk, this new value replaces the first row (containing the 0xB tag), because it is the least recently used. Finally the \T{0x3100} request is a TLB miss, since it had been replaced earlier. We go to the page table and get a hit, replacing the 3rd row in the TLB (that contained the 0x7 tag). \\
+
+
+\item \textbf{Question 4.C - Two-Way Set Associative TLB} \\
+
+Assume the TLB is 2-way set-associative instead of fully-associative. Given the address sequence and the initial state of TLB and page table, what would be the final state of the TLB and page table? Assume ideal LRU replacement for the TLB. Specify what accesses hit on TLB, what addresses hit on page table, and what addresses are page fault. \\
+
+\begin{table}[H]
+\caption{ Question 4.C - 2-Way Associative TLB Page Table} \label{tab:q4Ctables} 
+\begin{center}
+\begin{tabular}{| l | l | l | l |}
+\hline
+  Valid  &  Tag       &  Index   & Phys. Address    \\ \hline
+  1      &   \T{0x5}  &    1     &  \T{0x1B}         \\ \hline
+  1      &   \T{0x2}  &    1     &  \T{0x15}         \\ \hline
+  1      &   \T{0x1}  &    1     &  \T{0x13}         \\ \hline
+  1      &   \T{0x3}  &    0     &  \T{0x16}         \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+This question confused me a bit, I know that the starting position of the cache will be different because we now have a single bit for the index (because it's two way associative and their are 4 lines in the TLB), thus the tab will now lose one lower order bit. When I try and construct the TLB using this method, I end up with the first 3 rows all having an index of 1, but only two items in the TLB are allowed to have the same index at one time, so what happend to the TLB in this case? I don't know the order of insertion so I'm not sure which item with on an index of one needs to be removed.
+
+
+\item \textbf{Question 4.D - 16KB Page Size } \\
+
+\item \textbf{Question 4.E - Trade-Offs} \\
+Discuss the advantages and disadvantages of a larger page size. \\
+
+\answer Having a larger page size can have some positive effects on the performance for your system. For example, having a page size that is twice as large means that a program can store twice the memory in a single page, which means that a single row in the TLB and Page Table refer to twice as many addresses. This increases the likelyhood of getting a hit, which increases the overall performance of a cache. This also has tradeoffs, for instance, if we make a page size too large then we end up wasting memory for small processes. If our page size if 64KB and many programs only need 2KB of memory, we will run out of room much quicker then is needed. Also, if our page size is too large, we then have less pages to offer to different programs. This normally isn't a problem, but for instance, if the page size was 1/10th the size of the total memory, we could only have 10 processes running simultaniously. This all implies that there is no thing as a set proper page size, this value changes as the average behavior of the user changes. If the user is constantly running very large programs, it makes sense to increase the page size at the expense of wasting memory when smaller programs are run.
+
 \enu
 
 
-
-
-%==============================%
-% ======== PROBLEM #5 ======== %
-%==============================%
-\item \textbf{Question \#5 : Multipliers}
-  
-  \benu
-\item nothing
-  \enu
-
-
-
-%==============================%
-% ======== PROBLEM #6 ======== %
-%==============================%
-\item \textbf{Question \#6 : Hazards} \\
- 
-\benu
-
-\item nothing
-\enu
 \enu
 \end{document}
