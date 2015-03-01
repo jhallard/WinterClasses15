@@ -54,21 +54,21 @@
 \item \textbf{Question 1.A Direct-Mapped, Cache fields}
 Assume the cache is direct mapped. Fill in the table below to specify the size of each address field.
 
-\textbf{Explanation} - For a direct-mapped cache, we need to have a 5-bit word offset because each cache-line is 32 words wide, we then need the 2 hard-coded bits to account for byte offset within each word, for a total of 7 bits for cacheline offset. Since our cache is 52-KByte large, and each line is 32 words,  we have 4,096 cache lines. The amount of bits needed to address this amount of cache-lines is 12 ($2^{12} = 4,096$). This leaves 13 bits for the tag.
+\textbf{Explanation} - For a direct-mapped cache, we need to have a 5-bit word offset because each cache-line is 32 words wide, we then need the 2 hard-coded bits to account for byte offset within each word, for a total of 7 bits for cacheline offset. Since our cache is 52-KByte large, and each line is 32 words,  we have 4,096 cache lines. The amount of bits needed to address this amount of cache-lines is 12 ($2^{12} = 4,096$). This leaves 13 bits for the tag. \\
 
 % ======== Question 1.B ======= %
 \item \textbf{Question 1.B Fully Associative Cache Fields} \\
 Assume the cache is fully associative,  fill in the table below to specify the size of each address field. \\
 
 
-\textbf{Explanation} - For a fully-associative cache, we still need 7 bits for the offset, which determines which of the 32 words in a cache-line our data is stored at. Since fully-associative caches do not use an index, this leaves 25 bits left for the tag. 
+\textbf{Explanation} - For a fully-associative cache, we still need 7 bits for the offset, which determines which of the 32 words in a cache-line our data is stored at. Since fully-associative caches do not use an index, this leaves 25 bits left for the tag. \\
 
 % ======= Question 1.C ========= %
 
 \item \textbf{Question 1.C 8-Way Set-Associative, Cache Fields} \\
 Assume the cache is 8-way associative, fill in the table below to specify the size of each address field. \\
 
-\textbf{Explanation} - Once again, we need 7 bits for the offset because each cache-line is 32-words wide. With 512Kbyte of memory and an 8-way set-associative cache, we will need 11 bits to state which set we are looking for ($2^{9} =4,096/8$). Finally we have 16 bits left to form the tag.
+\textbf{Explanation} - Once again, we need 7 bits for the offset because each cache-line is 32-words wide. With 512Kbyte of memory and an 8-way set-associative cache, we will need 11 bits to state which set we are looking for ($2^{9} =4,096/8$). Finally we have 16 bits left to form the tag.\\
 
 \begin{table}[H]
 \caption{Q 1A, 1B, and 1C Calculations} \label{tab:q1calc} 
@@ -105,7 +105,7 @@ Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data 
 \end{center}
 \end{table}
 
-\textbf{Explanation} - 
+\textbf{Explanation} - The system starts with a read call to a cold cache, so the Valid bit is originally zero and is 1 after the read, which has to go to memory to fetch the appropriate data. The cacheline index is 2 (decimal), representing bits 19:7 in the address. The tag is zero, which consists of bits 31:20. Next a write is called, with a cacheline index of 30 and a tag of 0 once again. This cacheline is invalid before the operation but it now valid. A writeback does not occur since another piece of data has not attempted to write to this spot yet. We then read from cacheline index 0, which is a miss (still cold). The appropriate data is pulled from memory (the 32 words starting at \T{M[0xC00000]} and stored in the cache, changing the valid bit to high for this line. Next we try and write to that cachline, which does cause a replace. The data is modified and still valid after the operation. Finally, we read from cacheline 30, a spot we have written to earlier, but the tags are different. This forces a write back of the data from the first read operation and causes a replace to occur. \\
 
 
 % ======= Question 1.E ========= %
@@ -127,7 +127,7 @@ Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data 
 \end{center}
 \end{table}
 
-\textbf{Explanation} -
+\textbf{Explanation} - This sequence is very much like the one it the last problem, except that the 8-way associativity allows us to not have to replace or write back like was required in the direct-mapped cache. This is because when two addresses map to the same index, we can now put it in any of the open 8 spots per set. \\
 
 
 \item \textbf{Question 1.F Overhead} \\
@@ -205,6 +205,33 @@ The diagram on the next page illustrates two cache microarchitectures with paral
 \end{table}
 
 The above table shows that by using a parallel structure to grab the data while also verifying it is valid reduces the time needed to grab a set of data from the cache from $66\tau$ to $44\tau$, a significant improvement, at the cost of increased power draw (we read from the data memory even when we don't need to).
+
+I then did the same calculations on the Two-Way Set Associative Cache, finding the 2 longest paths, calculating the time is takes to traverse both of them, and declaring the longest one as the critical path. For the 2-way set assoicative, I once again compared the path that is used to send the index to the data memory to the path that is used to compare the tags. The path that is used to forward the index to the data memory took $40\tau$ units of time. The path that is used to find and compare the tags to know if the read is valid took slightly longer, at $43\tau$ time units, so this is the critical path. This path is enumerated below :
+
+
+\begin{table}[H]
+\caption{Q1D Calculations} \label{tab:q2Btable2} 
+\begin{center}
+\begin{tabular}{| l | l | l |}
+\hline
+  Component         &  Delay Eq.              & Delay($\tau$)          \\ \hline
+  \V.addr_reg_MO.   &   \T{2}                 & \T{2}                  \\ \hline
+  \V.tag_decoder.   &   \T{$2+2*3$}           & \T{6}                  \\ \hline
+  \V.tag_mem.       &   \T{$12+(8+26)/32$}    & \T{13}                 \\ \hline
+  \V.tag_cmp.       &   \T{$2+3$log$_2(26)$}  & \T{17}                 \\ \hline
+  \V.tag_and.       &   \T{2}                 & \T{2}                  \\ \hline
+  \V.tag_or.        &   \T{2}                 & \T{2}                  \\ \hline
+  \V.hit_reg_M1.    &   \T{1}                 & \T{1}                  \\ \hline
+  \V.Total.         &   \T{}                  & \T{43}                 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The above table shows that once again, introducing a parellel structure for reads can significantly improve the performance of the cache, with the time needed to traverse the critical path droppign from $65\tau$ to $43\tau$ for this two-way set associative architecture.
+
+\textbf{Compare the Cycle times between the two cache microarchitectures, why is one slower than the other.} \\
+\answer Once again, the two-way set associative architecture slightly edges out the direct mapped architecture in terms of time for the critical path, with a time of $43\tau$ for the two-way and a time of $44\tau$ for the direct mapped. This is expected, because the two-way parallelizes some of its computation it is expected that there would be some assoicated speed-up (or else why would do it), at the cost of a slightly more complicated architecture. 
+
 
   
 % ======= Question 2.C ======= %
