@@ -16,6 +16,7 @@
 \newcommand{\suchthat}{\;\ifnum\currentgrouptype=16 \middle\fi|\;}
 \newcommand{\answer}{\textbf{Answer : }}
 \newcommand{\T}{\texttt}
+\newcommand{\V}{\verb}
 \newcommand{\benu}{\begin{enumerate}}
 \newcommand{\enu}{\end{enumerate}}
 
@@ -112,7 +113,7 @@ Address       & Request    & Cacheline Ind & Valid  & Modified  & Tag    & Data 
 Assume the cache is 8-way set-associative. Fill the table below to identify the content of the cache after each of the following memory accesses. Assume the cache is empty in the beginning (also known as cold cache). Specify if an entry causes another line to be replaced from the cache, and if an entry has to write its data back to memory. For the data column, specify the data in the block by referring to its address like M[address]. Write accesses will modify the data, so lets indicate the data after a write access with D[address].
 
 \begin{table}[H]
-\caption{Q1D Calculations} \label{tab:q1calc2} 
+\caption{Q1E Calculations} \label{tab:q1calc2} 
 \begin{center}
 \begin{tabular}{| l | l | l | l | l | l | l | l | l |}
 \hline
@@ -154,10 +155,57 @@ This problem will require you to identify the critical path of a specific microa
 
 The diagram on the previous page illustrates two cache microarchitectures that serialize the tag check before data access. This means that for both reads and writes, the cache completely finishes the tag check and accesses the data memory only on a cache hit. figure (a) is for a directed-mapped cache, while figure (b) is for a two-way set-associative cache. We now want to determine the critical path and cycle time in units of $\tau$ for each cache microarchitecture. As an example, the table below shows the critical path and cycle time for the directed-mapped cache from (a). Note that because we are serializing the tag check before data access and because the delay equations are the same for both read and write accesses, the critical path is the same regardless of whether we are doing a read or a write. This is a simplification, but it will do for the purposes of this part. Note that the tag is 25 bits, but each row of the tag memory requires 26 bits since it must also include a valid bit. Create a table similar to the one in the example which identifies the critical path and cycle time in units of $\tau$ for the two-way set-associative cache in (b). Compare the cycle times of the two cache microarchitectures. What is the primary reason one microarchitecture is slower than the other microarchitecture?
 
+\begin{table}[H]
+\caption{Q2A Calculations} \label{tab:q2Atable} 
+\begin{center}
+\begin{tabular}{| l | l | l |}
+\hline
+  Component         &  Delay Eq.              & Delay($\tau$)          \\ \hline
+  \V.addr_reg_MO.   &   \T{2}                 & \T{2}                  \\ \hline
+  \V.tag_decoder.   &   \T{$2+2*2$}           & \T{6}                  \\ \hline
+  \V.tag_mem.       &   \T{$12+(4+26)/32$}    & \T{13}                 \\ \hline
+  \V.tag_cmp.       &   \T{$2+3$log$_2(26)$}  & \T{17}                 \\ \hline
+  \V.tag_and.       &   \T{2}                 & \T{2}                  \\ \hline
+  \V.tag_or.        &   \T{2}                 & \T{2}                  \\ \hline
+  \V.data_mem.      &   \T{$12+(8+128)/32$}   & \T{17}                 \\ \hline
+  \V.data_mux.      &   \T{$1+2$log$_2(4)$}   & \T{5}                  \\ \hline
+  \V.rdata_reg_M1.  &   \T{1}                 & \T{1}                  \\ \hline \hline
+  \V.Total.         &   \T{}                  & \T{65}                 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\textbf{Compare the Cycle times between the two cache microarchitectures, why is one slower than the other.} \\
+\answer Well, one is slower than the other, but by my calculation this is only by a single cycle. The two-way set associative is one cycle faster, (clocking in at $65\tau$ vs $66\tau$ for the direct-mapped), and this is mostly due to the fact that it can decode half the tags in parallel, saving it 2 cycles compared to the direct-mapped, which must compare all 8 indexes with the same comparator. Accessing the tag memory saves another cycle, since we are once again searching through two halves in parallel. However, 2 of these saved cycles are un-done by the added OR-gate that compares the hit bits from both tag memories. I have a feeling that I made a mistake somewhere and the difference was supposed to be more pronounced, but in general an $n$-way associative cache will have a faster look-up time than an $m$-way ($m < n$) associative cache because of parallelization. This will come at the expense of more complicated hardware though. \\
+
+
 % ======= Question 2.B ======= %
 \item \textbf{Question 2.B - Parallel Read Hit Path} \\ 
 
-The diagram on the next page illustrates two cache microarchitectures with parallel read hit paths and pipelined write hit paths. This means that for a single read request, the tag check is done in parallel with the data memory read access, while for for a single write request the tag check is done in stage M0 and the data memory write access is done in stage M1. Figure (a) is for a directed-mapped cache, while figure (b) is for a two-way set-associative cache. For this part we will focus just on the parallel read hit path for both the direct-mapped and set-associative caches. Create two tables similar to the one from the previous part which identifies the critical path and cycle time in units of τ for just the parallel read hit paths. Note that since the tag check and the data memory read access are done in parallel, you will need to examine both of these paths to determine which one is in fact the critical path. Compare the cycle times of the two cache microarchitectures. What is the primary reason one microarchitecture is slower than the other microarchitecture?
+The diagram on the next page illustrates two cache microarchitectures with parallel read hit paths and pipelined write hit paths. This means that for a single read request, the tag check is done in parallel with the data memory read access, while for for a single write request the tag check is done in stage M0 and the data memory write access is done in stage M1. Figure (a) is for a directed-mapped cache, while figure (b) is for a two-way set-associative cache. For this part we will focus just on the parallel read hit path for both the direct-mapped and set-associative caches. Create two tables similar to the one from the previous part which identifies the critical path and cycle time in units of τ for just the parallel read hit paths. Note that since the tag check and the data memory read access are done in parallel, you will need to examine both of these paths to determine which one is in fact the critical path. Compare the cycle times of the two cache microarchitectures. What is the primary reason one microarchitecture is slower than the other microarchitecture? \\
+
+\answer The following is for the direct-mapped cache with parallel read and pipelined writes. To find the critical path, I actually had to calculate the times for 2 different paths, then compare those to find the longest. The first path I look at was the one from the \T{idx} line, through the \V.add_reg_M1., through the \V.idk mux., through the \V.data_decoder., and finally through the \V.data_memory. and \V.rdata_reg_M1.. This is the path that the circuit uses to forward the index to the data memory before the tag has even been compared for correctness. I found that this path takes $39\tau$ to finish. The second path I checked was the path that compared the tags, this path starts like the one in 2.A but doesn't end up going into the data memory (on reads). This path was the critical path and is listed below.
+
+\begin{table}[H]
+\caption{Q1D Calculations} \label{tab:q2Btable1} 
+\begin{center}
+\begin{tabular}{| l | l | l |}
+\hline
+  Component         &  Delay Eq.              & Delay($\tau$)          \\ \hline
+  \V.addr_reg_MO.   &   \T{2}                 & \T{2}                  \\ \hline
+  \V.tag_decoder.   &   \T{$2+2*3$}           & \T{8}                  \\ \hline
+  \V.tag_mem.       &   \T{$12+(8+26)/32$}    & \T{14}                 \\ \hline
+  \V.tag_cmp.       &   \T{$2+3$log$_2(26)$}  & \T{17}                 \\ \hline
+  \V.tag_and.       &   \T{2}                 & \T{2}                  \\ \hline
+  \V.hit_reg_M1.    &   \T{1}                 & \T{1}                  \\ \hline
+  \V.Total.         &   \T{}                  & \T{44}                 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The above table shows that by using a parallel structure to grab the data while also verifying it is valid reduces the time needed to grab a set of data from the cache from $66\tau$ to $44\tau$, a significant improvement, at the cost of increased power draw (we read from the data memory even when we don't need to).
+
   
 % ======= Question 2.C ======= %
 \item \textbf{Question 2.C - Pipelined Write Hit Path} \\
