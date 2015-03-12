@@ -214,6 +214,11 @@ void clear(List L) {
         L->num_nodes--;
     }
 
+    // L->front_node->next = NULL;
+    // L->back_node->prev = NULL;
+    L->front_node = NULL;
+    L->back_node = NULL;
+
 }
 
 // @func - moveTo
@@ -317,14 +322,14 @@ void moveNext(List L) {
 // @ret  - nothing
 void prepend(List L, int data) {
     if(L == NULL) {
-      fprintf(stderr, "Error : L null in append\n");
+      fprintf(stderr, "Error : L null in prepend\n");
       exit(1);
     }
 
     // allocate a new node
     Node * new_node = newNode();
     if(new_node == NULL) {
-      fprintf(stderr, "Error : Malloc Fail in Append");
+      fprintf(stderr, "Error : Malloc Fail in prepend");
     }
     new_node->data = data;
 
@@ -368,7 +373,10 @@ void append(List L, int data) {
         return;
     }
     new_node->prev = L->back_node;
-    L->back_node->next = new_node;
+
+    if(L->back_node != NULL) {
+        L->back_node->next = new_node;
+    }
     L->back_node = new_node;
     L->num_nodes++;
 }

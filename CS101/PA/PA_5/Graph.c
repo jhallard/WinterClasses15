@@ -25,7 +25,7 @@ typedef struct GraphObj {
   List * adj_list;
   int * parent;
   int * color;
-  int * discover;
+  int * discovered;
   int * finished;
 
 } GraphObj;
@@ -157,13 +157,36 @@ typedef struct GraphObj {
 // @args - #1 Graph to be queried, #2 vertex in the graph to get the discover time of
 // @ret  - the time of discovery for the given vertex
 // @info : Pre: 1<=u<=n=getOrder(G) 
-int getDiscover(Graph G, int u); 
+int getDiscover(Graph G, int u) {
+  if(G == NULL) {
+    fprintf(stderr, "Error : Graph null in getDiscover");
+    exit(1);
+  }
+  if(u < 1 || u > G->order) {
+    fprintf(stderr, "Error : vertex value out of range in getDiscover");
+    exit(1);
+  }
+
+  return G->discovered[--u];
+}
 
 // @func - finish
 // @args - #1 Graph to be queried, #2 vertex in the graph to get the finish time of
 // @ret  - the time of finish for the given vertex
 // @info : Pre: 1<=u<=n=getOrder(G) 
-int getFinish(Graph G, int u); 
+int getFinish(Graph G, int u) {
+  if(G == NULL) {
+    fprintf(stderr, "Error : Graph null in getFinish");
+    exit(1);
+  }
+  if(u < 1 || u > G->order) {
+    fprintf(stderr, "Error : vertex value out of range in getFinish");
+    exit(1);
+  }
+
+  return G->finished[--u];
+
+}
 
 /*** Manipulation procedures ***/
 
@@ -245,12 +268,104 @@ void printGraph(FILE* out, Graph G) {
   }
 }
 
+// @func - copyGraph
+// @args - Graph Object to have a copy made of
+// @ret  - new graph object
+Graph copyGraph(Graph G) {
+  Graph new_graph = newGraph(G->order);
 
-void DFS(Graph g, List s) {
+  for(int i = 0; i < G->order; i++) {
+    List * temp = &G->adj_list[i];
+
+    for(moveTo(*temp, 0); getIndex(*temp) >= 0; moveNext(*temp)) {
+      addArc(new_graph, i, getElement(*temp));
+    }
+  }
+
+  return new_graph;
+}
+
+// @func - transpose
+// @args - Graph to be transposed
+// @ret  - tranposed graph
+// @info - This function takes all edges and switch their origin and terminus
+Graph transpose(Graph G) {
+  Graph new_graph = newGraph(G->order);
+
+  for(int i = 0; i < G->order; i++) {
+    List * temp = &G->adj_list[i];
+
+    for(moveTo(*temp, 0); getIndex(*temp) >= 0; moveNext(*temp)) {
+      addArc(new_graph, getElement(*temp), i);
+    }
+  }
+
+  return new_graph;
+}
 
 
+// @func - visit
+// @args - #1 Graph object in question, #2 vertex to visit, #3 time value at the beginning of this call
+void visit(Graph G, List s, int vert, int * t) {
+  G->color[vert] = GRAY;
+  G->discovered[vert] = ++(*t);
+  // printf("outer :  %d \n", vert);
+  for(moveTo(G->adj_list[vert], 0); getIndex(G->adj_list[vert]) >= 0; moveNext(G->adj_list[vert])) {
+    
+    int curr = getElement(G->adj_list[vert]);
+    if(G->color[curr] == WHITE) {
+      G->parent[curr] = vert;
+      visit(G, s, curr, t);
+    }
+  }
+
+  G->color[vert] = BLACK;
+  G->finished[vert] = ++(*t);
+  append(s, vert);
+}
+
+// @func - DFS
+// @args - #1 Graph object to be searched, #2 list containing the order of vertices to be processed
+// @info - This function performs DFS on the graph object, searching the vertices in the order they are given in the input list.
+//         This same list is then used as an output parameter to store the vertices by decreasing finish time.
+void DFS(Graph G, List s) {
+
+  if(G == NULL) {
+    fprintf(stderr, "Error : Null input in DFS");
+    exit(1); 
+  }
+
+  if(length(s) != G->order) {
+    fprintf(stderr, "Precondition Failure : List length != G->order in DFS");
+    exit(1); 
+  }
+
+  List ret = newList();
+
+  // initialization of DFS
+  for(int i = 0; i < G->order; i++) {
+    G->color[i] = WHITE;
+    G->parent[i] = NIL;
+  }
+
+  int t = 0;
+
+  for(moveTo(s, 0); getIndex(s) >= 0; moveNext(s)) {
+    int curr = getElement(s)-1;
+    // printf("Here : %d \n", curr);
+    if(G->color[curr] == WHITE) {
+      visit(G, ret, curr, &t);
+    }  
+  }
+
+  clear(s);
+  for(moveTo(ret, 0); getIndex(ret) >= 0; moveNext(ret)) {
+    // fprintf(stdout," %d ", getElement(ret));
+      append(s, getElement(ret)+1);
+  }
 
 }
+
 
 
 
