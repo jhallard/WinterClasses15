@@ -15,6 +15,8 @@
 
 Graph processFile(char *, char *);
 
+void findSCC(Graph, List l, FILE *);
+
 int main(int argc, char ** argv) {
 
   if(argc != 3 || argv == NULL) {
@@ -24,10 +26,9 @@ int main(int argc, char ** argv) {
 
   char * fn = argv[1];
   char * out_fn = argv[2];
+  FILE * fp_out = fopen(out_fn, "w");
 
   Graph G = processFile(fn, out_fn);
-
-  printGraph(stdout,  G);
   
   List l = newList();
 
@@ -35,25 +36,59 @@ int main(int argc, char ** argv) {
     append(l, i);
   }
 
+  fprintf(fp_out, "Adjacency List Representation : \n");
+  printGraph(fp_out, G);
+  fprintf(fp_out, "\n\n");
+
   DFS(G, l);
-  printf("\n\n");
-  printList(stdout, l);
-  printf("\n\n");
-  DFS(G, l);
-  printf("\n\n");
-  printList(stdout, l);
-  printf("\n\n");
+
+
+  Graph T = transpose(G);
+
+
+  DFS(T, l);
+
+  findSCC(T, l, fp_out);
 
   freeList(&l);
   freeGraph(&G);
+  freeGraph(&T);
+  fclose(fp_out);
 }
 
+void findSCC(Graph G, List l, FILE * fp_out) {
+
+  if(G == NULL || l == NULL || fp_out == NULL) {
+    fprintf(stderr, "Error : Null Input to findSCC\n");
+    exit(1); 
+  }
+
+  List temp = newList();
+  int comp_num = 1;
+
+  for(moveTo(l, length(l)-1); getIndex(l) >= 0; movePrev(l)) {
+    int element = getElement(l);
+
+    if(getParent(G, element) == -1) {
+      prepend(temp, element);
+      fprintf(fp_out, "Component # %d : ", comp_num++);
+      printList(fp_out, temp);
+      fprintf(fp_out, "\n");
+      clear(temp);
+    }
+    else {
+      prepend(temp, element);
+    }
+  }
+
+  freeList(&temp);
+}
 
 
 Graph processFile(char * fn, char * fn_out) {
   
   FILE * fp = fopen(fn, "r");
-  FILE * fp_out = fopen(fn_out, "w");
+
   char line[81];
 
   if(fp == NULL) {
@@ -82,11 +117,7 @@ Graph processFile(char * fn, char * fn_out) {
     }
   }
 
-  // printGraph(fp_out, new_graph);
-
-  fprintf(fp_out, "\n\n");
   fclose(fp);
-  fclose(fp_out);
 
   return new_graph;
 }

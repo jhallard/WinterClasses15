@@ -2,7 +2,7 @@
 // ||  Author  - John Allard                                          ||     
 // ||  ID      - 1437547                                              || 
 // ||  CruzID  - jhallard                                             || 
-// ||  Project - Programming Assignment #4                            ||                 
+// ||  Project - Programming Assignment #5                            ||                 
 // ||  File    - Graph.c                                              || 
 // ||  Info    - Implementation of the GraphObj Data Structure        ||                                             
 // |===================================================================|
@@ -21,12 +21,12 @@
 typedef struct GraphObj {
   int order;
   int size;
-  int source;
-  List * adj_list;
+
   int * parent;
   int * color;
   int * discovered;
   int * finished;
+  List * adj_list;
 
 } GraphObj;
 
@@ -44,7 +44,6 @@ typedef struct GraphObj {
     new_graph->adj_list = malloc(n*sizeof(List));
     new_graph->order = n;
     new_graph->size = 0;
-    new_graph->source = 0;
 
     for(int i = 0; i < n; i++) {
       new_graph->adj_list[i] = newList();
@@ -126,17 +125,7 @@ typedef struct GraphObj {
     return G->size;
   }
 
-  // @func - getSource
-  // @args - Graph to be queried
-  // @ret  - returns the index that was most recently used at a source
-  //         vertex for BFS
-  int getSource(Graph G) {
-    if(G == NULL) {
-      fprintf(stderr, "Error :Graph null in getSource");
-      exit(1);
-    }
-    return G->source;
-  }
+
 
   // @func - getParent
   // @args - #1 graph to be queried, #2 the index of the vertex that we are querying the parent of
@@ -278,7 +267,7 @@ Graph copyGraph(Graph G) {
     List * temp = &G->adj_list[i];
 
     for(moveTo(*temp, 0); getIndex(*temp) >= 0; moveNext(*temp)) {
-      addArc(new_graph, i, getElement(*temp));
+      addArc(new_graph, i+1, getElement(*temp)+1);
     }
   }
 
@@ -296,7 +285,7 @@ Graph transpose(Graph G) {
     List * temp = &G->adj_list[i];
 
     for(moveTo(*temp, 0); getIndex(*temp) >= 0; moveNext(*temp)) {
-      addArc(new_graph, getElement(*temp), i);
+      addArc(new_graph, getElement(*temp)+1, i+1);
     }
   }
 
@@ -314,14 +303,14 @@ void visit(Graph G, List s, int vert, int * t) {
     
     int curr = getElement(G->adj_list[vert]);
     if(G->color[curr] == WHITE) {
-      G->parent[curr] = vert;
+      G->parent[curr] = vert+1;
       visit(G, s, curr, t);
     }
   }
 
   G->color[vert] = BLACK;
   G->finished[vert] = ++(*t);
-  append(s, vert);
+  prepend(s, vert);
 }
 
 // @func - DFS
@@ -350,19 +339,22 @@ void DFS(Graph G, List s) {
 
   int t = 0;
 
+  // main DFS loop, recursively visit all of the vertices in order
   for(moveTo(s, 0); getIndex(s) >= 0; moveNext(s)) {
     int curr = getElement(s)-1;
-    // printf("Here : %d \n", curr);
     if(G->color[curr] == WHITE) {
       visit(G, ret, curr, &t);
     }  
   }
 
   clear(s);
+  
+  // fill the original list with our values of decreasing finish time.
   for(moveTo(ret, 0); getIndex(ret) >= 0; moveNext(ret)) {
-    // fprintf(stdout," %d ", getElement(ret));
       append(s, getElement(ret)+1);
   }
+
+  freeList(&ret);
 
 }
 
