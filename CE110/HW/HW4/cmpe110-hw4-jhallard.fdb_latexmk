@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1426410118 "cmpe110-hw4-jhallard.tex" "cmpe110-hw4-jhallard.pdf" "cmpe110-hw4-jhallard" 1426410118
+["pdflatex"] 1426460837 "cmpe110-hw4-jhallard.tex" "cmpe110-hw4-jhallard.pdf" "cmpe110-hw4-jhallard" 1426460837
   "/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1284331290 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty" 1335995445 7612 c47308d923ec19888707b0f1792b326a ""
@@ -21,6 +21,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty" 1362954379 4082 502152465aedb8f6a3c4b0b7c0fa8ae5 ""
   "/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty" 1362954379 2637 846ebe982d3549c7ede7ce135456f54a ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/article.cls" 1254151887 20571 b8bd218bf2e18b4f5817ee643cd9c515 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty" 1254151887 5022 2ec7815b07dc68e65542e23a180bc839 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo" 1254151887 9058 640f9c40a6d912e30839a669c8a999ec ""
   "/usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty" 1160175134 20521 e5d13d98d57bd53d4fed3aa61bd29c86 ""
   "/usr/share/texlive/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
@@ -37,11 +38,12 @@
   "/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty" 1335995445 22417 c74ff4af6a1aa2b65d1924020edbbe11 ""
   "/usr/share/texlive/texmf-dist/tex/latex/oberdiek/pdflscape.sty" 1335995445 6534 e0e842a7712d799f3e6bbcbedd28e578 ""
   "/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def" 1306616590 55368 3c8a0d99822330f2dfabc0dfb09ce897 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/rotating/rotating.sty" 1238284825 7131 a49b179ae7108fe42935176733099fc0 ""
   "/usr/share/texlive/texmf-dist/tex/latex/tools/afterpage.sty" 1254151720 3949 89434e99c8254edc84c9da65f8a03a7f ""
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texlive/texmf-dist/tex/latex/wrapfig/wrapfig.sty" 1137111090 26220 3701aebf80ccdef248c0c20dd062fea9 ""
-  "cmpe110-hw4-jhallard.aux" 1426410118 129 996a5f033744ebe974b2499c1c2481a0 ""
-  "cmpe110-hw4-jhallard.tex" 1426410115 6665 25aab389381a45f5b7835fa582c50f08 ""
+  "cmpe110-hw4-jhallard.aux" 1426460837 147 dc9bfc61d984300c9775dbc65220c491 ""
+  "cmpe110-hw4-jhallard.tex" 1426460835 8172 3cabf67546edba23412f9c759f8a34bb ""
   (generated)
   "cmpe110-hw4-jhallard.pdf"
   "cmpe110-hw4-jhallard.aux"

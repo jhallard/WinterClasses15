@@ -9,6 +9,7 @@
 \usepackage{amssymb}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{rotating}
 \usepackage[margin=0.6in]{geometry}
 
 % \setlength{\voffset}{-0.5in}
@@ -59,21 +60,27 @@ Let.s indicate the requests as follows: \\
 
 Note that a Pwr to a local cache will trigger a RRx to all the other caches connected to the bus. a Prd will trigger a RRd. Either RRx or RRd in occasions could also trigger a BWb. Run the following accesses and complete the table. Assume all the accessing belong to the same multithreaded program. For each step, specify the coherency messages that the request will trigger, and state of the coherency state for the cachelines that changes due to the access. \\
 
-
-\begin{table}[H]
+\begin{sidewaystable}
 \caption{Q1 Calculations} \label{tab:q1calc} 
 \begin{center}
-\begin{tabular}{| l | l | l | l | l | l | l | l | l |}
+\begin{tabular}{| l | l | l | l | l | l | l | l | l | l | l |}
 \hline
-Address       & Request    & Set Index & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
-\T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0xF40}     &  \T{write} & \T{30 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{1}  & \T{0}     & \T{96} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
-\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0x000]}    &      \T{0}      & \T{0}    \\ \hline
-\T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16} & \T{D[0x100F00]} &      \T{0}      & \T{0}    \\ \hline
+              &   Core     & Instr.        & Addr.  & L1 Access & L1 C-State  & L1-L2 B         &   L2 C-State  & L2 Access & L2 State & L1 State   \\ \hline
+ 0            &  \T{read}  & \T{ 2}        & \T{0}  & \T{0}     & \T{0}       & \T{M[0x100]}    &      \T{0}    & \T{0}     &          &            \\ \hline
+ 1            &  \T{write} & \T{ 30}       & \T{1}  & \T{1}     & \T{0}       & \T{D[0xF00]}    &      \T{0}    & \T{0}     &          &            \\ \hline
+ 2            &  \T{read}  & \T{ 0}        & \T{1}  & \T{0}     & \T{96}      & \T{M[0xC00000]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 3            &  \T{write} & \T{ 0}        & \T{1}  & \T{1}     & \T{0}       & \T{D[0x000]}    &      \T{0}    & \T{0}     &          &            \\ \hline
+ 4            &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 5            &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 6            &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 7            &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 8            &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 9            &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 10           &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
+ 11           &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16}      & \T{D[0x100F00]} &      \T{0}    & \T{0}     &          &            \\ \hline
 \end{tabular}
 \end{center}
-\end{table}
+\end{sidewaystable}
 
 
 
