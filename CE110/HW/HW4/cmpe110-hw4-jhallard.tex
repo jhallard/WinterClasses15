@@ -1,0 +1,157 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage[margin=0.6in]{geometry}
+
+% \setlength{\voffset}{-0.5in}
+\setlength{\headsep}{7pt}
+\newcommand{\suchthat}{\;\ifnum\currentgrouptype=16 \middle\fi|\;}
+\newcommand{\answer}{\textbf{Answer : }}
+\newcommand{\T}{\texttt}
+\newcommand{\V}{\verb}
+\newcommand{\benu}{\begin{enumerate}}
+\newcommand{\enu}{\end{enumerate}}
+
+
+%===========---------================
+% Author John H Allard
+% CMPE 110, HW #2
+% December 10th, 2014
+%===========---------================
+
+\begin{document}
+    % \vspace*{\stretch{-0.5}}
+   \begin{center}
+      \Large\textbf{CMPE 110 Homework \#3}\\
+      \large\texttt{John Allard} \\
+      \small\texttt{February 23nd, 2015} \\
+      \small\texttt{jhallard@ucsc.edu}
+   \end{center}
+   % \vspace*{\stretch{-0.5}}
+
+
+\benu
+
+%==============================%
+% ======== PROBLEM #1 ======== %
+%==============================%
+\item \textbf{Question \#1 - Cache Coherency} \
+Assume we have the following quad core system : (picture shown in handout). \\
+
+The processor is 32-bit and supports 32-bit virtual address and 32-bit physical address. Each core has its own dedicated IL1 and DL1 for instruction and data cache. L1 cacheline size of all the caches are 4-words. L1 is 4-way set associative, with 4KB size. core0 and core 1 share the same L2 cache. core2 and core 3 share the same L2 cache. L2 line size is 16-word, it is a 8-way set associative cache with 64KB size each. Assume the processor implements MESI cache coherence protocol. Note that for each cache, the requests are divided into two categories. \\
+a) requests coming from above (from processor) \\
+b) requests coming from below (other processors). \\
+Let.s indicate the requests as follows: \\
+\textbf{Prd}: Read request from the processor. \\
+\textbf{Pwr}: Write request from the processor \\
+\textbf{RRd}: Read request from a remote processor \\
+\textbf{RRx}: Read request from a remote processor with the intention to modify the data (this could be triggered by a Pwr of another processor in the system). \\
+\textbf{BWb}: Bus Write back \\
+\textbf{BDis}: Displacement, which is the cache response to a Brd or Brx request. (We can ignore this for now). \\
+
+Note that a Pwr to a local cache will trigger a RRx to all the other caches connected to the bus. a Prd will trigger a RRd. Either RRx or RRd in occasions could also trigger a BWb. Run the following accesses and complete the table. Assume all the accessing belong to the same multithreaded program. For each step, specify the coherency messages that the request will trigger, and state of the coherency state for the cachelines that changes due to the access. \\
+
+
+\begin{table}[H]
+\caption{Q1 Calculations} \label{tab:q1calc} 
+\begin{center}
+\begin{tabular}{| l | l | l | l | l | l | l | l | l |}
+\hline
+Address       & Request    & Set Index & Valid  & Modified  & Tag    & Data            & Caused Replace  & Write-back?    \\ \hline
+\T{0x128}     &  \T{read}  & \T{ 2 }       & \T{0}  & \T{0}     & \T{0}  & \T{M[0x100]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xF40}     &  \T{write} & \T{30 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0xF00]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0xC00024}  &  \T{read}  & \T{ 0 }       & \T{1}  & \T{0}     & \T{96} & \T{M[0xC00000]} &      \T{0}      & \T{0}    \\ \hline
+\T{0x014}     &  \T{write} & \T{ 0 }       & \T{1}  & \T{1}     & \T{0}  & \T{D[0x000]}    &      \T{0}      & \T{0}    \\ \hline
+\T{0x100F44}  &  \T{read}  & \T{ 30}       & \T{1}  & \T{0}     & \T{16} & \T{D[0x100F00]} &      \T{0}      & \T{0}    \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+
+%==============================%
+% ======== PROBLEM #2 ======== %
+%==============================%
+
+\item \textbf{Question \#2 -  Memory Mapping Impact} \\ 
+
+Assume we have the following single threaded code: (Given in the handout) \\
+
+\benu
+
+% ======= Question 2.A ======= %
+\item \textbf{Question 2.A -  Single-threaded vs Multi-threaded} \\
+Assume data in each of the a, b, and c matrices are stored in the memory in the following way: \\
+
+Assume the same cache hierarchy as in Question 1. How many data cache misses is the single threaded version to have? How about the multithreaded version? Does the average data memory access change between running the single threaded and multithreaded? Does it matter which thread is mapped to which processor? Justify your answer. \\
+
+\verb, addr: a[0][0] ,\\
+\verb, addr+0x4: a[0][1] ,\\
+\verb, ... ,\\
+\verb, addr+0x1C: a[0][7] ,\\
+\verb, addr+0x20: a[1][0] ,\\
+\verb, ... ,\\
+\verb, addr+0x3C: a[1][7] ,\\
+\verb, ... ,\\
+
+
+% ======= Question 2.B ======= %
+\item \textbf{Question 2.B - New Memory Mapping} \\ 
+
+If we change the memory mapping as follows, how would it change the cache hit rate? You don’t need to compute the exact cache hit rate, but provide enough justification for your answer, particularly from a locality perspective (you can list the data addresses a sample thread touches to guide you). Which version would have a better performance? \\
+
+\verb, addr: a[0][0] , \\
+\verb, addr+0x4: a[1][0] , \\
+\verb, ... , \\
+\verb, addr+0x1C: a[7][0] , \\
+\verb, addr+0x20: a[0][1] , \\
+\verb, ... , \\
+\verb, addr+0x3C: a[7][1] , \\
+\verb, ... , \\
+
+\answer 
+
+  
+% ======= Question 2.C ======= %
+\item \textbf{Question 2.C - Pipelined Write Hit Path} \\
+
+Assume you run the program multiple times. Does the cache hit rate changes assuming running only the single threaded program across different runs? How about the multithreaded across different runs? What is the source of variation?
+
+
+% ======= Question 2.D ======= %
+\item \textbf{Question 2.D - Reduction Stage} \\
+
+The provided code computes the absolute difference of two blocks of an image. This is used to find the difference between consecutive frames in video encoding. Eventually the difference of two blocks needs to be converted to a scalar data. The following code snippet shows the code:
+
+\verb, int reduction ( int **c ) { ,\\
+\verb, int sum = 0; ,\\
+\verb, for( int i = 0; i < 4; i++ ) { ,\\
+\verb, for( int j = 0; j < 8; j++ ) { ,\\
+\verb, sum += c[i][j]; ,\\
+\verb, } ,\\
+\verb, } ,\\
+\verb, return sum; ,\\
+\verb, } ,\\
+\verb, void main () { ,\\
+\verb, ... ,\\
+\verb. adiff( a, b, c ); .\\
+\verb, int sad = reduction( c ); // Sum of Absolute difference ,\\
+\verb, ... ,\\
+\verb, ,
+
+How do you suggest parallelizing the reduction function? Ignore all other instructions, and just consider the add operation and the data dependency. Assume the add operation takes 1 cycle. What is the minimum number of cycles to finish the reduction, in theory?
+
+\enu % end problem #2 sub-problems
+
+
+\enu
+\end{document}
