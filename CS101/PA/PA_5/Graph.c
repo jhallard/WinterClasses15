@@ -9,7 +9,7 @@
 
 #include "Graph.h"
 
-// These defines are used to keep track of the vertex 'colors' during BFS
+// These defines are used to keep track of the vertex 'colors' during DFS
 #define WHITE 0
 #define GRAY  1
 #define BLACK 2

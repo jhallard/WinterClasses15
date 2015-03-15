@@ -1,10 +1,10 @@
 John Allard Jr.
 CruzID : jhallard
 ID : 1437547
-CS101 PA_4
+CS101 PA_5
 1/16/2015
 
-This is the README file for programming assignment #4, CMPS 101 at UCSC during Winter quarter, 2015.
+This is the README file for programming assignment #5, CMPS 101 at UCSC during Winter quarter, 2015.
 This project contains the following files
 
 List.c
@@ -27,9 +27,9 @@ GraphTest.c
 ====================
 This is a simple test file for the Graph datatype. We add a bunch of edges to a large graph and perform some BFS runs on them.
 
-FindPath.c
+FindComponents.c
 ====================
-This file defines the FindPath command line utility. This utility takes in two arguments, an input file and an output file. The input file defines a graph and the paths it would like to find on that graph. The program writes this information to the output file before exiting.
+This file defines the FindComponents command line utility. This utility takes in two arguments, an input file and an output file. The input file defines structure of a directed graph over a set of contiguous interger vertices. It then performs DFS twice using a special algorithm to find the strongly connected components of the graph. These components are printed to the output file.
 
 README.txt
 ====================

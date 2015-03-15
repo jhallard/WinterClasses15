@@ -4,8 +4,8 @@
 // ||  CruzID  - jhallard                                             || 
 // ||  Project - Programming Assignment #4                            ||                
 // ||  File    - FindPath.c                                           || 
-// ||  Info    - Command-line program for finding the shortest path   ||
-// ||            between two vertices in a given graph.               ||                              
+// ||  Info    - Command-line program for finding the strongly        ||                              
+// ||             connected componenets of a digraph                  ||
 // |===================================================================|
 
 #include <stdio.h>

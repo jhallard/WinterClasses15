@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-#  Makefile for CMPS 101 Programming Assignment 4
+#  Makefile for CMPS 101 Programming Assignment 5
 #
 #  make                     makes FindComponents
 #  make GraphClient         makes GraphClient
