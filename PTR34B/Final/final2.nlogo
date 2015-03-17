@@ -1,5 +1,6 @@
 turtles-own [greed]
 patches-own [health]
+globals [soc-resources]
 
 
 to setup
@@ -12,7 +13,7 @@ end
 to setup-patches
   ask patches [ ifelse random 100 < initial-forest-coverage 
     [set health 10 - (initial-forest-coverage - random 40) / 100 set pcolor get-patch-color (health)]
-    [set health 0  + (initial-forest-coverage + random 40) / 100 set pcolor get-patch-color (health) ] 
+    [set health 0  + (initial-forest-coverage + random 40) / 100 set pcolor get-patch-color (health)] 
   ]
 end
 
@@ -35,7 +36,7 @@ to act-on-greed
   ask turtles [
     ifelse greed > 5 
     [set health health - (greed - 5)]
-    [set health health + (greed) ]
+    [set health health + (greed)]
   ]
   ask patches [
    set pcolor get-patch-color (health) 
@@ -43,19 +44,19 @@ to act-on-greed
 end
 
 to move-turtles
-  ask turtles [fd 0.5 rt random 90]
+  ask turtles [fd random 10 / 10 rt random 90 lt random 60]
 end
 
 to-report get-patch-color [x]
   ifelse health > 5 
-  [report  61 + x ]
+  [if health > 10 [set health 9] report  61 + x ]
   [report  31 + x ]
 end
 
 to-report get-turtle-color [x]
   ifelse greed > 5
-  [report 11 + 2 * greed / 10]
-  [report 91 + 2 * greed / 10 ]
+  [if greed > 10 [set greed 8] report 11 + 2 * greed / 10]
+  [if greed < 0  [set greed 2] report 91 + 2 * greed / 10 ]
 end
 
 @#$#@#$#@
@@ -80,8 +81,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -144,7 +145,7 @@ initial-forest-coverage
 initial-forest-coverage
 0
 100
-25
+44
 1
 1
 NIL
