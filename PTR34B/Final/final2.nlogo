@@ -17,22 +17,45 @@ to setup-patches
 end
 
 to setup-turtles
-  create-turtles initial-num-turtles [ set size 2 setxy random-xcor random-ycor set greed random 20 ifelse greed > 10 [set color 11 + greed / 10][set color 91 + greed / 10 ] ]
+  create-turtles initial-num-turtles [ set size 1.4 setxy random-xcor random-ycor set greed health set color get-turtle-color (greed) ]
 end
 
 to go
+  change-greed
+  act-on-greed
   move-turtles
   tick
 end
 
+to change-greed
+  ask turtles [set greed greed + (health - 5) if greed > 10 [set greed 9] if greed < 0 [set greed 1] set color get-turtle-color (greed)]
+end
+
+to act-on-greed
+  ask turtles [
+    ifelse greed > 5 
+    [set health health - (greed - 5)]
+    [set health health + (greed) ]
+  ]
+  ask patches [
+   set pcolor get-patch-color (health) 
+  ]
+end
+
 to move-turtles
-  ask turtles [fd 0.1 rt random 180]
+  ask turtles [fd 0.5 rt random 90]
 end
 
 to-report get-patch-color [x]
   ifelse health > 5 
   [report  61 + x ]
   [report  31 + x ]
+end
+
+to-report get-turtle-color [x]
+  ifelse greed > 5
+  [report 11 + 2 * greed / 10]
+  [report 91 + 2 * greed / 10 ]
 end
 
 @#$#@#$#@
@@ -72,7 +95,7 @@ initial-num-turtles
 initial-num-turtles
 0
 50
-10
+34
 1
 1
 NIL
@@ -121,7 +144,7 @@ initial-forest-coverage
 initial-forest-coverage
 0
 100
-89
+25
 1
 1
 NIL
