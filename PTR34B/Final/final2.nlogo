@@ -25,38 +25,60 @@ to go
   change-greed
   act-on-greed
   move-turtles
+  regrow-forest
   tick
 end
 
 to change-greed
-  ask turtles [set greed greed + (health - 5) if greed > 10 [set greed 9] if greed < 0 [set greed 1] set color get-turtle-color (greed)]
+  ask turtles [set greed get-average-health (neighbors) + (health - 5) / 2 if greed > 10 [set greed 9] if greed < 0 [set greed 1] set color get-turtle-color (greed)]
 end
+
 
 to act-on-greed
   ask turtles [
     ifelse greed > 5 
-    [set health health - (greed - 5)]
-    [set health health + (greed)]
+    [set health health - (greed - 5) / (11 - turtle-impact)]
+    [set health health + (greed + 1) / (11 - turtle-impact)]
   ]
   ask patches [
    set pcolor get-patch-color (health) 
   ]
 end
 
+to regrow-forest
+  ask patches [
+   if random 10 < natural-regrowth-rate
+   [if health < 8 and health > 2 [set health health + (10 - health) / (20)] ] 
+  ]
+end
 to move-turtles
-  ask turtles [fd random 10 / 10 rt random 90 lt random 60]
+  ask turtles [
+    let empty-patches patches in-radius (random 2 + 1) with [ count turtles-here < 1]
+    ifelse greed > 5
+    [if health < 2 or random 11 > (11 - movement-tendency) [if any? empty-patches [move-to max-one-of empty-patches [health] ]]]
+    [if health > 8 or random 11 > (11 - movement-tendency) [if any? empty-patches [move-to min-one-of empty-patches [health] ]]]
+  ]
+  
 end
 
 to-report get-patch-color [x]
   ifelse health > 5 
   [if health > 10 [set health 9] report  61 + x ]
-  [report  31 + x ]
+  [if health < 0 [set health 0] report  31 + x ]
 end
 
 to-report get-turtle-color [x]
   ifelse greed > 5
   [if greed > 10 [set greed 8] report 11 + 2 * greed / 10]
   [if greed < 0  [set greed 2] report 91 + 2 * greed / 10 ]
+end
+
+to-report get-average-health [temp_set]
+  let sums 0
+  ask temp_set  [
+    set sums sums + health
+  ]
+  report sums / 8
 end
 
 @#$#@#$#@
@@ -145,7 +167,52 @@ initial-forest-coverage
 initial-forest-coverage
 0
 100
-44
+4
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+701
+68
+873
+101
+turtle-impact
+turtle-impact
+1
+10
+10
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+700
+122
+912
+155
+natural-regrowth-rate
+natural-regrowth-rate
+0
+10
+1
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+701
+173
+904
+206
+movement-tendency
+movement-tendency
+1
+10
+2
 1
 1
 NIL
