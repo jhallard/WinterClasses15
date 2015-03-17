@@ -1,7 +1,8 @@
-turtles-own [energy]
+turtles-own [greed]
+patches-own [health]
+
 
 to setup
-  set-default-shape turtles "square"
   clear-all
   setup-patches
   setup-turtles
@@ -9,70 +10,36 @@ to setup
 end
 
 to setup-patches
-  ask patches [ ifelse random 10 > 5 [set pcolor green]
-    [set pcolor brown] ]
+  ask patches [ ifelse random 100 < initial-forest-coverage 
+    [set health 10 - (initial-forest-coverage - random 40) / 100 set pcolor get-patch-color (health)]
+    [set health 0  + (initial-forest-coverage + random 40) / 100 set pcolor get-patch-color (health) ] 
+  ]
 end
 
 to setup-turtles
-  create-turtles number [ setxy random-xcor random-ycor ]
+  create-turtles initial-num-turtles [ set size 2 setxy random-xcor random-ycor set greed random 20 ifelse greed > 10 [set color 11 + greed / 10][set color 91 + greed / 10 ] ]
 end
 
 to go
   move-turtles
-  eat-grass
-  reproduce
-  check-death
-  regrow-grass
   tick
 end
 
-to reproduce
-  ask turtles [ 
-    if energy > 50 [
-      home
-      set energy energy - 50
-      hatch 1 [ set energy 5 ]
-    ]
-  ]
-end
-
-to check-death
-  ask turtles [   
-    if energy <= 0 [ die ]
-  ]
-  ask turtles
-  [ ask turtles in-radius 2
-      [ set pcolor red ] ]
-end
-
-to regrow-grass
-  ask patches [
-    if random 100 < 3 [ set pcolor green ]
-  ]
-end
-
-to eat-grass
-  ask turtles [
-    if pcolor = green [
-      set pcolor black
-      set energy energy + 10
-    ]
-  ]
-end
-
 to move-turtles
-  ask turtles [
-    right random 360
-    forward 1
-    set energy energy - 1
-    set color energy
-  ]
+  ask turtles [fd 0.1 rt random 180]
 end
+
+to-report get-patch-color [x]
+  ifelse health > 5 
+  [report  61 + x ]
+  [report  31 + x ]
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+245
 10
-649
+684
 470
 16
 16
@@ -90,17 +57,32 @@ GRAPHICS-WINDOW
 16
 -16
 16
-1
-1
+0
+0
 1
 ticks
 30.0
 
+SLIDER
+9
+348
+191
+381
+initial-num-turtles
+initial-num-turtles
+0
+50
+10
+1
+1
+NIL
+HORIZONTAL
+
 BUTTON
-24
-37
-97
-70
+13
+35
+86
+68
 NIL
 setup\n
 NIL
@@ -114,12 +96,12 @@ NIL
 1
 
 BUTTON
-24
-129
-87
-162
+101
+35
+164
+68
 NIL
-go
+go\n
 T
 1
 T
@@ -130,27 +112,16 @@ NIL
 NIL
 0
 
-MONITOR
-692
-30
-940
-75
-NIL
-count patches with [pcolor = green]
-17
-1
-11
-
 SLIDER
-22
-234
-194
-267
-number
-number
-1
+-2
+293
+211
+326
+initial-forest-coverage
+initial-forest-coverage
+0
 100
-10
+89
 1
 1
 NIL
