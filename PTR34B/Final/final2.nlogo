@@ -1,6 +1,6 @@
-turtles-own [greed]
+turtles-own [greed base-greed resources]
 patches-own [health]
-globals [soc-resources]
+globals [soc-resources net-health time]
 
 
 to setup
@@ -11,17 +11,32 @@ to setup
 end
 
 to setup-patches
-  ask patches [ ifelse random 100 < initial-forest-coverage 
-    [set health 10 - (initial-forest-coverage - random 40) / 100 set pcolor get-patch-color (health)]
-    [set health 0  + (initial-forest-coverage + random 40) / 100 set pcolor get-patch-color (health)] 
+  set soc-resources random 100 + 50
+  ask patches [ 
+    ifelse random 100 < initial-forest-coverage 
+      [set health 10 - (initial-forest-coverage - random 40) / 100 set pcolor get-patch-color (health)]
+      [set health 0  + (initial-forest-coverage + random 40) / 100 set pcolor get-patch-color (health)] 
   ]
 end
 
 to setup-turtles
-  create-turtles initial-num-turtles [ set size 1.4 setxy random-xcor random-ycor set greed health set color get-turtle-color (greed) ]
+    create-turtles initial-num-turtles [ 
+    set size 1.4 
+    setxy random-xcor random-ycor 
+    set base-greed random inherent-greed
+    ifelse random-start-greed 
+    [set greed random (10 - base-greed) + base-greed]
+    [set greed get-average-health(neighbors) ]
+    set resources random 10 + resource-needs 
+    set color get-turtle-color (greed) 
+  ]
 end
 
 to go
+  setup-plots
+  plotxy time net-health
+  set time time + 1
+  set net-health get-net-health
   change-greed
   act-on-greed
   move-turtles
@@ -30,15 +45,30 @@ to go
 end
 
 to change-greed
-  ask turtles [set greed get-average-health (neighbors) + (health - 5) / 2 if greed > 10 [set greed 9] if greed < 0 [set greed 1] set color get-turtle-color (greed)]
+  ask turtles [
+    let adjustment greed-inertia / 2 + 1
+    let factor (resources - resource-needs)
+    ifelse factor > 0
+    [set factor 0]
+    [set factor 0]
+    set greed factor + (greed + (health - 5 + get-average-health (neighbors) - 5) / adjustment)
+    if greed > 10 [set greed 9]
+    if greed < base-greed [set greed base-greed] 
+    set color get-turtle-color (greed)]
 end
 
 
 to act-on-greed
   ask turtles [
-    ifelse greed > 5 
-    [set health health - (greed - 5) / (11 - turtle-impact)]
-    [set health health + (greed + 1) / (11 - turtle-impact)]
+    set resources resources - 1
+    let before_health health
+    ifelse greed > 5
+    [set health health - (greed - 1) / (11 - logger-impact)]
+    [set health health + (greed + 2) / (11 - hippy-impact)]
+    let diff health - before_health
+    if diff > 0
+    [ set resources resources + 2 * diff ]
+    print resources
   ]
   ask patches [
    set pcolor get-patch-color (health) 
@@ -47,16 +77,16 @@ end
 
 to regrow-forest
   ask patches [
-   if random 10 < natural-regrowth-rate
-   [if health < 8 and health > 2 [set health health + (10 - health) / (20)] ] 
+   if random 15 < natural-regrowth-rate
+   [if health < 9 and health > 1 [set health health + (natural-regrowth-rate) / (30)] ] 
   ]
 end
 to move-turtles
   ask turtles [
     let empty-patches patches in-radius (random 2 + 1) with [ count turtles-here < 1]
     ifelse greed > 5
-    [if health < 2 or random 11 > (11 - movement-tendency) [if any? empty-patches [move-to max-one-of empty-patches [health] ]]]
-    [if health > 8 or random 11 > (11 - movement-tendency) [if any? empty-patches [move-to min-one-of empty-patches [health] ]]]
+    [if health < 2 or random 11 > (11 - movement-tendency) [if any? empty-patches [set heading towards max-one-of empty-patches [health]  move-to max-one-of empty-patches [health] ]]]
+    [if health > 8 or random 11 > (11 - movement-tendency) [if any? empty-patches [set heading towards min-one-of empty-patches [health] move-to min-one-of empty-patches [health] ]]]
   ]
   
 end
@@ -81,12 +111,21 @@ to-report get-average-health [temp_set]
   report sums / 8
 end
 
+to-report get-net-health 
+  let total 0
+  ask patches [
+    set total total + health
+  ]
+  set total total / count patches
+  report total
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
-245
-10
-684
-470
+322
+11
+761
+471
 16
 16
 13.0
@@ -110,10 +149,10 @@ ticks
 30.0
 
 SLIDER
-9
-348
-191
-381
+14
+154
+196
+187
 initial-num-turtles
 initial-num-turtles
 0
@@ -159,14 +198,29 @@ NIL
 0
 
 SLIDER
--2
-293
-211
-326
+5
+113
+218
+146
 initial-forest-coverage
 initial-forest-coverage
 0
 100
+90
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+847
+60
+1019
+93
+logger-impact
+logger-impact
+1
+10
 4
 1
 1
@@ -174,25 +228,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-701
-68
-873
-101
-turtle-impact
-turtle-impact
-1
-10
-10
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-700
-122
-912
-155
+846
+114
+1058
+147
 natural-regrowth-rate
 natural-regrowth-rate
 0
@@ -204,19 +243,108 @@ NIL
 HORIZONTAL
 
 SLIDER
-701
-173
-904
-206
+847
+165
+1050
+198
 movement-tendency
 movement-tendency
 1
 10
-2
+5
 1
 1
 NIL
 HORIZONTAL
+
+SLIDER
+848
+216
+1020
+249
+inherent-greed
+inherent-greed
+0
+4
+3
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+849
+267
+1021
+300
+greed-inertia
+greed-inertia
+1
+10
+6
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+13
+73
+211
+106
+random-start-greed
+random-start-greed
+0
+1
+-1000
+
+SLIDER
+851
+320
+1023
+353
+resource-needs
+resource-needs
+1
+10
+4
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+846
+18
+1018
+51
+hippy-impact
+hippy-impact
+1
+10
+6
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+6
+289
+303
+439
+forest-health
+time
+average health
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plotxy time get-net-health"
 
 @#$#@#$#@
 ## WHAT IS IT?
