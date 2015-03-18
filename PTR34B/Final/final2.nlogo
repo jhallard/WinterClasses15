@@ -1,6 +1,7 @@
 ;;; @author John H. Allard Jr.
 ;;; @date   03-12-15
 ;;; @info   This file contains the code for my final project for porter 34b. For a complete description of the program see the 'info' section
+extensions [sound]
 
 turtles-own [greed base-greed resources] ;;; people have a current greed level, a base (lowest) greed level, and a set of resources
 patches-own [health] ;;; patches have a health (0-10), 0 being dead and 10 being lush forest
@@ -16,7 +17,7 @@ to setup
 end
 
 to setup-patches
-  set soc-resources random 100 + 50
+  set soc-resources initial-resources
   ask patches [ 
     ;;; here we go through and set a weighted-random distribution of healthy/dead forests
     ifelse random 100 < initial-forest-coverage 
@@ -37,26 +38,33 @@ to setup-turtles
   ]
    set num-hippies 0
    set num-loggers 0
-  count-factions
+   count-factions
 end
 
+;; main loop for our program
 to go
   count-factions
   set time time + 1
   set net-health get-net-health
-  change-greed
-  act-on-greed
-  move-turtles
-  regrow-forest
+  change-greed  ;;; change turtle greed based on environment and net-resources
+  act-on-greed  ;;; have the turtles act on the new greed values (by logging or planting trees)
+  move-turtles  ;;; move the turtles in a coordinated fashion
+  regrow-forest ;;; have the forest regrow slightly
   tick
 end
 
+;;; This function will go through every turtle, and change its greed value based on a few different characteristics.
+;;; The first characteristic is the surrounding forests for the specific turtle, a dead forest will lower the greed, a dense lush forest
+;;; will increase the greed. The next is the greed intertia, which is the tendency for turtles to not want to change thier current greed level.
+;;; Finally, we also consider the net resources available to society relative to its population, low stored resources will increase demand for lumber
+;;; thus increasing greed, while a glut of resources will lower greedy behavior.
 to change-greed
   ask turtles [
     let adjustment greed-inertia / 2 + 1
     let factor (soc-resources / count turtles) - resource-needs
-    ifelse factor > 0
+    if factor > 2
     [set factor -1]
+    if factor < -2
     [set factor 1]
     set greed factor + (greed + (health - 5 + get-average-health (neighbors) - 5) / adjustment)
     if greed > 10 [set greed 9]
@@ -64,9 +72,13 @@ to change-greed
     set color get-turtle-color (greed)]
 end
 
+;;; This function goes through each turtle and has it act on its greed level by either increasing or decreasing the health of the forest that it
+;;; is currently standing on. The impacts of the turtle on its current patch are wieghted by the logger-impact and hippy-impact slider values accordingly.
+;;; finally, we adjust the net resources available to society based on the change in health of the forest. If we log, thus decreasing health, we gain resources
+;;; for sicety
 to act-on-greed
   ask turtles [
-    set soc-resources soc-resources - 0.5
+    set soc-resources soc-resources - resource-usage
     let before_health health
     ifelse greed > 5
     [set health health - (greed + 1) / (11 - logger-impact)]
@@ -77,7 +89,7 @@ to act-on-greed
   ]
   let factor (soc-resources / (count turtles + 1))
   if factor < 0.5 * resource-needs [if any? turtles [ ask one-of turtles [die] set soc-resources soc-resources + resource-needs]]
-  if factor > 2 * resource-needs [if any? turtles [spawnturtle set soc-resources soc-resources - resource-needs]]
+  if factor > 2 * resource-needs [if any? turtles [spawnturtle beep set soc-resources soc-resources - resource-needs]]
   ask patches [
    set pcolor get-patch-color (health) 
   ]
@@ -186,8 +198,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-1
-1
+0
+0
 1
 ticks
 30.0
@@ -201,7 +213,7 @@ initial-num-turtles
 initial-num-turtles
 0
 50
-11
+9
 1
 1
 NIL
@@ -250,7 +262,7 @@ initial-forest-coverage
 initial-forest-coverage
 0
 100
-73
+89
 1
 1
 NIL
@@ -265,7 +277,7 @@ logger-impact
 logger-impact
 1
 10
-5
+4
 1
 1
 NIL
@@ -280,7 +292,7 @@ natural-regrowth-rate
 natural-regrowth-rate
 0
 10
-1
+7
 1
 1
 NIL
@@ -295,7 +307,7 @@ movement-tendency
 movement-tendency
 1
 10
-3
+5
 1
 1
 NIL
@@ -310,7 +322,7 @@ inherent-greed
 inherent-greed
 0
 4
-1
+2
 1
 1
 NIL
@@ -325,7 +337,7 @@ greed-inertia
 greed-inertia
 1
 10
-4
+5
 1
 1
 NIL
@@ -351,7 +363,7 @@ resource-needs
 resource-needs
 1
 10
-4
+1
 1
 1
 NIL
@@ -366,7 +378,7 @@ hippy-impact
 hippy-impact
 1
 10
-5
+6
 1
 1
 NIL
@@ -411,6 +423,36 @@ logger-nums
 0
 1
 11
+
+SLIDER
+850
+369
+1022
+402
+initial-resources
+initial-resources
+100
+1000
+100
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+850
+418
+1022
+451
+resource-usage
+resource-usage
+0.0
+1.0
+0.95
+0.05
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
