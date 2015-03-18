@@ -5,7 +5,7 @@ extensions [sound]
 
 turtles-own [greed base-greed resources] ;;; people have a current greed level, a base (lowest) greed level, and a set of resources
 patches-own [health] ;;; patches have a health (0-10), 0 being dead and 10 being lush forest
-globals [soc-resources net-health time num-hippies num-loggers] ;;; just some simple tracking variables for plotting
+globals [soc-resources net-health time num-hippies num-loggers beat-count] ;;; just some simple tracking variables for plotting
 
 
 to setup
@@ -17,6 +17,7 @@ to setup
 end
 
 to setup-patches
+  set beat-count random 10
   set soc-resources initial-resources
   ask patches [ 
     ;;; here we go through and set a weighted-random distribution of healthy/dead forests
@@ -89,7 +90,7 @@ to act-on-greed
   ]
   let factor (soc-resources / (count turtles + 1))
   if factor < 0.5 * resource-needs [if any? turtles [ ask one-of turtles [die] set soc-resources soc-resources + resource-needs]]
-  if factor > 2 * resource-needs [if any? turtles [spawnturtle beep set soc-resources soc-resources - resource-needs]]
+  if factor > 2 * resource-needs [if any? turtles [spawnturtle set soc-resources soc-resources - resource-needs]]
   ask patches [
    set pcolor get-patch-color (health) 
   ]
@@ -172,6 +173,8 @@ to-report get-net-health
     set total total + health
   ]
   set total total / count patches
+  set beat-count beat-count + 1
+  if beat-count mod 3 = 1 [sound:play-note "TRUMPET" 2 * total 64 - 2 * total 0.01]
   report total
 end
 

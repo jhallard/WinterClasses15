@@ -1,7 +1,12 @@
-turtles-own [energy]
+breed [hippies hippy]
+breed [loggers logger]
+loggers-own [cuts]
+hippies-own [saves]
+patches-own [life]
 
 to setup
-  set-default-shape turtles "square"
+  set-default-shape hippies "square"
+  set-default-shape loggers "circle"
   clear-all
   setup-patches
   setup-turtles
@@ -9,63 +14,48 @@ to setup
 end
 
 to setup-patches
-  ask patches [ ifelse random 10 > 5 [set pcolor green]
-    [set pcolor brown] ]
+  ask patches [ ifelse random 10 > 5 
+    [set pcolor green set life 10]
+    [set pcolor brown set life 1 ] 
+  ]
 end
 
 to setup-turtles
-  create-turtles number [ setxy random-xcor random-ycor ]
+  create-hippies initial-num-hippies [ setxy random-xcor random-ycor set color blue ]
+  create-loggers initial-num-loggers [ setxy random-xcor random-ycor set color red ]
 end
 
 to go
-  move-turtles
-  eat-grass
-  reproduce
-  check-death
+  move-loggers
+  move-hippies
   regrow-grass
   tick
 end
 
-to reproduce
-  ask turtles [ 
-    if energy > 50 [
-      home
-      set energy energy - 50
-      hatch 1 [ set energy 5 ]
-    ]
-  ]
-end
-
-to check-death
-  ask turtles [   
-    if energy <= 0 [ die ]
-  ]
-  ask turtles
-  [ ask turtles in-radius 2
-      [ set pcolor red ] ]
-end
 
 to regrow-grass
   ask patches [
-    if random 100 < 3 [ set pcolor green ]
+    ifelse life > 5 
+    [ ask patches in-radius 2 [if life < 8 [set life life + 2 ] ] ]
+    [ ask patches in-radius 4 [if life > 2 [set life life - 2 ] ] ]
   ]
 end
 
-to eat-grass
-  ask turtles [
-    if pcolor = green [
-      set pcolor black
-      set energy energy + 10
-    ]
-  ]
-end
-
-to move-turtles
-  ask turtles [
+to move-loggers
+  ask loggers [
     right random 360
     forward 1
-    set energy energy - 1
-    set color energy
+    if pcolor = green [set life 0 set pcolor brown set cuts cuts + 1]
+    if cuts > 15 [die]
+  ]
+end
+
+to move-hippies
+  ask hippies [
+    right random 360
+    forward 1
+    if pcolor = brown [set life 8 set pcolor green set saves saves + 1]
+    if saves > 15 [die]
   ]
 end
 @#$#@#$#@
@@ -144,13 +134,28 @@ count patches with [pcolor = green]
 SLIDER
 22
 234
-194
+200
 267
-number
-number
+initial-num-hippies
+initial-num-hippies
 1
-100
-10
+20
+16
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+22
+278
+211
+311
+initial-num-loggers
+initial-num-loggers
+0
+40
+11
 1
 1
 NIL
