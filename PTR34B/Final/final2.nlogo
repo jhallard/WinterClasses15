@@ -1,6 +1,10 @@
-turtles-own [greed base-greed resources]
-patches-own [health]
-globals [soc-resources net-health time num-hippies num-loggers]
+;;; @author John H. Allard Jr.
+;;; @date   03-12-15
+;;; @info   This file contains the code for my final project for porter 34b. For a complete description of the program see the 'info' section
+
+turtles-own [greed base-greed resources] ;;; people have a current greed level, a base (lowest) greed level, and a set of resources
+patches-own [health] ;;; patches have a health (0-10), 0 being dead and 10 being lush forest
+globals [soc-resources net-health time num-hippies num-loggers] ;;; just some simple tracking variables for plotting
 
 
 to setup
@@ -14,6 +18,7 @@ end
 to setup-patches
   set soc-resources random 100 + 50
   ask patches [ 
+    ;;; here we go through and set a weighted-random distribution of healthy/dead forests
     ifelse random 100 < initial-forest-coverage 
       [set health 10 - (initial-forest-coverage - random 40) / 100 set pcolor get-patch-color (health)]
       [set health 0  + (initial-forest-coverage + random 40) / 100 set pcolor get-patch-color (health)] 
@@ -22,13 +27,12 @@ end
 
 to setup-turtles
     create-turtles initial-num-turtles [ 
-    set size 1.4 
-    setxy random-xcor random-ycor 
-    set base-greed random inherent-greed
+    set size 1.4  ;; easier to see
+    setxy random-xcor random-ycor  ;; random coordinates
+    set base-greed inherent-greed
     ifelse random-start-greed 
     [set greed random (10 - base-greed) + base-greed]
     [set greed get-average-health(neighbors) ]
-    set resources random 10 + resource-needs 
     set color get-turtle-color (greed) 
   ]
    set num-hippies 0
@@ -50,29 +54,30 @@ end
 to change-greed
   ask turtles [
     let adjustment greed-inertia / 2 + 1
-    let factor (resources - resource-needs)
+    let factor (soc-resources / count turtles) - resource-needs
     ifelse factor > 0
-    [set factor 0]
-    [set factor 0]
+    [set factor -1]
+    [set factor 1]
     set greed factor + (greed + (health - 5 + get-average-health (neighbors) - 5) / adjustment)
     if greed > 10 [set greed 9]
     if greed < base-greed [set greed base-greed] 
     set color get-turtle-color (greed)]
 end
 
-
 to act-on-greed
   ask turtles [
-    set resources resources - 1
+    set soc-resources soc-resources - 0.5
     let before_health health
     ifelse greed > 5
     [set health health - (greed + 1) / (11 - logger-impact)]
     [set health health + (greed + 1) / (11 - hippy-impact)]
     let diff health - before_health
-    if diff > 0
-    [ set resources resources + 2 * diff ]
-    print resources
+    set soc-resources soc-resources - diff
+    print soc-resources
   ]
+  let factor (soc-resources / (count turtles + 1))
+  if factor < 0.5 * resource-needs [if any? turtles [ ask one-of turtles [die] set soc-resources soc-resources + resource-needs]]
+  if factor > 2 * resource-needs [if any? turtles [spawnturtle set soc-resources soc-resources - resource-needs]]
   ask patches [
    set pcolor get-patch-color (health) 
   ]
@@ -81,7 +86,7 @@ end
 to regrow-forest
   ask patches [
    if random 15 < natural-regrowth-rate
-   [if health < 8 and health > 2 [set health health + (natural-regrowth-rate) / (30)] ] 
+   [if health <= 8 and health >= 1 [set health health + (natural-regrowth-rate) / (30)] ] 
    if health >= 10 [set health 10]
    if health <= 0 [set health 0]
   ]
@@ -94,6 +99,19 @@ to move-turtles
     [if health > 8 or random 11 > (11 - movement-tendency) [if any? empty-patches [set heading towards min-one-of empty-patches [health] move-to min-one-of empty-patches [health] ]]]
   ]
   
+end
+
+
+to spawnturtle
+    crt 1 [
+      set size 1.4  ;; easier to see
+      setxy random-xcor random-ycor  ;; random coordinates
+      set base-greed inherent-greed
+      ifelse random-start-greed 
+      [set greed random (10 - base-greed) + base-greed]
+      [set greed get-average-health(neighbors) ]
+      set color get-turtle-color (greed) 
+    ]
 end
 
 to count-factions 
@@ -183,7 +201,7 @@ initial-num-turtles
 initial-num-turtles
 0
 50
-29
+11
 1
 1
 NIL
@@ -232,7 +250,7 @@ initial-forest-coverage
 initial-forest-coverage
 0
 100
-44
+73
 1
 1
 NIL
@@ -247,7 +265,7 @@ logger-impact
 logger-impact
 1
 10
-10
+5
 1
 1
 NIL
@@ -262,7 +280,7 @@ natural-regrowth-rate
 natural-regrowth-rate
 0
 10
-0
+1
 1
 1
 NIL
@@ -277,7 +295,7 @@ movement-tendency
 movement-tendency
 1
 10
-1
+3
 1
 1
 NIL
@@ -292,7 +310,7 @@ inherent-greed
 inherent-greed
 0
 4
-0
+1
 1
 1
 NIL
@@ -307,7 +325,7 @@ greed-inertia
 greed-inertia
 1
 10
-9
+4
 1
 1
 NIL
@@ -333,7 +351,7 @@ resource-needs
 resource-needs
 1
 10
-5
+4
 1
 1
 NIL
@@ -348,7 +366,7 @@ hippy-impact
 hippy-impact
 1
 10
-2
+5
 1
 1
 NIL
