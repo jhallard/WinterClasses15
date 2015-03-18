@@ -1,10 +1,11 @@
 turtles-own [greed base-greed resources]
 patches-own [health]
-globals [soc-resources net-health time]
+globals [soc-resources net-health time num-hippies num-loggers]
 
 
 to setup
   clear-all
+  setup-plots
   setup-patches
   setup-turtles
   reset-ticks
@@ -30,11 +31,13 @@ to setup-turtles
     set resources random 10 + resource-needs 
     set color get-turtle-color (greed) 
   ]
+   set num-hippies 0
+   set num-loggers 0
+  count-factions
 end
 
 to go
-  setup-plots
-  plotxy time net-health
+  count-factions
   set time time + 1
   set net-health get-net-health
   change-greed
@@ -63,8 +66,8 @@ to act-on-greed
     set resources resources - 1
     let before_health health
     ifelse greed > 5
-    [set health health - (greed - 1) / (11 - logger-impact)]
-    [set health health + (greed + 2) / (11 - hippy-impact)]
+    [set health health - (greed + 1) / (11 - logger-impact)]
+    [set health health + (greed + 1) / (11 - hippy-impact)]
     let diff health - before_health
     if diff > 0
     [ set resources resources + 2 * diff ]
@@ -78,23 +81,45 @@ end
 to regrow-forest
   ask patches [
    if random 15 < natural-regrowth-rate
-   [if health < 9 and health > 1 [set health health + (natural-regrowth-rate) / (30)] ] 
+   [if health < 8 and health > 2 [set health health + (natural-regrowth-rate) / (30)] ] 
+   if health >= 10 [set health 10]
+   if health <= 0 [set health 0]
   ]
 end
 to move-turtles
   ask turtles [
     let empty-patches patches in-radius (random 2 + 1) with [ count turtles-here < 1]
-    ifelse greed > 5
+    ifelse greed > 5 
     [if health < 2 or random 11 > (11 - movement-tendency) [if any? empty-patches [set heading towards max-one-of empty-patches [health]  move-to max-one-of empty-patches [health] ]]]
     [if health > 8 or random 11 > (11 - movement-tendency) [if any? empty-patches [set heading towards min-one-of empty-patches [health] move-to min-one-of empty-patches [health] ]]]
   ]
   
 end
 
+to count-factions 
+  let n_h 0
+  let n_l 0
+  ask turtles [
+    ifelse greed >= 5 
+    [set n_l n_l + 1]
+    [set n_h n_h + 1]
+  ]
+  set num-hippies n_h
+  set num-loggers n_l
+end
+
+to-report hippy-nums
+  report num-hippies
+end
+
+to-report logger-nums
+  report num-loggers
+end
+
 to-report get-patch-color [x]
-  ifelse health > 5 
-  [if health > 10 [set health 9] report  61 + x ]
-  [if health < 0 [set health 0] report  31 + x ]
+  ifelse x > 5 
+  [if x > 10 [set x 9] report  65  - x / 2 ]
+  [if x < 0 [set x 1] report  31 + x / 2 ]
 end
 
 to-report get-turtle-color [x]
@@ -119,6 +144,7 @@ to-report get-net-health
   set total total / count patches
   report total
 end
+
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -157,7 +183,7 @@ initial-num-turtles
 initial-num-turtles
 0
 50
-34
+29
 1
 1
 NIL
@@ -206,7 +232,7 @@ initial-forest-coverage
 initial-forest-coverage
 0
 100
-90
+44
 1
 1
 NIL
@@ -221,7 +247,7 @@ logger-impact
 logger-impact
 1
 10
-4
+10
 1
 1
 NIL
@@ -236,7 +262,7 @@ natural-regrowth-rate
 natural-regrowth-rate
 0
 10
-1
+0
 1
 1
 NIL
@@ -251,7 +277,7 @@ movement-tendency
 movement-tendency
 1
 10
-5
+1
 1
 1
 NIL
@@ -266,7 +292,7 @@ inherent-greed
 inherent-greed
 0
 4
-3
+0
 1
 1
 NIL
@@ -281,7 +307,7 @@ greed-inertia
 greed-inertia
 1
 10
-6
+9
 1
 1
 NIL
@@ -294,7 +320,7 @@ SWITCH
 106
 random-start-greed
 random-start-greed
-0
+1
 1
 -1000
 
@@ -307,7 +333,7 @@ resource-needs
 resource-needs
 1
 10
-4
+5
 1
 1
 NIL
@@ -322,17 +348,17 @@ hippy-impact
 hippy-impact
 1
 10
-6
+2
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-6
-289
-303
-439
+3
+194
+300
+384
 forest-health
 time
 average health
@@ -341,10 +367,32 @@ average health
 0.0
 10.0
 true
-true
+false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plotxy time get-net-health"
+
+MONITOR
+21
+401
+109
+446
+hippy count
+hippy-nums
+0
+1
+11
+
+MONITOR
+167
+400
+262
+445
+logger count
+logger-nums
+0
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
